@@ -58,27 +58,24 @@ public class ProductFragment extends Fragment {
         // Inflate the layout for this fragment
 
         lvProducts = view.findViewById(R.id.lvProduct);
-        products = ProductBL.getAllClient();
+        products = ProductBL.getAllProduct();
         productAdapter = new ProductAdapter(getActivity(), R.layout.item_product, products);
         lvProducts.setAdapter(productAdapter);
         lvProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                goToAddProductActivity(products.get(i));
+                goToAddProductActivity(products.get(i).getId());
             }
         });
-        for(Product product: products){
-            Log.e("product: ", product.getId() + "-" + product.getBrand()+"-" + product.getCategory());
-        }
         return view;
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == Constants.PRODUCT_REQUEST_CODE && resultCode == Activity.RESULT_OK){
             Bundle bundle = data.getExtras();
-            Product product = (Product) bundle.getSerializable(Constants.PRODUCT);
+            int productId = bundle.getInt(Constants.PRODUCT);
+            Product product = ProductBL.getProduct(productId);
             int indexChange = checkProducts(product);
             if( indexChange == -1){
                 products.add(product);
@@ -109,7 +106,7 @@ public class ProductFragment extends Fragment {
 
         switch (item.getItemId()){
             case R.id.actionBar_add:
-                goToAddProductActivity(null);
+                goToAddProductActivity(-1);
                 break;
             case R.id.actionBar_search:
                 break;
@@ -118,10 +115,10 @@ public class ProductFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private void goToAddProductActivity(Product product) {
+    private void goToAddProductActivity(int productId) {
         Intent addProductActivity = new Intent(getActivity(), AddProductActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putSerializable(Constants.PRODUCT, product);
+        bundle.putInt(Constants.PRODUCT, productId);
         addProductActivity.putExtras(bundle);
         startActivityForResult(addProductActivity, Constants.PRODUCT_REQUEST_CODE);
 

@@ -45,7 +45,9 @@ public class ProductAdapter extends ArrayAdapter<Product> {
         TextView txtPrice = convertView.findViewById(R.id.txtPrice);
 
         Product product = this.objects.get(position);
-        imgProduct.setImageBitmap(MySupport.StringToBitMap(product.getImage()));
+        if(product.getImages().size() > 0){
+            imgProduct.setImageBitmap(MySupport.getRoundedRectBitmap(MySupport.StringToBitMap(product.getImages().first())));
+        }
         txtProductName.setText(product.getName());
         txtPrice.setText(product.getPrice() + "");
 

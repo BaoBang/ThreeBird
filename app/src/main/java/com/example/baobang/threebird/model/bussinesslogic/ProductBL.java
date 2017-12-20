@@ -35,7 +35,7 @@ public class ProductBL {
         return false;
     }
 
-    public static ArrayList<Product> getAllClient(){
+    public static ArrayList<Product> getAllProduct(){
         List<Product> list = null;
         ArrayList<Product> products = new ArrayList<>();
         Realm realm = Realm.getDefaultInstance();
@@ -44,6 +44,13 @@ public class ProductBL {
         for(Product product : list) products.add(product);
         realm.close();
         return  products;
+    }
+    public static Product getProduct(int productId){
+        Realm realm = Realm.getDefaultInstance();
+        Product results = realm.where(Product.class).equalTo("id", productId).findFirst();
+        Product product = realm.copyFromRealm(results);
+        realm.close();
+        return  product;
     }
 
     public static boolean updateProduct(Product product) {

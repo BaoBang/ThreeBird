@@ -8,18 +8,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.Transformation;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -27,9 +21,7 @@ import android.widget.Spinner;
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.model.Brand;
 import com.example.baobang.threebird.model.Category;
-import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.Product;
-import com.example.baobang.threebird.model.bussinesslogic.ClientBL;
 import com.example.baobang.threebird.model.bussinesslogic.ProductBL;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.MySupport;
@@ -37,6 +29,8 @@ import com.example.baobang.threebird.utils.MySupport;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.realm.RealmList;
 
 public class AddProductActivity extends AppCompatActivity {
 
@@ -60,9 +54,18 @@ public class AddProductActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_product);
         Bundle bundle = getIntent().getExtras();
-        product = (Product) bundle.getSerializable(Constants.PRODUCT);
+        product = getProduct();
         addControlls();
         addEvents();
+    }
+
+    private Product getProduct() {
+        Bundle bundle = getIntent().getExtras();
+        int productId = bundle.getInt(Constants.PRODUCT);
+        if(productId == -1)
+            return null;
+        return ProductBL.getProduct(productId);
+
     }
 
     private void addControlls() {
@@ -123,6 +126,12 @@ public class AddProductActivity extends AppCompatActivity {
                 break;
             }
         }
+        bitmaps = new ArrayList<>();
+        for(String bitmapStr : product.getImages()){
+            Bitmap bitmap = MySupport.StringToBitMap(bitmapStr);
+            bitmaps.add(bitmap);
+            addImageView(layoutImage, bitmap);
+        }
     }
 
     private void addEvents() {
@@ -150,20 +159,25 @@ public class AddProductActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Constants.CAMERA_PIC_REQUEST) {
-            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-            bitmaps.add(bitmap);
-            addImageView(layoutImage, bitmap);
-        }else if(requestCode == Constants.SELECT_FILE){
-            Uri selectedImageUri = data.getData();
-            Bitmap bitmap = null;
-            try {
-                bitmap = MySupport.getBitmapFromUri(this,selectedImageUri);
-            } catch (IOException e) {
-                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.noimage);
+
+        if(resultCode == Activity.RESULT_OK){
+            if(requestCode == Constants.CAMERA_PIC_REQUEST){
+                Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                bitmap = MySupport.getResizedBitmap(bitmap, Constants.IMAGE_WIDTH, Constants.IMAGE_HEIGHT);
+                bitmaps.add(bitmap);
+                addImageView(layoutImage, bitmap);
+            }else if(requestCode == Constants.SELECT_FILE){
+                Uri selectedImageUri = data.getData();
+                Bitmap bitmap = null;
+                try {
+                    bitmap = MySupport.getBitmapFromUri(this,selectedImageUri);
+                    bitmap = MySupport.getResizedBitmap(bitmap, Constants.IMAGE_WIDTH, Constants.IMAGE_HEIGHT);
+                } catch (IOException e) {
+                    bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.noimage);
+                }
+                bitmaps.add(bitmap);
+                addImageView(layoutImage, bitmap);
             }
-            bitmaps.add(bitmap);
-            addImageView(layoutImage, bitmap);
         }
     }
 
@@ -252,11 +266,11 @@ public class AddProductActivity extends AppCompatActivity {
                 priceInventory,
                 price,
                 detail);
-//        if(avartar != null){
-//            client.setAvatar(MySupport.BitMapToString(avartar));
-//        }else{
-//            client.setAvatar(null);
-//        }
+        RealmList<String> bitmapStrs = new RealmList<>();
+        for(Bitmap bitmap : bitmaps){
+            bitmapStrs.add(MySupport.BitMapToString(bitmap, 50));
+        }
+        product.setImages(bitmapStrs);
         boolean res = false;
         if(this.product == null){
             res =  ProductBL.createProudct(product);
@@ -266,8 +280,7 @@ public class AddProductActivity extends AppCompatActivity {
         if(res){
             Intent returnIntent = new Intent();
             Bundle bundle = new Bundle();
-            bundle.putSerializable(Constants.PRODUCT,product);
-            //returnIntent.putExtras(bundle);
+            bundle.putInt(Constants.PRODUCT,product.getId());
             returnIntent.putExtras(bundle);
             setResult(Activity.RESULT_OK,returnIntent);
             finish();

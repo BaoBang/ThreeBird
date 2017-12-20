@@ -10,11 +10,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.media.Image;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
@@ -49,6 +51,14 @@ public class MySupport {
         dialog.setPositiveButton("Ok",null);
         dialog.show();
 
+    }
+    public static String BitMapToString(Bitmap bitmap, int quality){
+
+        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG,quality, baos);
+        byte [] b=baos.toByteArray();
+        String temp= Base64.encodeToString(b, Base64.DEFAULT);
+        return temp;
     }
 
     public static String BitMapToString(Bitmap bitmap){
@@ -108,14 +118,13 @@ public class MySupport {
         });
         builder.show();
     }
-    public static void cameraIntent(Activity activity)
-    {
+
+    public static void cameraIntent(Activity activity) {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         activity.startActivityForResult(intent, Constants.CAMERA_PIC_REQUEST);
     }
 
-    public static void galleryIntent(Activity activity)
-    {
+    public static void galleryIntent(Activity activity) {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);//
@@ -131,10 +140,20 @@ public class MySupport {
         return image;
     }
 
-    public static Bitmap compresImage(Bitmap bitmap){
-        ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+    public static Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
 
-        bitmap.compress(Bitmap.CompressFormat.PNG,50/100,byteArrayOutputStream);
-        return bitmap;
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
     }
 }

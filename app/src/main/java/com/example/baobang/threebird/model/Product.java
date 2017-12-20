@@ -2,8 +2,8 @@ package com.example.baobang.threebird.model;
 
 import java.io.Serializable;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
-import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -20,7 +20,7 @@ public class Product extends RealmObject implements Serializable{
     private int priceInventory;
     private int price;
     private String detail;
-    private String image;
+    private RealmList<String> images;
 
     public Product(int id, String name, Category category, Brand brand, int invetory, int priceInventory, int price, String detail) {
         this.id = id;
@@ -31,6 +31,7 @@ public class Product extends RealmObject implements Serializable{
         this.priceInventory = priceInventory;
         this.price = price;
         this.detail = detail;
+        images = new RealmList<>();
     }
 
     public Product() {
@@ -100,11 +101,11 @@ public class Product extends RealmObject implements Serializable{
         this.detail = detail;
     }
 
-    public String getImage() {
-        return image;
+    public RealmList<String> getImages() {
+        return images;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setImages(RealmList<String> images) {
+        this.images = images;
     }
 }

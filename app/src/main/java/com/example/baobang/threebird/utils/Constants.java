@@ -15,6 +15,8 @@ public class Constants {
     public static int SELECT_FILE = 1338;
     public static int AVATAR_WIDTH = 100;
     public static int AVATAR_HEIGHT = 100;
+    public static int IMAGE_WIDTH = 100;
+    public static int IMAGE_HEIGHT = 110;
 
     //
     public static int PADDING = 12;
