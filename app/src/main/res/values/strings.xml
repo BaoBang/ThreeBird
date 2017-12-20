@@ -1,0 +1,66 @@
+<resources>
+    <string name="app_name">ThreeBird</string>
+    <string name="singin">Đăng kí</string>
+    <string name="title_home">Trang chủ</string>
+    <string name="title_order">Đơn hàng</string>
+    <string name="title_product">Sản phẩm</string>
+    <string name="title_client">Khách hàng</string>
+    <string name="title_user_detail">Chi tiết khách hàng</string>
+    <string name="title_add_product">Thêm Sản phẩm</string>
+    <string name="title_create_order">Tạo đơn hàng</string>
+    <string name="title_activity_login">Sign in</string>
+
+    <!-- Strings related to login -->
+    <string name="user_name">Username</string>
+    <string name="password">Password</string>
+    <string name="password_confirm">Confirm Password</string>
+    <string name="action_sign_in">Đăng nhập</string>
+    <string name="forget_password">Quên mật khẩu</string>
+    <string name="resgiter">Đăng kí</string>
+    <string name="logo_decreption">Logo</string>
+    <string name="cancel">Hủy</string>
+
+    <!-- Strings related to add product -->
+    <string name="product_name">Tên hàng hóa</string>
+    <string name="product_category">Loại hàng hóa</string>
+    <string name="product_brand">Nhãn hiệu</string>
+    <string name="product_id">Mã hàng hóa</string>
+    <string name="product_inventory">Tồn kho ban đầu</string>
+    <string name="product_inventory_price">Giá nhập kho</string>
+    <string name="product_price">Giá khách thường</string>
+
+    <!-- Strings related to home -->
+    <string name="complete">HOÀN THÀNH</string>
+    <string name="destroy">HỦY</string>
+    <string name="_new">MỚI</string>
+
+    <!--Order-->
+    <string name="commune">Phường/xã</string>
+    <string name="address">Địa chỉ</string>
+    <string name="product">Sản phẩm</string>
+    <string name="delivery_date">Ngày giao hàng</string>
+    <string name="payment">Hình thức thanh toán</string>
+    <string name="order_id">Mã đơn hàng</string>
+    <string name="created_at">Ngày tạo</string>
+    <string name="status">Trạng thái</string>
+    <string name="phone">Số điện thoại</string>
+    <string name="provinces">Tỉnh/Thành phố</string>
+    <string name="district">Quận/Huyện</string>
+    <!--user detail-->
+    <string name="name">Họ tên</string>
+    <string name="group_user">Nhóm khách hàng</string>
+    <string name="fax">Số fax</string>
+    <string name="website">Website</string>
+    <string name="email">email</string>
+    <string name="user_info">Thông tin khách hàng</string>
+    <string name="address_info">Địa chỉ liên hệ</string>
+    <string name="delivery_info">Địa chỉ giao hàng</string>
+
+    <!--Action bar-->
+    <string name="search">Tìm kiếm</string>
+    <string name="add">Thêm mới</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+</resources>

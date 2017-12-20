@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/background_color_gradient">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolBarCreateOrder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="0dp"
+        android:padding="0dp"
+        android:background="@color/colorPrimary"
+        app:title=""
+        app:titleTextColor="@color/colorPrimary"
+        app:navigationIcon="@drawable/ic_back_list">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_create_order"
+            android:textSize="@dimen/text_size_title"
+            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
+            android:layout_gravity="left"/>
+    </android.support.v7.widget.Toolbar>
+
+    <LinearLayout
+        android:layout_marginTop="@dimen/margin"
+        android:layout_marginLeft="@dimen/margin"
+        android:layout_marginRight="@dimen/margin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="100">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_weight="20"
+            android:src="@drawable/noimage" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="20"
+            android:hint="Nhập tên khác"
+            android:textSize="@dimen/text_size" />
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="60"
+            android:textSize="@dimen/text_size"></Spinner>
+
+
+    </LinearLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin"
+                android:layout_marginTop="@dimen/padding_small"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="100">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/product_id"
+                    android:textSize="@dimen/text_size"
+                    android:layout_weight="20"
+                    android:padding="@dimen/padding_small"
+                    android:background="@drawable/edit_background_gray"
+                    android:drawableLeft="@drawable/ic_name_product"
+                    android:drawablePadding="@dimen/padding_small"/>
+
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="@dimen/text_size"
+                    android:layout_weight="80"></Spinner>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin"
+                android:layout_marginTop="@dimen/padding_small"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="100">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/created_at"
+                    android:textSize="@dimen/text_size"
+                    android:layout_weight="20"
+                    android:padding="@dimen/padding_small"
+                    android:background="@drawable/edit_background_gray"
+                    android:drawableLeft="@drawable/ic_name_product"
+                    android:drawablePadding="@dimen/padding_small"/>
+
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="@dimen/text_size"
+                    android:layout_weight="80"
+                    ></Spinner>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin"
+                android:layout_marginTop="@dimen/padding_small"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="100">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/status"
+                    android:textSize="@dimen/text_size"
+                    android:layout_weight="20"
+                    android:padding="@dimen/padding_small"
+                    android:background="@drawable/edit_background_gray"
+                    android:drawableLeft="@drawable/ic_name_product"
+                    android:drawablePadding="@dimen/padding_small"/>
+
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="@dimen/text_size"
+                    android:layout_weight="80"></Spinner>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin"
+                android:layout_marginTop="@dimen/padding_small"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="100">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/phone"
+                    android:textSize="@dimen/text_size"
+                    android:layout_weight="20"
+                    android:padding="@dimen/padding_small"
+                    android:background="@drawable/edit_background_gray"
+                    android:drawableLeft="@drawable/ic_number_phone"
+                    android:drawablePadding="@dimen/padding_small"/>
+
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="@dimen/text_size"
+                    android:layout_weight="80"></Spinner>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin"
+                android:layout_marginTop="@dimen/padding_small"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="100">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/provinces"
+                    android:textSize="@dimen/text_size"
+                    android:layout_weight="20"
+                    android:padding="@dimen/padding_small"
+                    android:background="@drawable/edit_background_gray"
+                    android:drawableLeft="@drawable/ic_address"
+                    android:drawablePadding="@dimen/padding_small"/>
+
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="@dimen/text_size"
+                    android:layout_weight="80"></Spinner>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin"
+                android:layout_marginTop="@dimen/padding_small"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="100">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/district"
+                    android:textSize="@dimen/text_size"
+                    android:layout_weight="20"
+                    android:padding="@dimen/padding_small"
+                    android:background="@drawable/edit_background_gray"
+                    android:drawableLeft="@drawable/ic_address"
+                    android:drawablePadding="@dimen/padding_small"/>
+
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="@dimen/text_size"
+                    android:layout_weight="80"></Spinner>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin"
+                android:layout_marginTop="@dimen/padding_small"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="100">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/commune"
+                    android:textSize="@dimen/text_size"
+                    android:layout_weight="20"
+                    android:padding="@dimen/padding_small"
+                    android:background="@drawable/edit_background_gray"
+                    android:drawableLeft="@drawable/ic_address"
+                    android:drawablePadding="@dimen/padding_small"/>
+
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="@dimen/text_size"
+                    android:layout_weight="80"></Spinner>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin"
+                android:layout_marginTop="@dimen/padding_small"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="100">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/address"
+                    android:textSize="@dimen/text_size"
+                    android:layout_weight="20"
+                    android:padding="@dimen/padding_small"
+                    android:background="@drawable/edit_background_gray"
+                    android:drawableLeft="@drawable/ic_address"
+                    android:drawablePadding="@dimen/padding_small"/>
+
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="@dimen/text_size"
+                    android:layout_weight="80"></Spinner>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin"
+                android:layout_marginTop="@dimen/padding_small"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="100">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/product"
+                    android:textSize="@dimen/text_size"
+                    android:layout_weight="20"
+                    android:padding="@dimen/padding_small"
+                    android:background="@drawable/edit_background_gray"
+                    android:drawableLeft="@drawable/ic_lable_product"
+                    android:drawablePadding="@dimen/padding_small"/>
+
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="@dimen/text_size"
+                    android:layout_weight="80"></Spinner>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin"
+                android:layout_marginTop="@dimen/padding_small"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="100">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/delivery_date"
+                    android:textSize="@dimen/text_size"
+                    android:layout_weight="20"
+                    android:padding="@dimen/padding_small"
+                    android:background="@drawable/edit_background_gray"
+                    android:drawableLeft="@drawable/ic_name_product"
+                    android:drawablePadding="@dimen/padding_small"/>
+
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="@dimen/text_size"
+                    android:layout_weight="80"></Spinner>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin"
+                android:layout_marginTop="@dimen/padding_small"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="100">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/payment"
+                    android:textSize="@dimen/text_size"
+                    android:layout_weight="20"
+                    android:padding="@dimen/padding_small"
+                    android:background="@drawable/edit_background_gray"
+                    android:drawableLeft="@drawable/ic_name_product"
+                    android:drawablePadding="@dimen/padding_small"/>
+
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="@dimen/text_size"
+                    android:layout_weight="80"></Spinner>
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
