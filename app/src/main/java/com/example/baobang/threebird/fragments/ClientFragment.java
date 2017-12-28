@@ -116,6 +116,7 @@ public class ClientFragment extends Fragment {
                 }else{
                     clients.set(indexChange, client);
                 }
+                clientApdapter.setTempObjects(clients);
                 clientApdapter.notifyDataSetChanged();
         }
     }

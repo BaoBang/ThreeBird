@@ -83,6 +83,7 @@ public class ProductFragment extends Fragment {
             }else{
                 products.set(indexChange, product);
             }
+            productAdapter.setTempObjects(products);
             productAdapter.notifyDataSetChanged();
         }
     }

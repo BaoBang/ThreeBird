@@ -37,6 +37,10 @@ public class OrderAdapter extends ArrayAdapter<Order> {
         tempObjects = new ArrayList<>(objects);
     }
 
+    public void setTempObjects(List<Order> tempObjects) {
+        this.tempObjects = tempObjects;
+    }
+
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {

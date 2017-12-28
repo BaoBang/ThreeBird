@@ -129,6 +129,7 @@ public class OrderFragment extends Fragment {
             }else{
                 orders.set(indexChange, order);
             }
+            orderAdapter.setTempObjects(orders);
             orderAdapter.notifyDataSetChanged();
         }
     }

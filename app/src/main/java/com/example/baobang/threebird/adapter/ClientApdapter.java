@@ -41,6 +41,10 @@ public class ClientApdapter extends ArrayAdapter<Client>{
         tempObjects = new ArrayList<>(objects);
     }
 
+    public void setTempObjects(List<Client> tempObjects) {
+        this.tempObjects = tempObjects;
+    }
+
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {

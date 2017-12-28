@@ -3,6 +3,7 @@ package com.example.baobang.threebird.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -234,7 +235,8 @@ public class CreateOrderActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
+                txtName.setText("");
+                imgAvatar.setImageResource(R.drawable.noimage);
             }
         });
     }
@@ -243,7 +245,13 @@ public class CreateOrderActivity extends AppCompatActivity {
         if(i != 0){
             Client client = clients.get(i);
             txtName.setText(client.getName());
-            Bitmap bitmap = MySupport.StringToBitMap(client.getAvatar());
+
+            Bitmap bitmap;
+            if(client.getAvatar() != null){
+                bitmap = MySupport.StringToBitMap(client.getAvatar());
+            }else{
+                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.noimage);
+            }
             imgAvatar.setImageBitmap(MySupport.getRoundedRectBitmap(bitmap));
         }else{
             txtName.setText("");

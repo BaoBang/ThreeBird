@@ -38,6 +38,10 @@ public class ProductAdapter extends ArrayAdapter<Product> {
         tempObjects = new ArrayList<>(objects);
     }
 
+    public void setTempObjects(List<Product> tempObjects) {
+        this.tempObjects = tempObjects;
+    }
+
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
