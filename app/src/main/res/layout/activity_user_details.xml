@@ -51,12 +51,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <LinearLayout
-                android:layout_marginTop="@dimen/margin"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/color_white_90">
-
 
                 <TextView
                     android:padding="@dimen/padding"
@@ -87,126 +85,111 @@
                 android:id="@+id/groupUserInfo"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/padding">
                 <LinearLayout
-                    android:layout_marginLeft="@dimen/margin"
-                    android:layout_marginRight="@dimen/margin"
-                    android:layout_marginTop="@dimen/padding_small"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:weightSum="100">
+                    android:paddingTop="@dimen/padding">
 
                     <EditText
                         android:id="@+id/txtName"
+                        android:hint="@string/name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:hint="@string/name"
                         android:textSize="@dimen/text_size"
-                        android:layout_weight="20"
-                        android:layout_marginTop="@dimen/padding"
-                        android:padding="@dimen/padding_small"/>
-
+                        android:layout_marginLeft="@dimen/margin"
+                        android:layout_marginRight="@dimen/margin"
+                        android:padding="@dimen/padding"
+                        android:background="@color/color_white"/>
                 </LinearLayout>
                 <LinearLayout
-                    android:layout_marginLeft="@dimen/margin"
-                    android:layout_marginRight="@dimen/margin"
-                    android:layout_marginTop="@dimen/padding_small"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:weightSum="100">
-
+                    android:background="@color/color_white"
+                    android:layout_marginLeft="@dimen/margin"
+                    android:layout_marginRight="@dimen/margin"
+                    android:layout_marginTop="@dimen/padding">
                     <Spinner
                         android:id="@+id/spGroupClient"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_weight="80"
-                        android:text="Tên ở "
-                        android:textSize="@dimen/text_size"></Spinner>
+                        />
 
                 </LinearLayout>
                 <LinearLayout
-                    android:layout_marginLeft="@dimen/margin"
-                    android:layout_marginRight="@dimen/margin"
-                    android:layout_marginTop="@dimen/padding_small"
+
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:weightSum="100">
+                    android:paddingTop="@dimen/padding">
 
                     <EditText
                         android:id="@+id/txtPhone"
+                        android:hint="@string/phone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:hint="@string/phone"
                         android:textSize="@dimen/text_size"
-                        android:layout_weight="20"
-                        android:padding="@dimen/padding_small"/>
-
-
+                        android:layout_marginLeft="@dimen/margin"
+                        android:layout_marginRight="@dimen/margin"
+                        android:padding="@dimen/padding"
+                        android:background="@color/color_white"/>
                 </LinearLayout>
+
                 <LinearLayout
-                    android:layout_marginLeft="@dimen/margin"
-                    android:layout_marginRight="@dimen/margin"
-                    android:layout_marginTop="@dimen/padding_small"
-                    android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:weightSum="100">
+                    android:orientation="horizontal"
+                    android:paddingTop="@dimen/padding">
 
                     <EditText
                         android:id="@+id/txtFax"
+                        android:hint="@string/fax"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:hint="@string/fax"
                         android:textSize="@dimen/text_size"
-                        android:layout_weight="20"
-                        android:padding="@dimen/padding_small"/>
+                        android:layout_marginLeft="@dimen/margin"
+                        android:layout_marginRight="@dimen/margin"
+                        android:padding="@dimen/padding"
+                        android:background="@color/color_white"/>
 
                 </LinearLayout>
                 <LinearLayout
-                    android:layout_marginLeft="@dimen/margin"
-                    android:layout_marginRight="@dimen/margin"
-                    android:layout_marginTop="@dimen/padding_small"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:weightSum="100">
+                    android:paddingTop="@dimen/padding">
 
                     <EditText
                         android:id="@+id/txtWebsite"
+                        android:hint="@string/website"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:hint="@string/website"
                         android:textSize="@dimen/text_size"
-                        android:layout_weight="20"
-                        android:padding="@dimen/padding_small"/>
+                        android:layout_marginLeft="@dimen/margin"
+                        android:layout_marginRight="@dimen/margin"
+                        android:padding="@dimen/padding"
+                        android:background="@color/color_white"/>
 
                 </LinearLayout>
                 <LinearLayout
-                    android:layout_marginLeft="@dimen/margin"
-                    android:layout_marginRight="@dimen/margin"
-                    android:layout_marginTop="@dimen/padding_small"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:weightSum="100">
+                    android:paddingTop="@dimen/padding">
 
                     <EditText
                         android:id="@+id/txtEmail"
+                        android:hint="@string/email"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:hint="@string/email"
                         android:textSize="@dimen/text_size"
-                        android:layout_weight="20"
-                        android:padding="@dimen/padding_small"/>
+                        android:layout_marginLeft="@dimen/margin"
+                        android:layout_marginRight="@dimen/margin"
+                        android:padding="@dimen/padding"
+                        android:background="@color/color_white"/>
 
                 </LinearLayout>
 
@@ -216,7 +199,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin"
                 android:background="@color/color_white_90"
                 android:orientation="horizontal">
 
@@ -250,82 +232,70 @@
                 android:layout_height="wrap_content">
 
                 <LinearLayout
-                    android:layout_marginLeft="@dimen/margin"
-                    android:layout_marginRight="@dimen/margin"
-                    android:layout_marginTop="@dimen/padding_small"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:weightSum="100">
+                    android:background="@color/color_white"
+                    android:layout_marginLeft="@dimen/margin"
+                    android:layout_marginRight="@dimen/margin"
+                    android:layout_marginTop="@dimen/padding">
 
                     <Spinner
                         android:id="@+id/spProvince"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:textSize="@dimen/text_size"
-                        android:layout_weight="20"
-                        android:padding="@dimen/padding_small"/>
+                        android:textSize="@dimen/text_size"/>
 
                 </LinearLayout>
                 <LinearLayout
-                    android:layout_marginLeft="@dimen/margin"
-                    android:layout_marginRight="@dimen/margin"
-                    android:layout_marginTop="@dimen/padding_small"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:weightSum="100">
+                    android:background="@color/color_white"
+                    android:layout_marginLeft="@dimen/margin"
+                    android:layout_marginRight="@dimen/margin"
+                    android:layout_marginTop="@dimen/padding">
 
                     <Spinner
                         android:id="@+id/spDistrict"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="@string/district"
-                        android:textSize="@dimen/text_size"
-                        android:layout_weight="20"
-                        android:padding="@dimen/padding_small"/>
+                        android:textSize="@dimen/text_size"/>
 
                 </LinearLayout>
                 <LinearLayout
-                    android:layout_marginLeft="@dimen/margin"
-                    android:layout_marginRight="@dimen/margin"
-                    android:layout_marginTop="@dimen/padding_small"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:weightSum="100">
+                    android:background="@color/color_white"
+                    android:layout_marginLeft="@dimen/margin"
+                    android:layout_marginRight="@dimen/margin"
+                    android:layout_marginTop="@dimen/padding">
 
                     <Spinner
                         android:id="@+id/spCommune"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="@string/commune"
-                        android:textSize="@dimen/text_size"
-                        android:layout_weight="20"
-                        android:padding="@dimen/padding_small"/>
+                        android:textSize="@dimen/text_size"/>
 
                 </LinearLayout>
                 <LinearLayout
-                    android:layout_marginLeft="@dimen/margin"
-                    android:layout_marginRight="@dimen/margin"
-                    android:layout_marginTop="@dimen/padding_small"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:weightSum="100">
+                    android:paddingTop="@dimen/padding"
+                    android:paddingBottom="@dimen/padding">
 
                     <EditText
                         android:id="@+id/txtAddress"
+                        android:hint="@string/address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:hint="@string/address"
                         android:textSize="@dimen/text_size"
-                        android:layout_weight="20"
-                        android:padding="@dimen/padding_small"/>
+                        android:layout_marginLeft="@dimen/margin"
+                        android:layout_marginRight="@dimen/margin"
+                        android:padding="@dimen/padding"
+                        android:background="@color/color_white"/>
 
                 </LinearLayout>
             </LinearLayout>

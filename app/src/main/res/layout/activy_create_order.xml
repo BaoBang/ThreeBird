@@ -36,27 +36,31 @@
 
         <ImageView
             android:id="@+id/txtAvatar"
-            android:layout_width="100dp"
+            android:layout_width="0dp"
             android:layout_height="100dp"
-            android:layout_weight="20"
+            android:layout_weight="30"
             android:src="@drawable/noimage" />
 
         <EditText
             android:id="@+id/txtName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="20"
             android:hint="Nhập tên khác"
-            android:textSize="@dimen/text_size" />
-
-        <Spinner
-            android:id="@+id/spClient"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_width="0dp"
             android:layout_weight="60"
-            android:textSize="@dimen/text_size"></Spinner>
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:drawablePadding="@dimen/padding_small"
+            android:textSize="@dimen/text_size"
+            android:layout_marginLeft="@dimen/margin"
+            android:padding="@dimen/padding_small"
+            android:background="@color/color_white"/>
+
+        <ImageButton
+            android:id="@+id/btnAddClient"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_add"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="10"/>
 
 
     </LinearLayout>
@@ -67,181 +71,158 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingTop="@dimen/padding">
             <LinearLayout
-                android:layout_marginLeft="@dimen/margin"
-                android:layout_marginRight="@dimen/margin"
-                android:layout_marginTop="@dimen/padding_small"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:weightSum="100">
-
+                android:layout_height="wrap_content">
                 <EditText
                     android:id="@+id/txtOrderId"
+                    android:hint="@string/product_id"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:hint="@string/product_id"
-                    android:textSize="@dimen/text_size"
-                    android:layout_weight="20"
-                    android:padding="@dimen/padding_small"
                     android:drawableLeft="@drawable/ic_name_product"
-                    android:drawablePadding="@dimen/padding_small"/>
-
+                    android:drawablePadding="@dimen/padding_small"
+                    android:textSize="@dimen/text_size"
+                    android:layout_marginLeft="@dimen/margin"
+                    android:layout_marginRight="@dimen/margin"
+                    android:padding="@dimen/padding_small"
+                    android:background="@color/color_white"/>
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginLeft="@dimen/margin"
-                android:layout_marginRight="@dimen/margin"
-                android:layout_marginTop="@dimen/padding_small"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:weightSum="100">
+                android:layout_marginRight="@dimen/margin"
+                android:weightSum="100"
+                android:paddingTop="@dimen/padding">
 
                 <TextView
                     android:id="@+id/txtCreatedAt"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
                     android:hint="@string/created_at"
-                    android:textSize="@dimen/text_size"
-                    android:layout_weight="10"
-                    android:padding="@dimen/padding_small"
+                    android:layout_weight="90"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_name_product"
-                    android:drawablePadding="@dimen/padding_small"/>
+                    android:drawablePadding="@dimen/padding_small"
+                    android:textSize="@dimen/text_size"
+                    android:layout_marginLeft="@dimen/margin"
+                    android:padding="@dimen/padding_small"
+                    android:background="@color/color_white"/>
 
                 <ImageButton
                     android:id="@+id/btnCreatedAt"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_add"
-                    android:layout_gravity="fill_horizontal"
-                    android:layout_weight="90"/>
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="10"/>
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginLeft="@dimen/margin"
-                android:layout_marginRight="@dimen/margin"
-                android:layout_marginTop="@dimen/padding_small"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:weightSum="100">
+                android:background="@color/color_white"
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin"
+                android:layout_marginTop="@dimen/padding">
 
                 <Spinner
                     android:id="@+id/spStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:textSize="@dimen/text_size"
-                    android:layout_weight="100"></Spinner>
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginLeft="@dimen/margin"
-                android:layout_marginRight="@dimen/margin"
-                android:layout_marginTop="@dimen/padding_small"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:weightSum="100">
+                android:paddingTop="@dimen/padding">
 
                 <EditText
                     android:id="@+id/txtPhone"
+                    android:hint="@string/phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:hint="@string/phone"
-                    android:textSize="@dimen/text_size"
-                    android:padding="@dimen/padding_small"
                     android:drawableLeft="@drawable/ic_number_phone"
-                    android:drawablePadding="@dimen/padding_small"/>
+                    android:drawablePadding="@dimen/padding_small"
+                    android:textSize="@dimen/text_size"
+                    android:layout_marginLeft="@dimen/margin"
+                    android:layout_marginRight="@dimen/margin"
+                    android:padding="@dimen/padding_small"
+                    android:background="@color/color_white"/>
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginLeft="@dimen/margin"
-                android:layout_marginRight="@dimen/margin"
-                android:layout_marginTop="@dimen/padding_small"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:weightSum="100">
+                android:background="@color/color_white"
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin"
+                android:layout_marginTop="@dimen/padding">
 
                 <Spinner
                     android:id="@+id/spProvince"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/text_size"
-                    android:layout_weight="20"
-                    android:padding="@dimen/padding_small"
-                    android:drawablePadding="@dimen/padding_small"/>
+                    android:layout_height="wrap_content"/>
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginLeft="@dimen/margin"
-                android:layout_marginRight="@dimen/margin"
-                android:layout_marginTop="@dimen/padding_small"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:weightSum="100">
+                android:background="@color/color_white"
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin"
+                android:layout_marginTop="@dimen/padding">
 
                 <Spinner
                     android:id="@+id/spDistrict"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:textSize="@dimen/text_size"
-                    android:layout_weight="20"
-                    android:padding="@dimen/padding_small"
-                    android:drawablePadding="@dimen/padding_small"/>
+                    android:layout_height="wrap_content"/>
 
             </LinearLayout>
 
 
             <LinearLayout
-                android:layout_marginLeft="@dimen/margin"
-                android:layout_marginRight="@dimen/margin"
-                android:layout_marginTop="@dimen/padding_small"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:weightSum="100">
+                android:background="@color/color_white"
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin"
+                android:layout_marginTop="@dimen/padding">
 
                 <Spinner
                     android:id="@+id/spCommune"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:textSize="@dimen/text_size"
-                    android:layout_weight="20"
-                    android:padding="@dimen/padding_small"
-                    android:drawablePadding="@dimen/padding_small"/>
+                    android:layout_height="wrap_content"/>
 
             </LinearLayout>
             <LinearLayout
-                android:layout_marginLeft="@dimen/margin"
-                android:layout_marginRight="@dimen/margin"
-                android:layout_marginTop="@dimen/padding_small"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:weightSum="100">
+                android:weightSum="100"
+                android:paddingTop="@dimen/padding">
 
                 <EditText
                     android:id="@+id/txtAddress"
+                    android:hint="@string/address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:hint="@string/address"
-                    android:textSize="@dimen/text_size"
-                    android:layout_weight="20"
-                    android:padding="@dimen/padding_small"
                     android:drawableLeft="@drawable/ic_address"
-                    android:drawablePadding="@dimen/padding_small"/>
+                    android:drawablePadding="@dimen/padding_small"
+                    android:textSize="@dimen/text_size"
+                    android:layout_marginLeft="@dimen/margin"
+                    android:layout_marginRight="@dimen/margin"
+                    android:padding="@dimen/padding_small"
+                    android:background="@color/color_white"/>
 
             </LinearLayout>
             <LinearLayout
@@ -249,23 +230,24 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <LinearLayout
-                    android:layout_marginLeft="@dimen/margin"
-                    android:layout_marginRight="@dimen/margin"
-                    android:layout_marginTop="@dimen/padding_small"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/margin"
+                    android:paddingTop="@dimen/padding"
                     android:weightSum="100">
 
                     <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
                         android:text="@string/product"
-                        android:textSize="@dimen/text_size"
+                        android:layout_width="0dp"
                         android:layout_weight="40"
-                        android:padding="@dimen/padding_small"
+                        android:layout_height="wrap_content"
                         android:drawableLeft="@drawable/ic_lable_product"
-                        android:drawablePadding="@dimen/padding_small"/>
+                        android:drawablePadding="@dimen/padding_small"
+                        android:textSize="@dimen/text_size"
+                        android:layout_marginLeft="@dimen/margin"
+                        android:padding="@dimen/padding_small"
+                        android:background="@color/color_white"/>
 
                     <TextView
                             android:id="@+id/txtAmount"
@@ -301,51 +283,48 @@
                 </ScrollView>
             </LinearLayout>
             <LinearLayout
-                android:layout_marginLeft="@dimen/margin"
-                android:layout_marginRight="@dimen/margin"
-                android:layout_marginTop="@dimen/padding_small"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:weightSum="100">
+                android:layout_marginRight="@dimen/margin"
+                android:weightSum="100"
+                android:paddingTop="@dimen/padding">
 
                 <TextView
                     android:id="@+id/txtDeliveryDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
                     android:hint="@string/delivery_date"
-                    android:textSize="@dimen/text_size"
-                    android:layout_weight="10"
-                    android:padding="@dimen/padding_small"
                     android:drawableLeft="@drawable/ic_name_product"
-                    android:drawablePadding="@dimen/padding_small"/>
+                    android:drawablePadding="@dimen/padding_small"
+                    android:layout_weight="90"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size"
+                    android:layout_marginLeft="@dimen/margin"
+                    android:padding="@dimen/padding_small"
+                    android:background="@color/color_white"/>
 
                 <ImageButton
                     android:id="@+id/btnDeliveryDate"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_add"
-                    android:layout_gravity="fill_horizontal"
-                    android:layout_weight="90"/>
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="10"/>
 
             </LinearLayout>
             <LinearLayout
-                android:layout_marginLeft="@dimen/margin"
-                android:layout_marginRight="@dimen/margin"
-                android:layout_marginTop="@dimen/padding_small"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:weightSum="100">
+                android:background="@color/color_white"
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin"
+                android:layout_marginTop="@dimen/padding">
 
                 <Spinner
                     android:id="@+id/spPayment"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:textSize="@dimen/text_size"
-                    android:layout_weight="80"></Spinner>
+                    android:layout_height="wrap_content"/>
 
             </LinearLayout>
         </LinearLayout>

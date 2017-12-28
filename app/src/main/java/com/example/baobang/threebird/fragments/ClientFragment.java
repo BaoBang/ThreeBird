@@ -15,10 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
+
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.activity.UserDetailsActivity;
-import com.example.baobang.threebird.adapter.ClientApdapter;
+import com.example.baobang.threebird.adapter.ClientAdapter;
 import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.bussinesslogic.ClientBL;
 import com.example.baobang.threebird.utils.Constants;
@@ -30,7 +30,7 @@ public class ClientFragment extends Fragment {
 
     private ListView lvClients;
     private ArrayList<Client> clients;
-    private ClientApdapter clientApdapter;
+    private ClientAdapter clientAdapter;
 
     public ClientFragment() {
         // Required empty public constructor
@@ -56,8 +56,8 @@ public class ClientFragment extends Fragment {
         lvClients = view.findViewById(R.id.lvClients);
         clients = ClientBL.getAllClient();
         //
-        clientApdapter = new ClientApdapter(getActivity(), R.layout.item_client, clients);
-        lvClients.setAdapter(clientApdapter);
+        clientAdapter = new ClientAdapter(getActivity(), R.layout.item_client, clients);
+        lvClients.setAdapter(clientAdapter);
         for(Client client : clients){
             Log.e("Client ", client.getId() + "");
         }
@@ -85,7 +85,7 @@ public class ClientFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String s) {
-                clientApdapter.getFilter().filter(s);
+                clientAdapter.getFilter().filter(s);
                 return false;
             }
         });
@@ -116,8 +116,8 @@ public class ClientFragment extends Fragment {
                 }else{
                     clients.set(indexChange, client);
                 }
-                clientApdapter.setTempObjects(clients);
-                clientApdapter.notifyDataSetChanged();
+                clientAdapter.setTempObjects(clients);
+                clientAdapter.notifyDataSetChanged();
         }
     }
 

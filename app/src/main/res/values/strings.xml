@@ -28,6 +28,7 @@
     <string name="product_inventory">Tồn kho ban đầu</string>
     <string name="product_inventory_price">Giá nhập kho</string>
     <string name="product_price">Giá khách thường</string>
+    <string name="product_detail">Chi tiết sản phẩm</string>
 
     <!-- Strings related to home -->
     <string name="complete">HOÀN THÀNH</string>

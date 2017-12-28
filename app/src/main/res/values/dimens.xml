@@ -7,6 +7,7 @@
     <dimen name="stroke_width">2dp</dimen>
     <dimen name="padding">12dp</dimen>
     <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_s_small">4dp</dimen>
     <dimen name="margin">20dp</dimen>
     <dimen name="margin_vertical">8dp</dimen>
     <!--Text size-->

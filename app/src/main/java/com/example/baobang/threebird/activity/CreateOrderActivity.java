@@ -1,12 +1,16 @@
 package com.example.baobang.threebird.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,11 +20,14 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.baobang.threebird.R;
+import com.example.baobang.threebird.adapter.ClientAdapter;
 import com.example.baobang.threebird.model.Address;
 import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.Order;
@@ -47,16 +54,15 @@ public class CreateOrderActivity extends AppCompatActivity {
     private TextView txtCreatedAt, txtAmount, txtDeliveryDate;
 
 
-    private Spinner spClient, spStatus, spProvince,
+    private Spinner spStatus, spProvince,
             spDistrict, spCommune,  spPayment;
     private ArrayList<String> statuses, provinces,
             districts, communes, payments;
-    private ArrayList<Client> clients;
+
     private ArrayAdapter<String> adapterStatus, adapterProvince,
             adapterDistrict, adapterCommune, adapterPayment;
-    private ArrayAdapter<Client> adapterClient;
 
-    private ImageButton btnCreatedAt, btnAddProduct, btnDeliveryDate;
+    private ImageButton btnAddClient, btnCreatedAt, btnAddProduct, btnDeliveryDate;
 
     private Order order = null;
     private List<ProductOrder> productList = new ArrayList<>();
@@ -90,8 +96,8 @@ public class CreateOrderActivity extends AppCompatActivity {
         btnCreatedAt = findViewById(R.id.btnCreatedAt);
         btnAddProduct = findViewById(R.id.btnAddProduct);
         btnDeliveryDate = findViewById(R.id.btnDeliveryDate);
+        btnAddClient = findViewById(R.id.btnAddClient);
 
-        addSpinnerClient();
         addSpinnerStatus();
         addSpinnerProvince();
         addSpinnerDistrict();
@@ -188,15 +194,6 @@ public class CreateOrderActivity extends AppCompatActivity {
         spStatus.setAdapter(adapterStatus);
     }
 
-    private void addSpinnerClient() {
-        spClient = findViewById(R.id.spClient);
-        clients = getClients();
-        adapterClient = new ArrayAdapter<Client>(
-                this,
-                android.R.layout.simple_list_item_1,
-                clients);
-        spClient.setAdapter(adapterClient);
-    }
 
     private void addEvents() {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -227,37 +224,58 @@ public class CreateOrderActivity extends AppCompatActivity {
             }
         });
 
-        spClient.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        btnAddClient.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                doChangeClient(i);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                txtName.setText("");
-                imgAvatar.setImageResource(R.drawable.noimage);
+            public void onClick(View view) {
+                showDialogClient();
             }
         });
     }
 
-    private void doChangeClient(int i) {
-        if(i != 0){
-            Client client = clients.get(i);
-            txtName.setText(client.getName());
+    private void showDialogClient() {
+//        AlertDialog.Builder alertDialog = new AlertDialog.Builder(CreateOrderActivity.this);
+//        LayoutInflater inflater = getLayoutInflater();
+//        View convertView = (View) inflater.inflate(R.layout.listview_dialog, null);
+//        alertDialog.setView(convertView);
+//        alertDialog.setTitle("Danh sách khách hàng");
+//        ListView lv =  convertView.findViewById(R.id.listView);
+//        ArrayList<Client> clients = ClientBL.getAllClient();
+//        ClientAdapter adapter = new ClientAdapter(this, R.layout.item_client, clients);
+//        lv.setAdapter(adapter);
+//        alertDialog.show();
 
-            Bitmap bitmap;
-            if(client.getAvatar() != null){
-                bitmap = MySupport.StringToBitMap(client.getAvatar());
-            }else{
-                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.noimage);
-            }
-            imgAvatar.setImageBitmap(MySupport.getRoundedRectBitmap(bitmap));
-        }else{
-            txtName.setText("");
-            imgAvatar.setImageResource(R.drawable.noimage);
+        // setup the alert builder
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Chọn khách hàng...");
+        // add a radio button list
+        ArrayList<Client> clients = ClientBL.getAllClient();
+        String[] clientStrs = new String[clients.size()];
+        for(int i = 0; i < clients.size(); i++){
+            clientStrs[i] = clients.get(i).toString();
         }
+        int checkedItem = 0;
+        builder.setSingleChoiceItems(clientStrs, checkedItem, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // user checked an item
+            }
+        });
+
+        // add OK and Cancel buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // user clicked OK
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+
+        // create and show the alert dialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

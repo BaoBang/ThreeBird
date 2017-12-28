@@ -29,11 +29,11 @@ import java.util.Locale;
  * Created by baobang on 12/14/17.
  */
 
-public class ClientApdapter extends ArrayAdapter<Client>{
+public class ClientAdapter extends ArrayAdapter<Client>{
     Activity context;
     int resource;
     List<Client> objects, tempObjects;
-    public ClientApdapter(@NonNull Activity context, int resource, @NonNull List<Client> objects) {
+    public ClientAdapter(@NonNull Activity context, int resource, @NonNull List<Client> objects) {
         super(context, resource, objects);
         this.context = context;
         this.resource = resource;
