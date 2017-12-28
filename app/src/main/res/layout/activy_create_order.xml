@@ -231,7 +231,7 @@
                 android:layout_height="wrap_content"
                 android:weightSum="100">
 
-                <TextView
+                <EditText
                     android:id="@+id/txtAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -262,20 +262,37 @@
                         android:layout_height="wrap_content"
                         android:text="@string/product"
                         android:textSize="@dimen/text_size"
-                        android:layout_weight="10"
+                        android:layout_weight="0"
                         android:padding="@dimen/padding_small"
                         android:drawableLeft="@drawable/ic_lable_product"
                         android:drawablePadding="@dimen/padding_small"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:layout_weight="100"
+                        android:weightSum="100">
 
-                    <TextView
-                        android:id="@+id/txtAmount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/edit_background_gray"
-                        android:text="2"
-                        android:layout_weight="50"
-                        android:layout_gravity="center_vertical"
-                        android:textAlignment="center"/>
+                        <TextView
+                            android:id="@+id/txtAmount"
+                            android:layout_width="232dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="10"
+                            android:background="@drawable/edit_background_gray"
+                            android:gravity="center_vertical"
+                            android:text="2"
+                            android:textAlignment="center" />
+
+                        <ImageButton
+                            android:id="@+id/btnAddProduct"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_gravity="fill_horizontal"
+                            android:layout_weight="90"
+                            android:src="@drawable/ic_add" />
+                    </LinearLayout>
+
                 </LinearLayout>
                 <ScrollView
 
@@ -329,9 +346,8 @@
                 android:layout_height="wrap_content"
                 android:weightSum="100">
 
-
-
                 <Spinner
+                    android:id="@+id/spPayment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
