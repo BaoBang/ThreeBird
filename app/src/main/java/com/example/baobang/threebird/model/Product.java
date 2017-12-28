@@ -14,19 +14,19 @@ public class Product extends RealmObject implements Serializable{
     @PrimaryKey
     private int id;
     private String name;
-    private Category category;
-    private Brand brand;
+    private int categoryId;
+    private int brandId;
     private int invetory;
     private int priceInventory;
     private int price;
     private String detail;
     private RealmList<String> images;
 
-    public Product(int id, String name, Category category, Brand brand, int invetory, int priceInventory, int price, String detail) {
+    public Product(int id, String name, int categoryId, int brandId, int invetory, int priceInventory, int price, String detail) {
         this.id = id;
         this.name = name;
-        this.category = category;
-        this.brand = brand;
+        this.categoryId = categoryId;
+        this.brandId = brandId;
         this.invetory = invetory;
         this.priceInventory = priceInventory;
         this.price = price;
@@ -53,20 +53,20 @@ public class Product extends RealmObject implements Serializable{
         this.name = name;
     }
 
-    public Category getCategory() {
-        return category;
+    public int getCategory() {
+        return categoryId;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setCategory(int categoryId) {
+        this.categoryId = categoryId;
     }
 
-    public Brand getBrand() {
-        return brand;
+    public int getBrand() {
+        return brandId;
     }
 
-    public void setBrand(Brand brand) {
-        this.brand = brand;
+    public void setBrand(int brandId) {
+        this.brandId = brandId;
     }
 
     public int getInvetory() {

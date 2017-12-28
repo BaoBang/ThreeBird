@@ -49,11 +49,11 @@ public class AddProductActivity extends AppCompatActivity {
     private Product product = null;
     private Toolbar toolbar;
     private ArrayList<Bitmap> bitmaps;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_product);
-        Bundle bundle = getIntent().getExtras();
         product = getProduct();
         addControlls();
         addEvents();
@@ -114,14 +114,14 @@ public class AddProductActivity extends AppCompatActivity {
         txtProductInventory.setText(product.getInvetory() + "");
 
         for(int i = 0; i < brands.size(); i ++){
-            if(brands.get(i).getId() == product.getBrand().getId()){
+            if(brands.get(i).getId() == product.getBrand()){
                 spBrand.setSelection(i);
                 break;
             }
         }
 
         for(int i = 0; i < categories.size(); i ++){
-            if(categories.get(i).getId() == product.getCategory().getId()){
+            if(categories.get(i).getId() == product.getCategory()){
                 spCategory.setSelection(i);
                 break;
             }
@@ -260,8 +260,8 @@ public class AddProductActivity extends AppCompatActivity {
         }
 
         Product product = new Product(Integer.parseInt(productId),
-                name,categories.get(category),
-                brands.get(brand),
+                name,categories.get(category).getId(),
+                brands.get(brand).getId(),
                 inventory,
                 priceInventory,
                 price,

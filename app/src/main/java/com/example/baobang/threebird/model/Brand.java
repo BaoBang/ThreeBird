@@ -11,6 +11,7 @@ import io.realm.annotations.PrimaryKey;
 
 public class Brand extends RealmObject implements Serializable
 {
+    @PrimaryKey
     private int id;
     private String name;
 

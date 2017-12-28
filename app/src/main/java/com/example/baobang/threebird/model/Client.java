@@ -16,7 +16,7 @@ public class Client extends RealmObject implements Serializable{
     @PrimaryKey
     private int id;
     private String name;
-    private String group;
+    private int groupId;
     private String phone;
     private String fax;
     private String website;
@@ -27,10 +27,10 @@ public class Client extends RealmObject implements Serializable{
     public Client() {
     }
 
-    public Client(int id, String name, String group, String phone, String fax, String website, String email, Address address) {
+    public Client(int id, String name, int groupId, String phone, String fax, String website, String email, Address address) {
         this.id = id;
         this.name = name;
-        this.group = group;
+        this.groupId = groupId;
         this.phone = phone;
         this.fax = fax;
         this.website = website;
@@ -62,12 +62,12 @@ public class Client extends RealmObject implements Serializable{
         this.name = name;
     }
 
-    public String getGroup() {
-        return group;
+    public int getGroup() {
+        return groupId;
     }
 
-    public void setGroup(String group) {
-        this.group = group;
+    public void setGroup(int groupId) {
+        this.groupId = groupId;
     }
 
     public String getPhone() {

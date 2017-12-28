@@ -2,6 +2,7 @@ package com.example.baobang.threebird.utils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,6 +23,9 @@ import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.view.View;
+import android.widget.DatePicker;
+import android.widget.TextView;
 
 import com.example.baobang.threebird.activity.LoginActivity;
 
@@ -29,6 +33,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static android.support.v4.graphics.TypefaceCompatUtil.getTempFile;
@@ -52,6 +58,7 @@ public class MySupport {
         dialog.show();
 
     }
+
     public static String BitMapToString(Bitmap bitmap, int quality){
 
         ByteArrayOutputStream baos=new  ByteArrayOutputStream();
@@ -155,5 +162,21 @@ public class MySupport {
                 bm, 0, 0, width, height, matrix, false);
         bm.recycle();
         return resizedBitmap;
+    }
+
+    public static void getDate(Activity activity, final TextView txt){
+        final Calendar calendar = Calendar.getInstance();
+        DatePickerDialog datePickerDialog = new DatePickerDialog(activity,
+                new DatePickerDialog.OnDateSetListener() {
+
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+                        txt.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                    }
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.show();
     }
 }

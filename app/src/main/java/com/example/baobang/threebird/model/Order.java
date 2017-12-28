@@ -5,19 +5,21 @@ import java.util.Date;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by baobang on 12/27/17.
  */
 
 public class Order extends RealmObject implements Serializable {
+    @PrimaryKey
     private int id;
     private String clientName;
     private Date createdAt;
     private int status;
     private String phone;
     private Address address;
-    private RealmList<ProductOrder> products;
+    private RealmList<ProductOrder> products = new RealmList<>();
     private Date liveryDate;
     private int payments;
     private int paymentValue;
@@ -129,5 +131,9 @@ public class Order extends RealmObject implements Serializable {
     @Override
     public String toString() {
         return id + "-" + clientName + "-" + phone;
+    }
+
+    public int getAmount(){
+        return products.size();
     }
 }

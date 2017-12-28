@@ -23,7 +23,9 @@ import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.fragments.ClientFragment;
 import com.example.baobang.threebird.model.Address;
 import com.example.baobang.threebird.model.Client;
+import com.example.baobang.threebird.model.ClientGroup;
 import com.example.baobang.threebird.model.bussinesslogic.ClientBL;
+import com.example.baobang.threebird.model.bussinesslogic.ClientGroupBL;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.MySupport;
 import com.example.baobang.threebird.utils.SlideView;
@@ -41,9 +43,10 @@ public class UserDetailsActivity extends AppCompatActivity {
     EditText txtName, txtPhone, txtFax, txtWebsite, txtEmail, txtAddress;
 
     Spinner spGroupClient, spProvince, spDistrict, spCommune;
-    ArrayList<String> groups, provinces, districts, communes;
-    ArrayAdapter<String> groupAdapter, provinceAdapter, districtAdapter, communeAdapter;
-
+    ArrayList<String> provinces, districts, communes;
+    ArrayList<ClientGroup> groups;
+    ArrayAdapter<String> provinceAdapter, districtAdapter, communeAdapter;
+    ArrayAdapter<ClientGroup> groupAdapter;
     private Bitmap avartar = null;
     private Client client = null;
     @Override
@@ -52,6 +55,9 @@ public class UserDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_details);
         Bundle bundle = getIntent().getExtras();
         client = (Client) bundle.getSerializable(Constants.CLIENT);
+//        ClientGroupBL.createClientGroup(new ClientGroup(0, "Admin"));
+//        ClientGroupBL.createClientGroup(new ClientGroup(0, "Employee"));
+//        ClientGroupBL.createClientGroup(new ClientGroup(0, "Membber"));
         addControlls();
         addEvents();
     }
@@ -76,42 +82,58 @@ public class UserDetailsActivity extends AppCompatActivity {
         txtEmail = findViewById(R.id.txtEmail);
         txtAddress = findViewById(R.id.txtAddress);
         // spinner
-        spGroupClient = findViewById(R.id.spGroupClient);
-        spProvince = findViewById(R.id.spProvince);
-        spDistrict = findViewById(R.id.spDistrict);
-        spCommune = findViewById(R.id.spCommune);
-
-        groups = getGroups();
-        provinces = getProvinces();
-        districts = getDistricts();
-        communes = getCommunes();
-
-        groupAdapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                groups);
-        provinceAdapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                provinces);
-        districtAdapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                districts );
-        communeAdapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                communes);
-
-        spGroupClient.setAdapter(groupAdapter);
-        spProvince.setAdapter(provinceAdapter);
-        spDistrict.setAdapter(districtAdapter);
-        spCommune.setAdapter(communeAdapter);
+        addSpnnerClientGroup();
+        addSpinnerProvince();
+        addSpinnerDistrict();
+        addSpinerCommune();
 
         if(client != null){
             setDataForInput();
         }
 
+    }
+
+    private void addSpinerCommune() {
+
+        spCommune = findViewById(R.id.spCommune);
+        communes = getCommunes();
+
+        communeAdapter = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_list_item_1,
+                communes);
+        spCommune.setAdapter(communeAdapter);
+    }
+
+    private void addSpinnerDistrict() {
+        spDistrict = findViewById(R.id.spDistrict);
+        districts = getDistricts();
+        districtAdapter = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_list_item_1,
+                districts );
+        spDistrict.setAdapter(districtAdapter);
+    }
+
+    private void addSpinnerProvince() {
+        spProvince = findViewById(R.id.spProvince);
+        provinces = getProvinces();
+        provinceAdapter = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_list_item_1,
+                provinces);
+        spProvince.setAdapter(provinceAdapter);
+
+    }
+
+    private void addSpnnerClientGroup() {
+        spGroupClient = findViewById(R.id.spGroupClient);
+        groups = getGroups();
+        groupAdapter = new ArrayAdapter<ClientGroup>(
+                this,
+                android.R.layout.simple_list_item_1,
+                groups);
+        spGroupClient.setAdapter(groupAdapter);
     }
 
     private void setDataForInput() {
@@ -128,8 +150,9 @@ public class UserDetailsActivity extends AppCompatActivity {
         txtEmail.setText(client.getEmail());
         txtAddress.setText(client.getAddress().getAddress());
         //
+        ClientGroup clientGroup =  ClientGroupBL.getClientById(client.getGroup());
         for(int i = 0; i < groups.size(); i ++){
-            if(groups.get(i).equals(client.getGroup())){
+            if(groups.get(i).getId() == clientGroup.getId()){
                 spGroupClient.setSelection(i);
                 break;
             }
@@ -233,7 +256,7 @@ public class UserDetailsActivity extends AppCompatActivity {
 
     private void addClient() {
         String name = txtName.getText().toString();
-        String group = spGroupClient.getSelectedItem().toString();
+        int group = spGroupClient.getSelectedItemPosition();
         String phone = txtPhone.getText().toString();
         String fax = txtFax.getText().toString();
         String website = txtWebsite.getText().toString();
@@ -247,7 +270,7 @@ public class UserDetailsActivity extends AppCompatActivity {
             MySupport.openDialog(this, "Vui lòng nhập vào họ tên");
             return;
         }
-        if(spGroupClient.getSelectedItemPosition() ==0){
+        if(group ==0){
             MySupport.openDialog(this, "Vui lòng chọn nhóm thành viên");
             return;
         }
@@ -287,7 +310,7 @@ public class UserDetailsActivity extends AppCompatActivity {
             clientId = this.client.getId();
         }
         Client newClient = new Client(clientId,
-                name,group, phone,fax, website, email,
+                name,groups.get(group).getId(), phone,fax, website, email,
                 new Address(province, district, commune,  address));
         if(avartar != null){
             newClient.setAvatar(MySupport.BitMapToString(avartar));
@@ -315,28 +338,16 @@ public class UserDetailsActivity extends AppCompatActivity {
 
     }
 
-    private ArrayList<String> getGroups(){
-        ArrayList<String> list = new ArrayList<>();
-        list.add("Nhóm khách hàng...");
-        list.add("Member");
-        list.add("Admin");
+    private ArrayList<ClientGroup> getGroups(){
+        ArrayList<ClientGroup> list = new ArrayList<>();
+        list.add(new ClientGroup(0, "Nhóm khách hàng..."));
+        ArrayList<ClientGroup> temp = ClientGroupBL.getAllClientGroup();
+        for(ClientGroup cg : temp) list.add(cg);
         return list;
     }
     private ArrayList<String> getProvinces(){
         ArrayList<String> list = new ArrayList<>();
         list.add("Tỉnh/Thành Phố...");
-        list.add("An Giang");
-        list.add("Bình Phước");
-        list.add("Ninh Bình");
-        list.add("Hồ Chí Minh");
-        list.add("Hà Nội");
-        list.add("Đà Nẵng");
-        list.add("An Giang");
-        list.add("Bình Phước");
-        list.add("Ninh Bình");
-        list.add("Hồ Chí Minh");
-        list.add("Hà Nội");
-        list.add("Đà Nẵng");
         list.add("An Giang");
         list.add("Bình Phước");
         list.add("Ninh Bình");

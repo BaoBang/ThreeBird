@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
@@ -16,9 +17,15 @@ import android.widget.TextView;
 
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.model.Client;
+import com.example.baobang.threebird.model.Order;
+import com.example.baobang.threebird.model.Product;
 import com.example.baobang.threebird.model.bussinesslogic.ClientBL;
+import com.example.baobang.threebird.model.bussinesslogic.OrderBL;
+import com.example.baobang.threebird.utils.Constants;
+import com.example.baobang.threebird.utils.MySupport;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CreateOrderActivity extends AppCompatActivity {
 
@@ -38,10 +45,16 @@ public class CreateOrderActivity extends AppCompatActivity {
             adapterDistrict, adapterCommune, adapterPayment;
     private ArrayAdapter<Client> adapterClient;
 
+    private ImageButton btnCreatedAt, btnAddProduct, btnDeliveryDate;
+
+    private Order order = null;
+    private List<Product> productList = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activy_create_order);
+        order = getOrder();
         addControlls();
         addEvents();
     }
@@ -63,12 +76,51 @@ public class CreateOrderActivity extends AppCompatActivity {
         txtCreatedAt = findViewById(R.id.txtCreatedAt);
         txtDeliveryDate = findViewById(R.id.txtDeliveryDate);
 
+        btnCreatedAt = findViewById(R.id.btnCreatedAt);
+        btnAddProduct = findViewById(R.id.btnAddProduct);
+        btnDeliveryDate = findViewById(R.id.btnDeliveryDate);
+
         addSpinnerClient();
         addSpinnerStatus();
         addSpinnerProvince();
         addSpinnerDistrict();
         addSpinnerCommune();
         addSpinnerPayment();
+
+        if(order != null){
+            setDataForInput();
+        }
+    }
+
+    private void setDataForInput() {
+        txtName.setText(order.getClientName());
+        txtOrderId.setText(order.getId() + "");
+        txtCreatedAt.setText(order.getCreatedAt().toString());
+        spStatus.setSelection(order.getStatus() + 1);
+        txtPhone.setText(order.getPhone());
+        for(int i = 0; i < provinces.size(); i++){
+            if(order.getAddress().getProvince().equals(provinces.get(i))){
+                spProvince.setSelection(i);
+                break;
+            }
+        }
+        for(int i = 0; i < districts.size(); i++){
+            if(order.getAddress().getDistrict().equals(districts.get(i))){
+                spDistrict.setSelection(i);
+                break;
+            }
+        }
+        for(int i = 0; i < communes.size(); i++){
+            if(order.getAddress().getCommune().equals(communes.get(i))){
+                spCommune.setSelection(i);
+                break;
+            }
+        }
+
+        txtAmount.setText(order.getAmount());
+        txtDeliveryDate.setText(order.getLiveryDate().toString());
+
+        spPayment.setSelection(order.getPayments() + 1);
     }
 
     private void addSpinnerPayment() {
@@ -138,6 +190,27 @@ public class CreateOrderActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
+        btnCreatedAt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MySupport.getDate(CreateOrderActivity.this, txtCreatedAt);
+            }
+        });
+
+        btnAddProduct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        btnDeliveryDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MySupport.getDate(CreateOrderActivity.this, txtDeliveryDate);
+            }
+        });
     }
 
     @Override
@@ -149,25 +222,36 @@ public class CreateOrderActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.actionBar_add){
+            addOrder();
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void addOrder() {
+        String name = txtName.getText().toString();
+        int id = Integer.parseInt(txtOrderId.getText().toString());
+        String createdAtStr = txtCreatedAt.getText().toString();
+        int status = spStatus.getSelectedItemPosition();
+        String phone = txtPhone.getText().toString();
+        int province = spProvince.getSelectedItemPosition();
+        int district = spDistrict.getSelectedItemPosition();
+        int commune = spCommune.getSelectedItemPosition();
+        String address = txtAddress.getText().toString();
+        String deliveryDateStr = txtDeliveryDate.getText().toString();
+        int payment = spPayment.getSelectedItemPosition();
+
+        if(MySupport.checkInput(name)){
+            MySupport.openDialog(this, "Vui lòng nhập vào tên khách hàng");
+            return;
+        }
+
     }
 
 
     private ArrayList<String> getProvinces(){
         ArrayList<String> list = new ArrayList<>();
         list.add("Tỉnh/Thành Phố...");
-        list.add("An Giang");
-        list.add("Bình Phước");
-        list.add("Ninh Bình");
-        list.add("Hồ Chí Minh");
-        list.add("Hà Nội");
-        list.add("Đà Nẵng");
-        list.add("An Giang");
-        list.add("Bình Phước");
-        list.add("Ninh Bình");
-        list.add("Hồ Chí Minh");
-        list.add("Hà Nội");
-        list.add("Đà Nẵng");
         list.add("An Giang");
         list.add("Bình Phước");
         list.add("Ninh Bình");
@@ -215,6 +299,14 @@ public class CreateOrderActivity extends AppCompatActivity {
     private ArrayList<Client> getClients(){
         ArrayList<Client> list = ClientBL.getAllClient();
         return list;
+    }
+
+    public Order getOrder() {
+        Bundle bundle = getIntent().getExtras();
+        int orderId = bundle.getInt(Constants.ORDER);
+        if(orderId == -1)
+            return null;
+        return OrderBL.getOrder(orderId);
     }
 }
 

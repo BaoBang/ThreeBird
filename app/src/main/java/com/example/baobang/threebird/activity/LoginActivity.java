@@ -29,11 +29,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-           Realm.init(this);
-//        User user = new User();
-//        user.setUserName("admin");
-//        user.setPassWord("123");
-//        UserBL.createUser(user);
+        Realm.init(this);
+
         addControlls();
         addEvents();
     }
