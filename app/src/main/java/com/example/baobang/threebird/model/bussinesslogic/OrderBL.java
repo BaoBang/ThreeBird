@@ -35,11 +35,22 @@ public class OrderBL {
         return false;
     }
 
-    public static ArrayList<Order> getAllClient(){
+    public static ArrayList<Order> getAllOrder(){
         List<Order> list = null;
         ArrayList<Order> orders = new ArrayList<>();
         Realm realm = Realm.getDefaultInstance();
         RealmResults<Order> results = realm.where(Order.class).findAll();
+        list = realm.copyFromRealm(results);
+        for(Order order : list) orders.add(order);
+        realm.close();
+        return  orders;
+    }
+
+    public static ArrayList<Order> getOrderByStatus(int status){
+        List<Order> list = null;
+        ArrayList<Order> orders = new ArrayList<>();
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<Order> results = realm.where(Order.class).equalTo("status", status).findAll();
         list = realm.copyFromRealm(results);
         for(Order order : list) orders.add(order);
         realm.close();
@@ -52,5 +63,19 @@ public class OrderBL {
         Order order = realm.copyFromRealm(results);
         realm.close();
         return  order;
+    }
+
+    public static boolean updateOrder(Order order) {
+        Realm realm = Realm.getDefaultInstance();
+        try{
+            realm.beginTransaction();
+            realm.copyToRealmOrUpdate(order);
+            realm.commitTransaction();
+            return true;
+        }catch (Exception e){
+            return false;
+        }finally {
+            realm.close();
+        }
     }
 }

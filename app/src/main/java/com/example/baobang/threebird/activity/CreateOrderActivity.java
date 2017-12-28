@@ -1,5 +1,8 @@
 package com.example.baobang.threebird.activity;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -7,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -16,16 +20,22 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.baobang.threebird.R;
+import com.example.baobang.threebird.model.Address;
 import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.Order;
 import com.example.baobang.threebird.model.Product;
+import com.example.baobang.threebird.model.ProductOrder;
 import com.example.baobang.threebird.model.bussinesslogic.ClientBL;
 import com.example.baobang.threebird.model.bussinesslogic.OrderBL;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.MySupport;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import io.realm.RealmList;
 
 public class CreateOrderActivity extends AppCompatActivity {
 
@@ -48,7 +58,7 @@ public class CreateOrderActivity extends AppCompatActivity {
     private ImageButton btnCreatedAt, btnAddProduct, btnDeliveryDate;
 
     private Order order = null;
-    private List<Product> productList = new ArrayList<>();
+    private List<ProductOrder> productList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,8 +105,12 @@ public class CreateOrderActivity extends AppCompatActivity {
     private void setDataForInput() {
         txtName.setText(order.getClientName());
         txtOrderId.setText(order.getId() + "");
-        txtCreatedAt.setText(order.getCreatedAt().toString());
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        txtCreatedAt.setText(simpleDateFormat.format(order.getCreatedAt()));
+
         spStatus.setSelection(order.getStatus() + 1);
+
         txtPhone.setText(order.getPhone());
         for(int i = 0; i < provinces.size(); i++){
             if(order.getAddress().getProvince().equals(provinces.get(i))){
@@ -116,11 +130,11 @@ public class CreateOrderActivity extends AppCompatActivity {
                 break;
             }
         }
+        txtAddress.setText(order.getAddress().getAddress());
+        txtAmount.setText(order.getAmount() + "");
+        txtDeliveryDate.setText(simpleDateFormat.format(order.getLiveryDate()));
 
-        txtAmount.setText(order.getAmount());
-        txtDeliveryDate.setText(order.getLiveryDate().toString());
-
-        spPayment.setSelection(order.getPayments() + 1);
+        spPayment.setSelection(order.getPayments());
     }
 
     private void addSpinnerPayment() {
@@ -211,6 +225,30 @@ public class CreateOrderActivity extends AppCompatActivity {
                 MySupport.getDate(CreateOrderActivity.this, txtDeliveryDate);
             }
         });
+
+        spClient.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                doChangeClient(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    private void doChangeClient(int i) {
+        if(i != 0){
+            Client client = clients.get(i);
+            txtName.setText(client.getName());
+            Bitmap bitmap = MySupport.StringToBitMap(client.getAvatar());
+            imgAvatar.setImageBitmap(MySupport.getRoundedRectBitmap(bitmap));
+        }else{
+            txtName.setText("");
+            imgAvatar.setImageResource(R.drawable.noimage);
+        }
     }
 
     @Override
@@ -229,23 +267,100 @@ public class CreateOrderActivity extends AppCompatActivity {
     }
 
     private void addOrder() {
-        String name = txtName.getText().toString();
-        int id = Integer.parseInt(txtOrderId.getText().toString());
-        String createdAtStr = txtCreatedAt.getText().toString();
-        int status = spStatus.getSelectedItemPosition();
-        String phone = txtPhone.getText().toString();
-        int province = spProvince.getSelectedItemPosition();
-        int district = spDistrict.getSelectedItemPosition();
-        int commune = spCommune.getSelectedItemPosition();
-        String address = txtAddress.getText().toString();
-        String deliveryDateStr = txtDeliveryDate.getText().toString();
-        int payment = spPayment.getSelectedItemPosition();
+       try {
+           String name = txtName.getText().toString();
+           int id = Integer.parseInt(txtOrderId.getText().toString());
+           String createdAtStr = txtCreatedAt.getText().toString();
+           int status = spStatus.getSelectedItemPosition();
+           String phone = txtPhone.getText().toString();
+           int province = spProvince.getSelectedItemPosition();
+           int district = spDistrict.getSelectedItemPosition();
+           int commune = spCommune.getSelectedItemPosition();
+           String address = txtAddress.getText().toString();
+           String deliveryDateStr = txtDeliveryDate.getText().toString();
+           int payment = spPayment.getSelectedItemPosition();
 
-        if(MySupport.checkInput(name)){
-            MySupport.openDialog(this, "Vui lòng nhập vào tên khách hàng");
-            return;
-        }
+           if(MySupport.checkInput(name)){
+               MySupport.openDialog(this, "Vui lòng nhập vào tên khách hàng");
+               return;
+           }
+           if(MySupport.checkInput(createdAtStr)){
+               MySupport.openDialog(this, "Vui lòng chọn ngày lập hóa đơn");
+               return;
+           }
+           if(status == 0){
+               MySupport.openDialog(this, "Vui lòng chọn trạng thái của hóa đơn");
+               return;
+           }
+           if(MySupport.checkInput(phone)){
+               MySupport.openDialog(this, "Vui lòng nhâp vào số điện thoại");
+               return;
+           }
+           if(province == 0){
+               MySupport.openDialog(this, "Vui lòng chọn tỉnh/thành phố");
+               return;
+           }
+           if(district == 0){
+               MySupport.openDialog(this, "Vui lòng chọn quận/huyện");
+               return;
+           }
+           if(commune == 0){
+               MySupport.openDialog(this, "Vui lòng chọn phường/xã");
+               return;
+           }
+           if(MySupport.checkInput(address)){
+               MySupport.openDialog(this, "Vui lòng nhâp vào địa chỉ");
+               return;
+           }
+           if(MySupport.checkInput(deliveryDateStr)){
+               MySupport.openDialog(this, "Vui lòng chọn ngày giao hàng");
+               return;
+           }
+           Date date = new Date(createdAtStr);
+           Date date2 = new Date(deliveryDateStr);
+           if(date.after(date2)){
+               MySupport.openDialog(this, "Ngày giao hàng không hợp lệ");
+               return;
+           }
+           if(payment == 0){
+               MySupport.openDialog(this, "Vui lòng chọn hình thức thanh toán");
+               return;
+           }
+           RealmList<ProductOrder> products = new RealmList<>();
+           for(ProductOrder productOrder : productList){
+               products.add(productOrder);
+           }
+           Order order = new Order(0, name,
+                   date, status - 1, phone,
+                   new Address(provinces.get(province),
+                           districts.get(district),
+                           communes.get(commune),
+                           address),
+                   products,
+                   date2,
+                   payment,
+                   0);
+           boolean res = false;
+           if(this.order == null){
+               res =  OrderBL.createOrder(order);
+           }else{
+               res = OrderBL.updateOrder(order);
+           }
+           if(res){
+               Intent returnIntent = new Intent();
+               Bundle bundle = new Bundle();
+               bundle.putInt(Constants.ORDER,order.getId());
+               returnIntent.putExtras(bundle);
+               setResult(Activity.RESULT_OK,returnIntent);
+               finish();
+           }else{
+               MySupport.openDialog(this, "Đã có lỗi xảy ra, vui lòng thử lại");
+           }
 
+
+       }catch (Exception e){
+           MySupport.openDialog(this, "Lỗi: " + e.getMessage());
+       }
     }
 
 
@@ -300,7 +415,6 @@ public class CreateOrderActivity extends AppCompatActivity {
         ArrayList<Client> list = ClientBL.getAllClient();
         return list;
     }
-
     public Order getOrder() {
         Bundle bundle = getIntent().getExtras();
         int orderId = bundle.getInt(Constants.ORDER);

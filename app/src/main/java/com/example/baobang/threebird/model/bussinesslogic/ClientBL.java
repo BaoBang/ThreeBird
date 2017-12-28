@@ -57,6 +57,14 @@ public class ClientBL {
         return  clients;
     }
 
+    public static Client getClient(int id){
+        Realm realm = Realm.getDefaultInstance();
+        Client result = realm.where(Client.class).equalTo("id", id).findFirst();
+        Client client = realm.copyFromRealm(result);
+        realm.close();
+        return  client;
+    }
+
     public static ArrayList<Client> getClientByName(String name){
         List<Client> list = null;
         ArrayList<Client> clients = new ArrayList<>();

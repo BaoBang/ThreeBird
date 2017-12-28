@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,8 +17,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.activity.CreateOrderActivity;
@@ -41,6 +45,7 @@ public class OrderFragment extends Fragment {
     private List<Order> orders;
     private OrderAdapter orderAdapter;
 
+    private LinearLayout layoutOrder, layoutNewOrder, layoutCancelOrder, layoutCompletedOrder;
     public OrderFragment() {
         // Required empty public constructor
     }
@@ -59,7 +64,7 @@ public class OrderFragment extends Fragment {
         // Inflate the layout for this fragment
 
         lvOrders = view.findViewById(R.id.lvOrders);
-        orders = new ArrayList<>();
+        orders = getOrder(-1);
         orderAdapter = new OrderAdapter(getActivity(), R.layout.item_order, orders);
         lvOrders.setAdapter(orderAdapter);
         lvOrders.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -69,6 +74,46 @@ public class OrderFragment extends Fragment {
             }
         });
 
+        layoutOrder = view.findViewById(R.id.layoutOrder);
+        layoutNewOrder = view.findViewById(R.id.layoutNewOrder);
+        layoutCancelOrder = view.findViewById(R.id.layoutCancelOrder);
+        layoutCompletedOrder = view.findViewById(R.id.layoutCompletedOrder);
+
+        layoutCancelOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                orders = getOrder(Constants.CANCEL);
+                orderAdapter = new OrderAdapter(getActivity(), R.layout.item_order, orders);
+                lvOrders.setAdapter(orderAdapter);
+            }
+        });
+
+        layoutCompletedOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                orders = getOrder(Constants.COMPLETED);
+                orderAdapter = new OrderAdapter(getActivity(), R.layout.item_order, orders);
+                lvOrders.setAdapter(orderAdapter);
+            }
+        });
+
+        layoutOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                orders = getOrder(-1);
+                orderAdapter = new OrderAdapter(getActivity(), R.layout.item_order, orders);
+                lvOrders.setAdapter(orderAdapter);
+            }
+        });
+
+        layoutNewOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                orders = getOrder(Constants.DELIVERY);
+                orderAdapter = new OrderAdapter(getActivity(), R.layout.item_order, orders);
+                lvOrders.setAdapter(orderAdapter);
+            }
+        });
         return view;
     }
 
@@ -100,7 +145,20 @@ public class OrderFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.action_bar_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
+        MenuItem menuItem = menu.findItem(R.id.actionBar_search);
+        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                orderAdapter.getFilter().filter(s);
+                return false;
+            }
+        });
     }
 
     @Override
@@ -123,5 +181,21 @@ public class OrderFragment extends Fragment {
         bundle.putInt(Constants.ORDER, id);
         addProductActivity.putExtras(bundle);
         startActivityForResult(addProductActivity, Constants.ORDER_REQUEST_CODE);
+    }
+
+    private ArrayList<Order> getOrder(int status){
+        ArrayList<Order> list = OrderBL.getAllOrder();
+        switch (status){
+            case 0:
+                list = OrderBL.getOrderByStatus(Constants.COMPLETED);
+                break;
+            case 1:
+                list = OrderBL.getOrderByStatus(Constants.CANCEL);
+                break;
+            case 2:
+                list = OrderBL.getOrderByStatus(Constants.DELIVERY);
+                break;
+        }
+        return list;
     }
 }

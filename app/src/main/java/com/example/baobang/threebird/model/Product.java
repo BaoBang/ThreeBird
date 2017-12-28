@@ -108,4 +108,9 @@ public class Product extends RealmObject implements Serializable{
     public void setImages(RealmList<String> images) {
         this.images = images;
     }
+
+    @Override
+    public String toString() {
+        return id + "-" + name + "-" + price + "-" + invetory;
+    }
 }

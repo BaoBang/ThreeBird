@@ -15,6 +15,7 @@ import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.model.Order;
 import com.example.baobang.threebird.utils.Constants;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +43,7 @@ public class OrderAdapter extends ArrayAdapter<Order> {
         LayoutInflater layoutInflater = this.context.getLayoutInflater();
         convertView = layoutInflater.inflate(R.layout.item_order, null);
 
-        TextView txtId = convertView.findViewById(R.id.txtName);
+        TextView txtId = convertView.findViewById(R.id.txtOrderId);
         TextView txtClientName = convertView.findViewById(R.id.txtClientName);
         TextView txtCreatedAt = convertView.findViewById(R.id.txtCreatedAt);
         TextView txtPayment = convertView.findViewById(R.id.txtPayment);
@@ -51,7 +52,8 @@ public class OrderAdapter extends ArrayAdapter<Order> {
         Order order = this.objects.get(position);
         txtId.setText(order.getId() + "");
         txtClientName.setText(order.getClientName());
-        txtCreatedAt.setText(order.getCreatedAt().toString());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyyy");
+        txtCreatedAt.setText(simpleDateFormat.format(order.getCreatedAt()));
         txtPayment.setText(order.getToal() + "");
         if(order.getStatus() == Constants.COMPLETED){
                 txtStatus.setText(R.string.complete);

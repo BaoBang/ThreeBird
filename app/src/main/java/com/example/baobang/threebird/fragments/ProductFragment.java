@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -99,6 +100,20 @@ public class ProductFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
       //  super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.action_bar_menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.actionBar_search);
+        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                productAdapter.getFilter().filter(s);
+                return false;
+            }
+        });
 
     }
     @Override
