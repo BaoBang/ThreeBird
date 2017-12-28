@@ -33,7 +33,8 @@
     <string name="complete">HOÀN THÀNH</string>
     <string name="destroy">HỦY</string>
     <string name="_new">MỚI</string>
-
+    <!-- Order status -->
+    <string name="delivery">ĐANG GIAO HÀNG</string>
     <!--Order-->
     <string name="commune">Phường/xã</string>
     <string name="address">Địa chỉ</string>
@@ -60,7 +61,5 @@
     <string name="search">Tìm kiếm</string>
     <string name="add">Thêm mới</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

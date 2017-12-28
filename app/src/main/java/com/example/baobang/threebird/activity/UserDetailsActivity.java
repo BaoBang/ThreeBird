@@ -206,10 +206,13 @@ public class UserDetailsActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Constants.CAMERA_PIC_REQUEST) {
-            avartar = (Bitmap) data.getExtras().get("data");
-            imgAvatar.setImageBitmap(avartar);
+        if(resultCode == Activity.RESULT_OK){
+            if (requestCode == Constants.CAMERA_PIC_REQUEST) {
+                avartar = (Bitmap) data.getExtras().get("data");
+                imgAvatar.setImageBitmap(avartar);
+            }
         }
+
     }
 
     @Override

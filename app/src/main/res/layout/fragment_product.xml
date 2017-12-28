@@ -42,13 +42,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Loại hàng hóa:"
+                    android:textSize="@dimen/text_size"
                     android:textAllCaps="true" />
 
                 <Spinner
                     android:id="@+id/spCategory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:textSize="@dimen/text_size"
+                    />
 
 
             </LinearLayout>
@@ -61,13 +64,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Nhãn hiệu"
-                    android:textAllCaps="true" />
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/text_size"
+                    />
 
                 <Spinner
                     android:id="@+id/spBrand"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:textSize="@dimen/text_size"
+                    />
 
 
             </LinearLayout>
@@ -77,7 +84,8 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/top_bottom_border"
                 android:orientation="horizontal"
-                android:padding="@dimen/padding">
+                android:padding="@dimen/padding"
+                >
 
                 <TextView
                     android:id="@+id/textView3"
@@ -85,7 +93,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Sort by:"
-                    android:textAllCaps="true" />
+                    android:textAllCaps="true"
+                    />
 
                 <TextView
                     android:id="@+id/textView2"
@@ -93,13 +102,16 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="DATE"
-                    android:textAllCaps="true" />
+                    android:textAllCaps="true"
+                    />
 
                 <Spinner
                     android:id="@+id/spinner2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:textSize="@dimen/text_size"
+                    />
 
                 <TextView
                     android:id="@+id/textView"
@@ -107,25 +119,33 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="MONTH"
-                    android:textAllCaps="true" />
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/text_size"
+                    />
 
                 <Spinner
                     android:id="@+id/spinner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:textSize="@dimen/text_size"
+                    />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="YEAR"
-                    android:textAllCaps="true" />
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/text_size"
+                    />
 
                 <Spinner
                     android:id="@+id/spinner3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:textSize="@dimen/text_size"
+                    />
 
 
             </LinearLayout>
@@ -138,7 +158,9 @@
                 <ListView
                     android:id="@+id/lvProduct"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:textSize="@dimen/text_size"
+                    >
 
                 </ListView>
                 <!--<LinearLayout-->

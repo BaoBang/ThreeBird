@@ -23,176 +23,169 @@
             android:layout_gravity="center"/>
     </android.support.v7.widget.Toolbar>
 
-    <ScrollView
+
+    <LinearLayout
         android:layout_marginTop="55dp"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
-
-            <LinearLayout
-                android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:background="@color/gray"
+            android:padding="@dimen/padding">
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/gray"
-                android:padding="@dimen/padding">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Số hóa đơn trong ngày"
-                    android:textSize="@dimen/text_size_title"
-                    android:textColor="@color/bold_word"
-                    android:textAllCaps="true"
-                    />
+                android:text="Số hóa đơn trong ngày"
+                android:textSize="@dimen/text_size_title"
+                android:textColor="@color/bold_word"
+                android:textAllCaps="true"
+                />
+            <LinearLayout
+
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="100">
+
                 <LinearLayout
-
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
+                    android:layout_weight="25"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:weightSum="100">
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_weight="25"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:background="@drawable/background_color">
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:text="0"
-                                android:textSize="@dimen/text_size"
-                                android:textColor="@color/red"
-                                android:textAlignment="center"
-                                android:paddingLeft="@dimen/padding_small"
-                                android:paddingTop="@dimen/padding_small"
-                                android:paddingRight="@dimen/padding_small"
-                                />
-                             <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:text="ĐƠN HÀNG"
-                                android:textSize="@dimen/text_size_small"
-                                android:textColor="@color/red"
-                                android:textAlignment="center"
-                                 android:paddingLeft="@dimen/padding_small"
-                                 android:paddingBottom="@dimen/padding_small"
-                                 android:paddingRight="@dimen/padding_small"
-                                 />
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_weight="25"
-                        android:orientation="vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:background="@drawable/background_border_white">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:text="0"
-                            android:textSize="@dimen/text_size"
-                            android:textColor="@color/bold_word_80"
-                            android:textAlignment="center"
-                            android:paddingLeft="@dimen/padding_small"
-                            android:paddingTop="@dimen/padding_small"
-                            android:paddingRight="@dimen/padding_small"
-                            />
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:text="MỚI"
-                            android:textSize="@dimen/text_size_small"
-                            android:textColor="@color/bold_word_80"
-                            android:textAlignment="center"
-                            android:paddingLeft="@dimen/padding_small"
-                            android:paddingBottom="@dimen/padding_small"
-                            android:paddingRight="@dimen/padding_small"
-                            />
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_weight="25"
-                        android:orientation="vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:background="@drawable/background_border_white">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:text="0"
-                            android:textSize="@dimen/text_size"
-                            android:textColor="@color/bold_word_80"
-                            android:textAlignment="center"
-                            android:paddingLeft="@dimen/padding_small"
-                            android:paddingTop="@dimen/padding_small"
-                            android:paddingRight="@dimen/padding_small"
-                            />
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:text="HỦY"
-                            android:textSize="@dimen/text_size_small"
-                            android:textColor="@color/bold_word_80"
-                            android:textAlignment="center"
-                            android:paddingLeft="@dimen/padding_small"
-                            android:paddingBottom="@dimen/padding_small"
-                            android:paddingRight="@dimen/padding_small"
-                            />
-                    </LinearLayout>
+                    android:layout_margin="5dp"
+                    android:background="@drawable/background_color">
 
-                    <LinearLayout
+                    <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:orientation="vertical"
-                        android:layout_weight="25"
-                        android:background="@drawable/background_border_white">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingLeft="@dimen/padding_small"
-                            android:paddingRight="@dimen/padding_small"
-                            android:paddingTop="@dimen/padding_small"
-                            android:text="0"
-                            android:textAlignment="center"
-                            android:textColor="@color/bold_word_80"
-                            android:textSize="@dimen/text_size" />
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:paddingBottom="@dimen/padding_small"
-                            android:paddingLeft="@dimen/padding_small"
-                            android:paddingRight="@dimen/padding_small"
-                            android:text="HTHÀNH"
-                            android:textAlignment="center"
-                            android:textColor="@color/bold_word_80"
-                            android:textSize="@dimen/text_size_small" />
-                    </LinearLayout>
+                        android:layout_height="match_parent"
+                        android:text="0"
+                        android:textSize="@dimen/text_size"
+                        android:textColor="@color/red"
+                        android:textAlignment="center"
+                        android:paddingLeft="@dimen/padding_small"
+                        android:paddingTop="@dimen/padding_small"
+                        android:paddingRight="@dimen/padding_small"
+                        />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="ĐƠN HÀNG"
+                        android:textSize="@dimen/text_size_small"
+                        android:textColor="@color/red"
+                        android:textAlignment="center"
+                        android:paddingLeft="@dimen/padding_small"
+                        android:paddingBottom="@dimen/padding_small"
+                        android:paddingRight="@dimen/padding_small"
+                        />
                 </LinearLayout>
-            </LinearLayout>
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_weight="25"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/background_border_white">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="0"
+                        android:textSize="@dimen/text_size"
+                        android:textColor="@color/bold_word_80"
+                        android:textAlignment="center"
+                        android:paddingLeft="@dimen/padding_small"
+                        android:paddingTop="@dimen/padding_small"
+                        android:paddingRight="@dimen/padding_small"
+                        />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="MỚI"
+                        android:textSize="@dimen/text_size_small"
+                        android:textColor="@color/bold_word_80"
+                        android:textAlignment="center"
+                        android:paddingLeft="@dimen/padding_small"
+                        android:paddingBottom="@dimen/padding_small"
+                        android:paddingRight="@dimen/padding_small"
+                        />
+                </LinearLayout>
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
+                <LinearLayout
+                    android:layout_weight="25"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/background_border_white">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="0"
+                        android:textSize="@dimen/text_size"
+                        android:textColor="@color/bold_word_80"
+                        android:textAlignment="center"
+                        android:paddingLeft="@dimen/padding_small"
+                        android:paddingTop="@dimen/padding_small"
+                        android:paddingRight="@dimen/padding_small"
+                        />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="HỦY"
+                        android:textSize="@dimen/text_size_small"
+                        android:textColor="@color/bold_word_80"
+                        android:textAlignment="center"
+                        android:paddingLeft="@dimen/padding_small"
+                        android:paddingBottom="@dimen/padding_small"
+                        android:paddingRight="@dimen/padding_small"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:orientation="vertical"
+                    android:layout_weight="25"
+                    android:background="@drawable/background_border_white">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="@dimen/padding_small"
+                        android:paddingRight="@dimen/padding_small"
+                        android:paddingTop="@dimen/padding_small"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textColor="@color/bold_word_80"
+                        android:textSize="@dimen/text_size" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingBottom="@dimen/padding_small"
+                        android:paddingLeft="@dimen/padding_small"
+                        android:paddingRight="@dimen/padding_small"
+                        android:text="HTHÀNH"
+                        android:textAlignment="center"
+                        android:textColor="@color/bold_word_80"
+                        android:textSize="@dimen/text_size_small" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ListView
+                android:id="@+id/lvOrders"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-
-    </ScrollView>
-
+            </ListView>
+        </LinearLayout>
+    </LinearLayout>
 
 
 </FrameLayout>

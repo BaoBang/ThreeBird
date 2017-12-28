@@ -7,6 +7,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.NumberPicker;
+import android.widget.TextView;
 
 import com.example.baobang.threebird.R;
 
@@ -14,7 +16,7 @@ public class CreateOrderActivity extends AppCompatActivity {
 
 
     private Toolbar toolbar;
-
+    TextView txtAmount;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +30,10 @@ public class CreateOrderActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        //
+
+        txtAmount = findViewById(R.id.txtAmount);
+
     }
 
     private void addEvents() {
