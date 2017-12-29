@@ -134,6 +134,10 @@ public class Order extends RealmObject implements Serializable {
     }
 
     public int getAmount(){
-        return products.size();
+        int total = 0;
+        for(ProductOrder productOrder : products){
+            total += productOrder.getAmount();
+        }
+        return total;
     }
 }

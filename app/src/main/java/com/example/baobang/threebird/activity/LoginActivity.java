@@ -77,12 +77,12 @@ public class LoginActivity extends AppCompatActivity {
     private void doLogin() {
         String userName = txtUserName.getText().toString().trim();
         String password = txtPassword.getText().toString().trim();
-        if(userName == null || userName.equals("")){
+        if(userName.equals("")){
             MySupport.openDialog(LoginActivity.this,
                     "Nhập vào tài khoản.");
             return;
         }
-        if(password == null || password.equals("")){
+        if(password.equals("")){
             MySupport.openDialog(LoginActivity.this,
                     "Nhập vào mật khẩu.");
             return;
@@ -110,14 +110,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean checkLogin(String userName, String password) {
-
         User user = new User();
         user.setUserName(userName);
         user.setPassWord(password);
-        boolean result = UserBL.checkUser( user);
-
-
-        return result;
+        return UserBL.checkUser( user);
     }
 
 }

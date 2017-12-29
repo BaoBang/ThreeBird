@@ -3,6 +3,7 @@ package com.example.baobang.threebird.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -50,7 +51,7 @@ public class ClientActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
         Bundle bundle = getIntent().getExtras();
-        client = (Client) bundle.getSerializable(Constants.CLIENT);
+        client = (Client) (bundle != null ? bundle.getSerializable(Constants.CLIENT) : null);
 //        ClientGroupBL.createClientGroup(new ClientGroup(0, "Admin"));
 //        ClientGroupBL.createClientGroup(new ClientGroup(0, "Employee"));
 //        ClientGroupBL.createClientGroup(new ClientGroup(0, "Membber"));
@@ -62,8 +63,11 @@ public class ClientActivity extends AppCompatActivity {
         // start setting toolbar
         toolbar = findViewById(R.id.toolBarUserDetail);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null){
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setDisplayShowHomeEnabled(true);
+        }
         // end setting toolbar
         groupAddressInfo = findViewById(R.id.groupAddressInfo);
         groupUserInfo = findViewById(R.id.groupUserInfo);
@@ -94,7 +98,7 @@ public class ClientActivity extends AppCompatActivity {
         spCommune = findViewById(R.id.spCommune);
         communes = getCommunes();
 
-        communeAdapter = new ArrayAdapter<String>(
+        communeAdapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_list_item_1,
                 communes);
@@ -104,7 +108,7 @@ public class ClientActivity extends AppCompatActivity {
     private void addSpinnerDistrict() {
         spDistrict = findViewById(R.id.spDistrict);
         districts = getDistricts();
-        districtAdapter = new ArrayAdapter<String>(
+        districtAdapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_list_item_1,
                 districts );
@@ -114,7 +118,7 @@ public class ClientActivity extends AppCompatActivity {
     private void addSpinnerProvince() {
         spProvince = findViewById(R.id.spProvince);
         provinces = getProvinces();
-        provinceAdapter = new ArrayAdapter<String>(
+        provinceAdapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_list_item_1,
                 provinces);
@@ -125,7 +129,7 @@ public class ClientActivity extends AppCompatActivity {
     private void addSpnnerClientGroup() {
         spGroupClient = findViewById(R.id.spGroupClient);
         groups = getGroups();
-        groupAdapter = new ArrayAdapter<ClientGroup>(
+        groupAdapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_list_item_1,
                 groups);
@@ -227,7 +231,10 @@ public class ClientActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == Activity.RESULT_OK){
             if (requestCode == Constants.CAMERA_PIC_REQUEST) {
-                avartar = (Bitmap) data.getExtras().get("data");
+                Bundle bundle =  data.getExtras();
+                if(bundle != null){
+                    avartar = (Bitmap) bundle.get("data");
+                }
                 imgAvatar.setImageBitmap(avartar);
             }
         }
@@ -313,7 +320,7 @@ public class ClientActivity extends AppCompatActivity {
         }else{
             newClient.setAvatar(null);
         }
-        boolean res = false;
+        boolean res;
         if(this.client == null){
             res = ClientBL.createClient(newClient);
         }else{
@@ -338,7 +345,7 @@ public class ClientActivity extends AppCompatActivity {
         ArrayList<ClientGroup> list = new ArrayList<>();
         list.add(new ClientGroup(0, "Nhóm khách hàng..."));
         ArrayList<ClientGroup> temp = ClientGroupBL.getAllClientGroup();
-        for(ClientGroup cg : temp) list.add(cg);
+        list.addAll(temp);
         return list;
     }
     private ArrayList<String> getProvinces(){

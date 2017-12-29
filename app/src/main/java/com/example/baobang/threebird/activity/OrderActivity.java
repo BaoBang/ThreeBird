@@ -7,29 +7,34 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.adapter.ClientAdapter;
+import com.example.baobang.threebird.adapter.ProductAdapter;
 import com.example.baobang.threebird.model.Address;
 import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.Order;
+import com.example.baobang.threebird.model.Product;
 import com.example.baobang.threebird.model.ProductOrder;
 import com.example.baobang.threebird.model.bussinesslogic.ClientBL;
 import com.example.baobang.threebird.model.bussinesslogic.OrderBL;
+import com.example.baobang.threebird.model.bussinesslogic.ProductBL;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.MySupport;
 
@@ -37,6 +42,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import io.realm.RealmList;
 
@@ -48,16 +54,16 @@ public class OrderActivity extends AppCompatActivity {
     private EditText txtName, txtOrderId, txtPhone, txtAddress;
     private TextView txtCreatedAt, txtAmount, txtDeliveryDate;
 
-
     private Spinner spStatus, spProvince,
             spDistrict, spCommune,  spPayment;
-    private ArrayList<String> statuses, provinces,
+    private ArrayList<String> statuses , provinces,
             districts, communes, payments;
 
     private ArrayAdapter<String> adapterStatus, adapterProvince,
             adapterDistrict, adapterCommune, adapterPayment;
 
     private ImageButton btnAddClient, btnCreatedAt, btnAddProduct, btnDeliveryDate;
+    private LinearLayout layoutProduct;
 
     private Order order = null;
     private List<ProductOrder> productList = new ArrayList<>();
@@ -85,6 +91,7 @@ public class OrderActivity extends AppCompatActivity {
         txtAddress = findViewById(R.id.txtAddress);
 
         txtAmount = findViewById(R.id.txtAmount);
+        txtAmount.setText(getAmountAllProduct() + "");
         txtCreatedAt = findViewById(R.id.txtCreatedAt);
         txtDeliveryDate = findViewById(R.id.txtDeliveryDate);
 
@@ -92,6 +99,8 @@ public class OrderActivity extends AppCompatActivity {
         btnAddProduct = findViewById(R.id.btnAddProduct);
         btnDeliveryDate = findViewById(R.id.btnDeliveryDate);
         btnAddClient = findViewById(R.id.btnAddClient);
+
+        layoutProduct = findViewById(R.id.layoutProduct);
 
         addSpinnerStatus();
         addSpinnerProvince();
@@ -106,9 +115,9 @@ public class OrderActivity extends AppCompatActivity {
 
     private void setDataForInput() {
         txtName.setText(order.getClientName());
-        txtOrderId.setText(order.getId() + "");
+        txtOrderId.setText(String.valueOf(order.getId()));
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", new Locale("vi","VN"));
         txtCreatedAt.setText(simpleDateFormat.format(order.getCreatedAt()));
 
         spStatus.setSelection(order.getStatus() + 1);
@@ -133,7 +142,7 @@ public class OrderActivity extends AppCompatActivity {
             }
         }
         txtAddress.setText(order.getAddress().getAddress());
-        txtAmount.setText(order.getAmount() + "");
+        txtAmount.setText(String.valueOf(order.getAmount()));
         txtDeliveryDate.setText(simpleDateFormat.format(order.getLiveryDate()));
 
         spPayment.setSelection(order.getPayments());
@@ -142,7 +151,7 @@ public class OrderActivity extends AppCompatActivity {
     private void addSpinnerPayment() {
         spPayment = findViewById(R.id.spPayment);
         payments = getPayments();
-        adapterPayment = new ArrayAdapter<String>(
+        adapterPayment = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_list_item_1,
                 payments);
@@ -152,7 +161,7 @@ public class OrderActivity extends AppCompatActivity {
     private void addSpinnerCommune() {
         spCommune = findViewById(R.id.spCommune);
         communes = getCommunes();
-        adapterCommune = new ArrayAdapter<String>(
+        adapterCommune = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_list_item_1,
                 communes);
@@ -162,7 +171,7 @@ public class OrderActivity extends AppCompatActivity {
     private void addSpinnerDistrict() {
         spDistrict = findViewById(R.id.spDistrict);
         districts = getDistricts();
-        adapterDistrict = new ArrayAdapter<String>(
+        adapterDistrict = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_list_item_1,
                 districts);
@@ -172,7 +181,7 @@ public class OrderActivity extends AppCompatActivity {
     private void addSpinnerProvince() {
         spProvince = findViewById(R.id.spProvince);
         provinces = getProvinces();
-        adapterProvince = new ArrayAdapter<String>(
+        adapterProvince = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_list_item_1,
                 provinces);
@@ -182,7 +191,7 @@ public class OrderActivity extends AppCompatActivity {
     private void addSpinnerStatus() {
         spStatus = findViewById(R.id.spStatus);
         statuses = getStatuses();
-        adapterStatus = new ArrayAdapter<String>(
+        adapterStatus = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_list_item_1,
                 statuses);
@@ -225,6 +234,132 @@ public class OrderActivity extends AppCompatActivity {
                 showDialogClient();
             }
         });
+
+        btnAddProduct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDialogProduct();
+            }
+        });
+    }
+
+    private void showDialogProduct() {
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(OrderActivity.this, R.drawable.background_color_gradient);
+        LayoutInflater inflater = getLayoutInflater();
+        View convertView = (View) inflater.inflate(R.layout.listview_dialog, null);
+        alertDialog.setView(convertView);
+        alertDialog.setTitle("Danh sách sản phẩm");
+        ListView lv =  convertView.findViewById(R.id.listView);
+        final ArrayList<Product> products = ProductBL.getAllProduct();
+        ProductAdapter adapter = new ProductAdapter(this, R.layout.item_product, products);
+        lv.setAdapter(adapter);
+        final AlertDialog dialog = alertDialog.show();
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                getProductFromList(products.get(i));
+                txtAmount.setText(String.valueOf(getAmountAllProduct()));
+                addProductToLayout(products.get(i));
+                dialog.dismiss();
+            }
+        });
+    }
+
+    private int checkLayoutProduct(int id){
+        for(int i = 0; i < layoutProduct.getChildCount(); i++){
+            LinearLayout layout = (LinearLayout) layoutProduct.getChildAt(i);
+            if(id == layout.getId()){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private void addProductToLayout(Product product) {
+        int index = checkLayoutProduct(product.getId());
+        if(index != -1){
+            LinearLayout layout = (LinearLayout) layoutProduct.getChildAt(index);
+            TextView textView = (TextView) layout.getChildAt(2);
+            String text = "Số lượng: " + getAmountProduct(product.getId());
+            textView.setText(text);
+        }else{
+            LinearLayout layout = new LinearLayout(this);
+            layout.setOrientation(LinearLayout.VERTICAL);
+            layout.setId(product.getId());
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f);
+            layoutParams.setMargins(0, 0, Constants.MARGIN_SMALL, 0);
+            layout.setLayoutParams(layoutParams);
+
+            // ad image
+            LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            ImageView imageView = new ImageView(this);
+            imageView.setImageBitmap(MySupport.StringToBitMap(product.getImages().first()));
+            imageView.setLayoutParams(imageParams);
+            imageView.getLayoutParams().height = Constants.IMAGE_HEIGHT * 2;
+            imageView.getLayoutParams().width = Constants.IMAGE_WIDTH * 2;
+            imageParams.gravity = Gravity.CENTER;
+            layout.addView(imageView);
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            // add product name
+            TextView txtName = new TextView(this);
+            txtName.setLayoutParams(params);
+            String text = "Tên sản phẩm: " + product.getName();
+            txtName.setText(text);
+            layout.addView(txtName);
+            // add amount
+            TextView txtAmount = new TextView(this);
+            txtAmount.setLayoutParams(params);
+            text = "Số lượng: "+getAmountProduct(product.getId());
+            txtAmount.setText(text);
+            layout.addView(txtAmount);
+            // add price
+            TextView txtPrice = new TextView(this);
+            txtPrice.setLayoutParams(params);
+            text = "Đơn giá: " + product.getPrice() + "đ";
+            txtPrice.setText(text);
+            layout.addView(txtPrice);
+
+            layoutProduct.addView(layout);
+        }
+
+
+    }
+
+    private int getAmountProduct(int id){
+        int total = 1;
+        for(ProductOrder productOrder : productList){
+            if(productOrder.getProductId() == id){
+                total = productOrder.getAmount();
+            }
+        }
+        return total;
+    }
+
+    private int getAmountAllProduct(){
+        int total = 0;
+        for(ProductOrder productOrder : productList){
+            total += productOrder.getAmount();
+        }
+        return total;
+    }
+
+    private void getProductFromList(Product product) {
+        int index = checkProduct(product);
+        if(index != -1){
+            productList.get(index).setAmount(productList.get(index).getAmount() + 1);
+        }else{
+            productList.add(new ProductOrder(productList.size(), product.getId(), 1));
+        }
+    }
+
+    private int checkProduct(Product product) {
+        for(int i = 0; i < productList.size(); i ++){
+            if(productList.get(i).getProductId() == product.getId()){
+                return i;
+            }
+        }
+        return -1;
     }
 
     private void showDialogClient() {
@@ -245,37 +380,6 @@ public class OrderActivity extends AppCompatActivity {
                 getClientFromList(clients.get(i));
             }
         });
-
-//        // setup the alert builder
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setTitle("Chọn khách hàng...");
-//        // add a radio button list
-//        ArrayList<Client> clients = ClientBL.getAllClient();
-//        String[] clientStrs = new String[clients.size()];
-//        for(int i = 0; i < clients.size(); i++){
-//            clientStrs[i] = clients.get(i).toString();
-//        }
-//        int checkedItem = 0;
-//        builder.setSingleChoiceItems(clientStrs, checkedItem, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                // user checked an item
-//            }
-//        });
-//
-//        // add OK and Cancel buttons
-//        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                // user clicked OK
-//            }
-//        });
-//        builder.setNegativeButton("Cancel", null);
-//
-//        // create and show the alert dialog
-//        AlertDialog dialog = builder.create();
-//        dialog.show();
-
     }
 
     private void getClientFromList(Client client) {
@@ -308,7 +412,6 @@ public class OrderActivity extends AppCompatActivity {
     private void addOrder() {
        try {
            String name = txtName.getText().toString();
-           int id = Integer.parseInt(txtOrderId.getText().toString());
            String createdAtStr = txtCreatedAt.getText().toString();
            int status = spStatus.getSelectedItemPosition();
            String phone = txtPhone.getText().toString();
@@ -366,9 +469,7 @@ public class OrderActivity extends AppCompatActivity {
                return;
            }
            RealmList<ProductOrder> products = new RealmList<>();
-           for(ProductOrder productOrder : productList){
-               products.add(productOrder);
-           }
+           products.addAll(productList);
            Order order = new Order(0, name,
                    date, status - 1, phone,
                    new Address(provinces.get(province),
@@ -379,7 +480,7 @@ public class OrderActivity extends AppCompatActivity {
                    date2,
                    payment,
                    0);
-           boolean res = false;
+           boolean res;
            if(this.order == null){
                res =  OrderBL.createOrder(order);
            }else{
@@ -450,15 +551,15 @@ public class OrderActivity extends AppCompatActivity {
         list.add("Trả góp");
         return list;
     }
-    private ArrayList<Client> getClients(){
-        ArrayList<Client> list = ClientBL.getAllClient();
-        return list;
-    }
+
+//    private ArrayList<Client> getClients(){
+//        return ClientBL.getAllClient();
+//    }
     public Order getOrder() {
         Bundle bundle = getIntent().getExtras();
-        int orderId = bundle.getInt(Constants.ORDER);
+        int orderId = bundle != null ? bundle.getInt(Constants.ORDER) : -1;
         if(orderId == -1)
-            return null;
+           return null;
         return OrderBL.getOrder(orderId);
     }
 }

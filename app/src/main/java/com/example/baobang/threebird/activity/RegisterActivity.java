@@ -14,14 +14,11 @@ import com.example.baobang.threebird.model.User;
 import com.example.baobang.threebird.model.bussinesslogic.UserBL;
 import com.example.baobang.threebird.utils.MySupport;
 
-import io.realm.Realm;
-
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText txtUserName, txtPassword, txtPasswordConfirm;
     private Button btnSignUp;
     private TextView txtCancel;
-    private Realm realm;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +32,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void addControlls() {
-        realm = Realm.getDefaultInstance();
         txtUserName = findViewById(R.id.txtUserName);
         txtPassword=  findViewById(R.id.txtPassword);
         txtPasswordConfirm = findViewById(R.id.txtPasswordConfirm);

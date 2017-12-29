@@ -8,23 +8,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.Transformation;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.fragments.ClientFragment;
 import com.example.baobang.threebird.fragments.HomeFragment;
 import com.example.baobang.threebird.fragments.OrderFragment;
 import com.example.baobang.threebird.fragments.ProductFragment;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.Entry;
-
-import java.util.ArrayList;
-
 import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity {

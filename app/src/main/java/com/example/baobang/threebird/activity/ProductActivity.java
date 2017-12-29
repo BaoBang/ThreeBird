@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -43,8 +44,7 @@ public class ProductActivity extends AppCompatActivity {
     private Spinner spBrand, spCategory;
     private List<Category> categories;
     private List<Brand> brands;
-    private ArrayAdapter<Category> categoryArrayAdapter;
-    private ArrayAdapter<Brand> brandArrayAdapter;
+
 
     private Product product = null;
     private Toolbar toolbar;
@@ -61,7 +61,7 @@ public class ProductActivity extends AppCompatActivity {
 
     private Product getProduct() {
         Bundle bundle = getIntent().getExtras();
-        int productId = bundle.getInt(Constants.PRODUCT);
+        int productId = bundle != null ? bundle.getInt(Constants.PRODUCT) : -1;
         if(productId == -1)
             return null;
         return ProductBL.getProduct(productId);
@@ -72,8 +72,11 @@ public class ProductActivity extends AppCompatActivity {
         // add tool bar
         toolbar = findViewById(R.id.toolBarAddProduct);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        ActionBar actionBar =  getSupportActionBar();
+        if (actionBar != null){
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setDisplayShowHomeEnabled(true);
+        }
         // add views
         layoutImage = findViewById(R.id.layoutImage);
         txtDetail = findViewById(R.id.txtDetail);
@@ -92,8 +95,8 @@ public class ProductActivity extends AppCompatActivity {
         categories = getCategories();
         brands = getBrands();
         // spinner adapter
-        brandArrayAdapter = new ArrayAdapter<Brand>(this, android.R.layout.simple_list_item_1, brands);
-        categoryArrayAdapter = new ArrayAdapter<Category>(this, android.R.layout.simple_list_item_1, categories);
+        ArrayAdapter<Brand> brandArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, brands);
+        ArrayAdapter<Category> categoryArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, categories);
         // set adapter for listview
         spBrand.setAdapter(brandArrayAdapter);
         spCategory.setAdapter(categoryArrayAdapter);
@@ -106,12 +109,12 @@ public class ProductActivity extends AppCompatActivity {
     }
 
     private void setDataForInput() {
-        txtProductId.setText(product.getId() +"");
-        txtProductPriceInventory.setText(product.getPriceInventory() + "");
-        txtProductPrice.setText(product.getPrice() + "");
+        txtProductId.setText(String.valueOf(product.getId()));
+        txtProductPriceInventory.setText(String.valueOf(product.getPriceInventory()));
+        txtProductPrice.setText(String.valueOf(product.getPrice()));
         txtProductName.setText(product.getName());
         txtDetail.setText(product.getDetail());
-        txtProductInventory.setText(product.getInvetory() + "");
+        txtProductInventory.setText(String.valueOf(product.getInvetory()));
 
         for(int i = 0; i < brands.size(); i ++){
             if(brands.get(i).getId() == product.getBrand()){
@@ -162,13 +165,18 @@ public class ProductActivity extends AppCompatActivity {
 
         if(resultCode == Activity.RESULT_OK){
             if(requestCode == Constants.CAMERA_PIC_REQUEST){
-                Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-                bitmap = MySupport.getResizedBitmap(bitmap, Constants.IMAGE_WIDTH, Constants.IMAGE_HEIGHT);
-                bitmaps.add(bitmap);
-                addImageView(layoutImage, bitmap);
+
+                Bundle bundle = data.getExtras();
+                if(bundle != null){
+                    Bitmap bitmap = (Bitmap) bundle.get("data");
+                    bitmap = MySupport.getResizedBitmap(bitmap, Constants.IMAGE_WIDTH, Constants.IMAGE_HEIGHT);
+                    bitmaps.add(bitmap);
+                    addImageView(layoutImage, bitmap);
+                }
+
             }else if(requestCode == Constants.SELECT_FILE){
                 Uri selectedImageUri = data.getData();
-                Bitmap bitmap = null;
+                Bitmap bitmap;
                 try {
                     bitmap = MySupport.getBitmapFromUri(this,selectedImageUri);
                     bitmap = MySupport.getResizedBitmap(bitmap, Constants.IMAGE_WIDTH, Constants.IMAGE_HEIGHT);
@@ -248,7 +256,7 @@ public class ProductActivity extends AppCompatActivity {
             MySupport.openDialog(this, "Vui lòng nhập vào đơn giá sản phẩm");
             return;
         }
-        int inventory = 0, priceInventory = 0, price = 0;
+        int inventory, priceInventory, price;
 
         try{
             inventory = Integer.parseInt(inventoryStr);
@@ -271,7 +279,7 @@ public class ProductActivity extends AppCompatActivity {
             bitmapStrs.add(MySupport.BitMapToString(bitmap, 50));
         }
         product.setImages(bitmapStrs);
-        boolean res = false;
+        boolean res;
         if(this.product == null){
             res =  ProductBL.createProudct(product);
         }else{
