@@ -4,12 +4,10 @@ package com.example.baobang.threebird.fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,14 +18,12 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.baobang.threebird.R;
-import com.example.baobang.threebird.activity.AddProductActivity;
-import com.example.baobang.threebird.activity.CreateOrderActivity;
+import com.example.baobang.threebird.activity.ProductActivity;
 import com.example.baobang.threebird.adapter.ProductAdapter;
 import com.example.baobang.threebird.model.Product;
 import com.example.baobang.threebird.model.bussinesslogic.ProductBL;
 import com.example.baobang.threebird.utils.Constants;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -132,7 +128,7 @@ public class ProductFragment extends Fragment {
     }
 
     private void goToAddProductActivity(int productId) {
-        Intent addProductActivity = new Intent(getActivity(), AddProductActivity.class);
+        Intent addProductActivity = new Intent(getActivity(), ProductActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(Constants.PRODUCT, productId);
         addProductActivity.putExtras(bundle);

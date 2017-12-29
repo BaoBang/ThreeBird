@@ -32,7 +32,7 @@ import java.util.List;
 
 import io.realm.RealmList;
 
-public class AddProductActivity extends AppCompatActivity {
+public class ProductActivity extends AppCompatActivity {
 
     private ImageView btnCamera, btnPhoto;
     private LinearLayout layoutImage;
@@ -53,7 +53,7 @@ public class AddProductActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_product);
+        setContentView(R.layout.activity_product);
         product = getProduct();
         addControlls();
         addEvents();
@@ -145,14 +145,14 @@ public class AddProductActivity extends AppCompatActivity {
         btnPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MySupport.galleryIntent(AddProductActivity.this);
+                MySupport.galleryIntent(ProductActivity.this);
             }
         });
 
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MySupport.cameraIntent(AddProductActivity.this);
+                MySupport.cameraIntent(ProductActivity.this);
             }
         });
     }

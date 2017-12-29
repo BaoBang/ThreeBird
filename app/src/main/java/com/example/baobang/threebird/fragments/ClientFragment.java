@@ -17,7 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.baobang.threebird.R;
-import com.example.baobang.threebird.activity.UserDetailsActivity;
+import com.example.baobang.threebird.activity.ClientActivity;
 import com.example.baobang.threebird.adapter.ClientAdapter;
 import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.bussinesslogic.ClientBL;
@@ -131,7 +131,7 @@ public class ClientFragment extends Fragment {
     }
 
     private void goToUserDetailActivity(Client client) {
-        Intent userDetailActivity = new Intent(getActivity(), UserDetailsActivity.class);
+        Intent userDetailActivity = new Intent(getActivity(), ClientActivity.class);
 
         Bundle bundle = new Bundle();
         bundle.putSerializable(Constants.CLIENT,client);

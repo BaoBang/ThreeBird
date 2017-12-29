@@ -8,8 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,13 +17,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.baobang.threebird.R;
-import com.example.baobang.threebird.activity.CreateOrderActivity;
-import com.example.baobang.threebird.activity.LoginActivity;
-import com.example.baobang.threebird.activity.MainActivity;
+import com.example.baobang.threebird.activity.OrderActivity;
 import com.example.baobang.threebird.adapter.OrderAdapter;
 import com.example.baobang.threebird.model.Order;
 import com.example.baobang.threebird.model.bussinesslogic.OrderBL;
@@ -177,7 +171,7 @@ public class OrderFragment extends Fragment {
     }
 
     private void goToCreateOrderActivity(int id) {
-        Intent addProductActivity = new Intent(getActivity(), CreateOrderActivity.class);
+        Intent addProductActivity = new Intent(getActivity(), OrderActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(Constants.ORDER, id);
         addProductActivity.putExtras(bundle);

@@ -1,13 +1,12 @@
 package com.example.baobang.threebird.activity;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,7 +19,6 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.example.baobang.threebird.R;
-import com.example.baobang.threebird.fragments.ClientFragment;
 import com.example.baobang.threebird.model.Address;
 import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.ClientGroup;
@@ -31,9 +29,8 @@ import com.example.baobang.threebird.utils.MySupport;
 import com.example.baobang.threebird.utils.SlideView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-public class UserDetailsActivity extends AppCompatActivity {
+public class ClientActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private LinearLayout groupUserInfo, groupAddressInfo;
@@ -52,7 +49,7 @@ public class UserDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_details);
+        setContentView(R.layout.activity_client);
         Bundle bundle = getIntent().getExtras();
         client = (Client) bundle.getSerializable(Constants.CLIENT);
 //        ClientGroupBL.createClientGroup(new ClientGroup(0, "Admin"));
@@ -315,7 +312,8 @@ public class UserDetailsActivity extends AppCompatActivity {
         if(avartar != null){
             newClient.setAvatar(MySupport.BitMapToString(avartar));
         }else{
-            newClient.setAvatar(null);
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.noimage);
+            newClient.setAvatar(MySupport.BitMapToString(bitmap));
         }
         boolean res = false;
         if(this.client == null){

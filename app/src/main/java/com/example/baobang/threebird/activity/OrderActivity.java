@@ -2,11 +2,7 @@ package com.example.baobang.threebird.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,9 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -31,7 +25,6 @@ import com.example.baobang.threebird.adapter.ClientAdapter;
 import com.example.baobang.threebird.model.Address;
 import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.Order;
-import com.example.baobang.threebird.model.Product;
 import com.example.baobang.threebird.model.ProductOrder;
 import com.example.baobang.threebird.model.bussinesslogic.ClientBL;
 import com.example.baobang.threebird.model.bussinesslogic.OrderBL;
@@ -45,7 +38,7 @@ import java.util.List;
 
 import io.realm.RealmList;
 
-public class CreateOrderActivity extends AppCompatActivity {
+public class OrderActivity extends AppCompatActivity {
 
 
     private Toolbar toolbar;
@@ -70,7 +63,7 @@ public class CreateOrderActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activy_create_order);
+        setContentView(R.layout.activy_order);
         order = getOrder();
         addControlls();
         addEvents();
@@ -206,7 +199,7 @@ public class CreateOrderActivity extends AppCompatActivity {
         btnCreatedAt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MySupport.getDate(CreateOrderActivity.this, txtCreatedAt);
+                MySupport.getDate(OrderActivity.this, txtCreatedAt);
             }
         });
 
@@ -220,7 +213,7 @@ public class CreateOrderActivity extends AppCompatActivity {
         btnDeliveryDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MySupport.getDate(CreateOrderActivity.this, txtDeliveryDate);
+                MySupport.getDate(OrderActivity.this, txtDeliveryDate);
             }
         });
 
@@ -233,47 +226,58 @@ public class CreateOrderActivity extends AppCompatActivity {
     }
 
     private void showDialogClient() {
-//        AlertDialog.Builder alertDialog = new AlertDialog.Builder(CreateOrderActivity.this);
-//        LayoutInflater inflater = getLayoutInflater();
-//        View convertView = (View) inflater.inflate(R.layout.listview_dialog, null);
-//        alertDialog.setView(convertView);
-//        alertDialog.setTitle("Danh sách khách hàng");
-//        ListView lv =  convertView.findViewById(R.id.listView);
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(OrderActivity.this, R.drawable.background_color_gradient);
+        LayoutInflater inflater = getLayoutInflater();
+        View convertView = (View) inflater.inflate(R.layout.listview_dialog, null);
+        alertDialog.setView(convertView);
+        alertDialog.setTitle("Danh sách khách hàng");
+        ListView lv =  convertView.findViewById(R.id.listView);
+        final ArrayList<Client> clients = ClientBL.getAllClient();
+        ClientAdapter adapter = new ClientAdapter(this, R.layout.item_client, clients);
+        lv.setAdapter(adapter);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                getClientFromList(clients.get(i));
+            }
+        });
+        alertDialog.show();
+
+//        // setup the alert builder
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setTitle("Chọn khách hàng...");
+//        // add a radio button list
 //        ArrayList<Client> clients = ClientBL.getAllClient();
-//        ClientAdapter adapter = new ClientAdapter(this, R.layout.item_client, clients);
-//        lv.setAdapter(adapter);
-//        alertDialog.show();
+//        String[] clientStrs = new String[clients.size()];
+//        for(int i = 0; i < clients.size(); i++){
+//            clientStrs[i] = clients.get(i).toString();
+//        }
+//        int checkedItem = 0;
+//        builder.setSingleChoiceItems(clientStrs, checkedItem, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                // user checked an item
+//            }
+//        });
+//
+//        // add OK and Cancel buttons
+//        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                // user clicked OK
+//            }
+//        });
+//        builder.setNegativeButton("Cancel", null);
+//
+//        // create and show the alert dialog
+//        AlertDialog dialog = builder.create();
+//        dialog.show();
 
-        // setup the alert builder
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Chọn khách hàng...");
-        // add a radio button list
-        ArrayList<Client> clients = ClientBL.getAllClient();
-        String[] clientStrs = new String[clients.size()];
-        for(int i = 0; i < clients.size(); i++){
-            clientStrs[i] = clients.get(i).toString();
-        }
-        int checkedItem = 0;
-        builder.setSingleChoiceItems(clientStrs, checkedItem, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // user checked an item
-            }
-        });
+    }
 
-        // add OK and Cancel buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // user clicked OK
-            }
-        });
-        builder.setNegativeButton("Cancel", null);
-
-        // create and show the alert dialog
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
+    private void getClientFromList(Client client) {
+        txtName.setText(client.getName());
+        imgAvatar.setImageBitmap(MySupport.StringToBitMap(client.getAvatar()));
     }
 
 

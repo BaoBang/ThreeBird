@@ -45,15 +45,15 @@
             ></activity>
         <!-- User details activity -->
         <activity
-            android:name=".activity.UserDetailsActivity"
+            android:name=".activity.ClientActivity"
             android:theme="@style/AppThemeNoActionBar"/>
         <!-- Create order activity -->
         <activity
-            android:name=".activity.CreateOrderActivity"
+            android:name=".activity.OrderActivity"
             android:theme="@style/AppThemeNoActionBar"/>
         <!-- Add product activity -->
         <activity
-            android:name=".activity.AddProductActivity"
+            android:name=".activity.ProductActivity"
             android:theme="@style/AppThemeNoActionBar"/>
     </application>
 
