@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.activity.OrderActivity;
@@ -40,6 +42,8 @@ public class OrderFragment extends Fragment {
     private OrderAdapter orderAdapter;
 
     private LinearLayout layoutOrder, layoutNewOrder, layoutCancelOrder, layoutCompletedOrder;
+
+    private int layoutSelected = 0;
     public OrderFragment() {
         // Required empty public constructor
     }
@@ -76,6 +80,7 @@ public class OrderFragment extends Fragment {
         layoutCancelOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                setBackGround(layoutCancelOrder, 2);
                 orders = getOrder(Constants.CANCEL);
                 orderAdapter = new OrderAdapter(getActivity(), R.layout.item_order, orders);
                 lvOrders.setAdapter(orderAdapter);
@@ -85,6 +90,7 @@ public class OrderFragment extends Fragment {
         layoutCompletedOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                setBackGround(layoutCompletedOrder, 3);
                 orders = getOrder(Constants.COMPLETED);
                 orderAdapter = new OrderAdapter(getActivity(), R.layout.item_order, orders);
                 lvOrders.setAdapter(orderAdapter);
@@ -94,6 +100,7 @@ public class OrderFragment extends Fragment {
         layoutOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                setBackGround(layoutOrder, 0);
                 orders = getOrder(-1);
                 orderAdapter = new OrderAdapter(getActivity(), R.layout.item_order, orders);
                 lvOrders.setAdapter(orderAdapter);
@@ -103,6 +110,7 @@ public class OrderFragment extends Fragment {
         layoutNewOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                setBackGround(layoutNewOrder, 1);
                 orders = getOrder(Constants.DELIVERY);
                 orderAdapter = new OrderAdapter(getActivity(), R.layout.item_order, orders);
                 lvOrders.setAdapter(orderAdapter);
@@ -136,6 +144,40 @@ public class OrderFragment extends Fragment {
         }
         return -1;
     }
+
+
+    private void setBackGround(LinearLayout  layout, int layoutSelected){
+
+        switch (this.layoutSelected){
+            case 0:
+                layoutOrder.setBackgroundResource(R.drawable.background_border_white);
+//                setTextColorForViewChild(layoutOrder, R.color.bold_word_80);
+                break;
+            case 1:
+                layoutNewOrder.setBackgroundResource(R.drawable.background_border_white);
+//                setTextColorForViewChild(layoutNewOrder, R.color.bold_word_80);
+                break;
+            case 2:
+                layoutCancelOrder.setBackgroundResource(R.drawable.background_border_white);
+//                setTextColorForViewChild(layoutCancelOrder, R.color.bold_word_80);
+                break;
+            case 3:
+                layoutCompletedOrder.setBackgroundResource(R.drawable.background_border_white);
+//                setTextColorForViewChild(layoutCompletedOrder, R.color.bold_word_80);
+                break;
+        }
+        layout.setBackgroundResource(R.drawable.background_color);
+//        setTextColorForViewChild(layout, R.color.red);
+        this.layoutSelected = layoutSelected;
+    }
+
+//    private void setTextColorForViewChild(LinearLayout layout, int color){
+//
+//        for(int i = 0; i < layout.getChildCount(); i++){
+//            TextView textView = (TextView) layout.getChildAt(i);
+//            textView.setTextColor(color);
+//        }
+//    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

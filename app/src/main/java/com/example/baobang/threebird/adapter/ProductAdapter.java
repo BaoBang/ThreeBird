@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.baobang.threebird.R;
@@ -29,13 +30,17 @@ public class ProductAdapter extends ArrayAdapter<Product> {
     private int resource;
     private List<Product> objects;
     private List<Product> tempObjects;
-
+    private int itemSelected = -1;
     public ProductAdapter(@NonNull Activity context, int resource, @NonNull List<Product> objects) {
         super(context, resource, objects);
         this.context = context;
         this.resource = resource;
         this.objects = objects;
         tempObjects = new ArrayList<>(objects);
+    }
+
+    public void setItemSelected(int itemSelected) {
+        this.itemSelected = itemSelected;
     }
 
     public void setTempObjects(List<Product> tempObjects) {
@@ -47,7 +52,12 @@ public class ProductAdapter extends ArrayAdapter<Product> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         LayoutInflater layoutInflater = this.context.getLayoutInflater();
         convertView = layoutInflater.inflate(this.resource, null);
-
+        LinearLayout layout = convertView.findViewById(R.id.layoutItem);
+        if(position == itemSelected){
+            layout.setBackgroundColor(this.context.getResources().getColor(R.color.colorPrimary));
+        }else{
+            layout.setBackgroundColor(this.context.getResources().getColor(R.color.color_white));
+        }
         ImageView imgProduct = convertView.findViewById(R.id.imgProduct);
         TextView txtProductName = convertView.findViewById(R.id.txtProductName);
         TextView txtPrice = convertView.findViewById(R.id.txtPrice);

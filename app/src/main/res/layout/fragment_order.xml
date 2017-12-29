@@ -56,16 +56,16 @@
                     android:orientation="vertical"
                     android:layout_weight="25"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_margin="5dp"
                     android:background="@drawable/background_color">
 
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:text="0"
                         android:textSize="@dimen/text_size"
-                        android:textColor="@color/red"
+                        android:textColor="@color/bold_word_80"
                         android:textAlignment="center"
                         android:paddingLeft="@dimen/padding_small"
                         android:paddingTop="@dimen/padding_small"
@@ -77,7 +77,7 @@
                         android:layout_height="match_parent"
                         android:text="ĐƠN HÀNG"
                         android:textSize="@dimen/text_size_small"
-                        android:textColor="@color/red"
+                        android:textColor="@color/bold_word_80"
                         android:textAlignment="center"
                         android:paddingLeft="@dimen/padding_small"
                         android:paddingBottom="@dimen/padding_small"
@@ -90,15 +90,15 @@
                     android:layout_weight="25"
                     android:orientation="vertical"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_margin="5dp"
                     android:background="@drawable/background_border_white">
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:text="0"
                         android:textSize="@dimen/text_size"
-                        android:textColor="@color/bold_word_80"
+                        android:textColor="@color/blue"
                         android:textAlignment="center"
                         android:paddingLeft="@dimen/padding_small"
                         android:paddingTop="@dimen/padding_small"
@@ -109,7 +109,7 @@
                         android:layout_height="match_parent"
                         android:text="MỚI"
                         android:textSize="@dimen/text_size_small"
-                        android:textColor="@color/bold_word_80"
+                        android:textColor="@color/blue"
                         android:textAlignment="center"
                         android:paddingLeft="@dimen/padding_small"
                         android:paddingBottom="@dimen/padding_small"
@@ -122,15 +122,15 @@
                     android:layout_weight="25"
                     android:orientation="vertical"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_margin="5dp"
                     android:background="@drawable/background_border_white">
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:text="0"
                         android:textSize="@dimen/text_size"
-                        android:textColor="@color/bold_word_80"
+                        android:textColor="@color/red"
                         android:textAlignment="center"
                         android:paddingLeft="@dimen/padding_small"
                         android:paddingTop="@dimen/padding_small"
@@ -141,7 +141,7 @@
                         android:layout_height="match_parent"
                         android:text="HỦY"
                         android:textSize="@dimen/text_size_small"
-                        android:textColor="@color/bold_word_80"
+                        android:textColor="@color/red"
                         android:textAlignment="center"
                         android:paddingLeft="@dimen/padding_small"
                         android:paddingBottom="@dimen/padding_small"
@@ -151,7 +151,7 @@
                 <LinearLayout
                     android:id="@+id/layoutCompletedOrder"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_margin="5dp"
                     android:orientation="vertical"
                     android:layout_weight="25"
@@ -164,7 +164,7 @@
                         android:paddingTop="@dimen/padding_small"
                         android:text="0"
                         android:textAlignment="center"
-                        android:textColor="@color/bold_word_80"
+                        android:textColor="@color/green"
                         android:textSize="@dimen/text_size"
                         android:duplicateParentState="true"/>
                     <TextView
@@ -173,9 +173,9 @@
                         android:paddingBottom="@dimen/padding_small"
                         android:paddingLeft="@dimen/padding_small"
                         android:paddingRight="@dimen/padding_small"
-                        android:text="HTHÀNH"
+                        android:text="HOÀN THÀNH"
                         android:textAlignment="center"
-                        android:textColor="@color/bold_word_80"
+                        android:textColor="@color/green"
                         android:textSize="@dimen/text_size_small"
                         android:duplicateParentState="true"/>
                 </LinearLayout>
@@ -189,7 +189,10 @@
             <ListView
                 android:id="@+id/lvOrders"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/margin_vertical"
+                android:layout_marginLeft="@dimen/margin_vertical"
+                android:layout_marginBottom="@dimen/margin">
 
             </ListView>
         </LinearLayout>

@@ -3,7 +3,6 @@ package com.example.baobang.threebird.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -310,10 +309,9 @@ public class ClientActivity extends AppCompatActivity {
                 name,groups.get(group).getId(), phone,fax, website, email,
                 new Address(province, district, commune,  address));
         if(avartar != null){
-            newClient.setAvatar(MySupport.BitMapToString(avartar));
+            newClient.setAvatar(MySupport.BitMapToString(avartar, Constants.AVATAR_HEIGHT));
         }else{
-            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.noimage);
-            newClient.setAvatar(MySupport.BitMapToString(bitmap));
+            newClient.setAvatar(null);
         }
         boolean res = false;
         if(this.client == null){

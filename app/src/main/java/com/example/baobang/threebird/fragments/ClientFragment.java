@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -58,16 +59,14 @@ public class ClientFragment extends Fragment {
         //
         clientAdapter = new ClientAdapter(getActivity(), R.layout.item_client, clients);
         lvClients.setAdapter(clientAdapter);
-        for(Client client : clients){
-            Log.e("Client ", client.getId() + "");
-        }
         lvClients.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                clientAdapter.setItemSelected(i);
+                clientAdapter.notifyDataSetChanged();
                 goToUserDetailActivity(clients.get(i));
             }
         });
-
         return view;
     }
 

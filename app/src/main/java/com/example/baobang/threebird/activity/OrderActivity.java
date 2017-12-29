@@ -3,9 +3,11 @@ package com.example.baobang.threebird.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -226,7 +228,7 @@ public class OrderActivity extends AppCompatActivity {
     }
 
     private void showDialogClient() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(OrderActivity.this, R.drawable.background_color_gradient);
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(OrderActivity.this, R.drawable.background_color_gradient);
         LayoutInflater inflater = getLayoutInflater();
         View convertView = (View) inflater.inflate(R.layout.listview_dialog, null);
         alertDialog.setView(convertView);
@@ -235,13 +237,14 @@ public class OrderActivity extends AppCompatActivity {
         final ArrayList<Client> clients = ClientBL.getAllClient();
         ClientAdapter adapter = new ClientAdapter(this, R.layout.item_client, clients);
         lv.setAdapter(adapter);
+        final AlertDialog dialog = alertDialog.show();
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                dialog.dismiss();
                 getClientFromList(clients.get(i));
             }
         });
-        alertDialog.show();
 
 //        // setup the alert builder
 //        AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -277,7 +280,13 @@ public class OrderActivity extends AppCompatActivity {
 
     private void getClientFromList(Client client) {
         txtName.setText(client.getName());
-        imgAvatar.setImageBitmap(MySupport.StringToBitMap(client.getAvatar()));
+        if(client.getAvatar()!= null){
+            Bitmap bitmap = MySupport.StringToBitMap(client.getAvatar());
+            imgAvatar.setImageBitmap(MySupport.getRoundedRectBitmap(bitmap));
+        }
+        else{
+            imgAvatar.setImageResource(R.drawable.noimage);
+        }
     }
 
 

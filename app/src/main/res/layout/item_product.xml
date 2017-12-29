@@ -2,14 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/gradient_color"
+    android:layout_marginRight="@dimen/margin"
+    android:layout_marginLeft="@dimen/margin"
+    android:layout_marginTop="@dimen/margin_vertical">
 
     <LinearLayout
+        android:id="@+id/layoutItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:weightSum="100"
-        android:layout_marginTop="@dimen/margin_vertical">
+        android:layout_marginTop="@dimen/margin_vertical"
+        android:paddingTop="@dimen/padding"
+        android:paddingBottom="@dimen/padding"
+        android:background="@color/color_white">
         <LinearLayout
             android:layout_weight="80"
             android:layout_width="match_parent"
@@ -52,9 +60,9 @@
                 android:textColor="@color/bold_word_80"/>
         </LinearLayout>
     </LinearLayout>
-    <TextView
-        android:layout_marginTop="@dimen/padding"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#80000000"/>
+    <!--<TextView-->
+        <!--android:layout_marginTop="@dimen/padding"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="#80000000"/>-->
 </LinearLayout>

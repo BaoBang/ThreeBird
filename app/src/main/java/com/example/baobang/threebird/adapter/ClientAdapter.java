@@ -14,6 +14,7 @@ import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.baobang.threebird.R;
@@ -33,12 +34,17 @@ public class ClientAdapter extends ArrayAdapter<Client>{
     Activity context;
     int resource;
     List<Client> objects, tempObjects;
+    int itemSelected = -1;
     public ClientAdapter(@NonNull Activity context, int resource, @NonNull List<Client> objects) {
         super(context, resource, objects);
         this.context = context;
         this.resource = resource;
         this.objects = objects;
         tempObjects = new ArrayList<>(objects);
+    }
+
+    public void setItemSelected(int itemSelected) {
+        this.itemSelected = itemSelected;
     }
 
     public void setTempObjects(List<Client> tempObjects) {
@@ -50,7 +56,12 @@ public class ClientAdapter extends ArrayAdapter<Client>{
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         LayoutInflater layoutInflater = this.context.getLayoutInflater();
         convertView = layoutInflater.inflate(R.layout.item_client, null);
-        //TextView txtLetterName = convertView.findViewById(R.id.txtLetterName);
+        LinearLayout layout = convertView.findViewById(R.id.layoutItem);
+        if(position == itemSelected){
+            layout.setBackgroundColor(this.context.getResources().getColor(R.color.colorPrimary));
+        }else{
+            layout.setBackgroundColor(this.context.getResources().getColor(R.color.color_white));
+        }
         TextView txtName = convertView.findViewById(R.id.txtName);
         TextView txtAddress = convertView.findViewById(R.id.txtAddress);
         ImageView imgAvatar = convertView.findViewById(R.id.imgAvatar);
@@ -58,7 +69,6 @@ public class ClientAdapter extends ArrayAdapter<Client>{
         Client client = this.objects.get(position);
         txtAddress.setText(client.getAddress().toString());
         txtName.setText(client.getName());
-       // txtLetterName.setText(client.getName().substring(0,1).toUpperCase());
         if(client.getAvatar() != null && client.getAvatar().length() > 0){
             Bitmap avatar = MySupport.StringToBitMap(client.getAvatar());
             imgAvatar.setImageBitmap(MySupport.getRoundedRectBitmap(avatar));

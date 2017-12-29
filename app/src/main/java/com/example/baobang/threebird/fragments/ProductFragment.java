@@ -61,6 +61,8 @@ public class ProductFragment extends Fragment {
         lvProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                productAdapter.setItemSelected(i);
+                productAdapter.notifyDataSetChanged();
                 goToAddProductActivity(products.get(i).getId());
             }
         });

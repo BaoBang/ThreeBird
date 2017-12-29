@@ -159,8 +159,9 @@
                     android:id="@+id/lvProduct"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textSize="@dimen/text_size"
-                    >
+                    android:layout_marginRight="@dimen/margin_vertical"
+                    android:layout_marginLeft="@dimen/margin_vertical"
+                    android:layout_marginBottom="@dimen/margin">
 
                 </ListView>
                 <!--<LinearLayout-->
