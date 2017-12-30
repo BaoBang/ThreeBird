@@ -8,10 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.utils.Model;
-
 import java.util.List;
 
 /**
@@ -34,7 +32,7 @@ public class PagerAdapter extends android.support.v4.view.PagerAdapter {
 
     @Override
     public boolean isViewFromObject(View view, Object object) {
-        return view == ((LinearLayout)object);
+        return view == object;
     }
 
     @Override
@@ -45,7 +43,10 @@ public class PagerAdapter extends android.support.v4.view.PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = layoutInflater.inflate(R.layout.item, container, false);
+        View view = null;
+        if(layoutInflater != null){
+           view = layoutInflater.inflate(R.layout.item, container, false);
+        }
         Model model = this.models.get(position);
         ImageView img = view.findViewById(R.id.img);
         TextView txtTitle = view.findViewById(R.id.txtTitle);

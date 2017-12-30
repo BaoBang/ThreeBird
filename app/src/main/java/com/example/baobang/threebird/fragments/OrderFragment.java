@@ -123,7 +123,10 @@ public class OrderFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == Constants.ORDER_REQUEST_CODE && resultCode == Activity.RESULT_OK){
             Bundle bundle = data.getExtras();
-            int orderId = bundle.getInt(Constants.ORDER);
+            int orderId = -1;
+            if(bundle != null){
+                orderId = bundle.getInt(Constants.ORDER);
+            }
             Order order = OrderBL.getOrder(orderId);
             int indexChange = checkOrders(orderId);
             if( indexChange == -1){

@@ -13,26 +13,16 @@ import io.realm.annotations.PrimaryKey;
  */
 
 public  class ProductOrder extends RealmObject implements Serializable{
-    @PrimaryKey
-    private int id;
+
     private int productId;
     private int amount;
 
-    public ProductOrder(int id, int productId, int amount) {
-        this.id = id;
+    public ProductOrder(int productId, int amount) {
         this.productId = productId;
         this.amount = amount;
     }
 
     public ProductOrder() {
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public int getProductId() {

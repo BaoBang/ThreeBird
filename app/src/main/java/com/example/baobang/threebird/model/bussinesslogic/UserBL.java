@@ -45,8 +45,9 @@ public class UserBL {
         RealmResults<User> results = realm.where(User.class)
                 .equalTo("userName", userName)
                 .findAll();
+        boolean result = results.size() > 0;
         realm.close();
-        return results.size() > 0;
+        return result;
     }
 
     public static boolean updateUser( User user){

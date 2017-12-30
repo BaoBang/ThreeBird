@@ -28,9 +28,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         Realm.init(this);
-
         addControlls();
         addEvents();
     }
@@ -42,7 +40,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void addControlls() {
-//         realm = Realm.getDefaultInstance();
         txtUserName = findViewById(R.id.txtUserName);
         txtPassword = findViewById(R.id.txtPassword);
         btnLogin = findViewById(R.id.btnLogin);

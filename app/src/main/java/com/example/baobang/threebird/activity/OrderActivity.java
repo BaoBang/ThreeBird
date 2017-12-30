@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -56,11 +57,9 @@ public class OrderActivity extends AppCompatActivity {
 
     private Spinner spStatus, spProvince,
             spDistrict, spCommune,  spPayment;
-    private ArrayList<String> statuses , provinces,
-            districts, communes, payments;
+    private ArrayList<String>  provinces,
+            districts, communes;
 
-    private ArrayAdapter<String> adapterStatus, adapterProvince,
-            adapterDistrict, adapterCommune, adapterPayment;
 
     private ImageButton btnAddClient, btnCreatedAt, btnAddProduct, btnDeliveryDate;
     private LinearLayout layoutProduct;
@@ -80,8 +79,11 @@ public class OrderActivity extends AppCompatActivity {
     private void addControlls() {
         toolbar = findViewById(R.id.toolBarCreateOrder);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
         //
         imgAvatar = findViewById(R.id.imgAvatar);
 
@@ -91,7 +93,7 @@ public class OrderActivity extends AppCompatActivity {
         txtAddress = findViewById(R.id.txtAddress);
 
         txtAmount = findViewById(R.id.txtAmount);
-        txtAmount.setText(getAmountAllProduct() + "");
+        txtAmount.setText(String.valueOf(getAmountAllProduct()));
         txtCreatedAt = findViewById(R.id.txtCreatedAt);
         txtDeliveryDate = findViewById(R.id.txtDeliveryDate);
 
@@ -150,8 +152,9 @@ public class OrderActivity extends AppCompatActivity {
 
     private void addSpinnerPayment() {
         spPayment = findViewById(R.id.spPayment);
-        payments = getPayments();
-        adapterPayment = new ArrayAdapter<>(
+        ArrayList<String> payments = getPayments();
+
+        ArrayAdapter<String> adapterPayment = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_list_item_1,
                 payments);
@@ -161,7 +164,8 @@ public class OrderActivity extends AppCompatActivity {
     private void addSpinnerCommune() {
         spCommune = findViewById(R.id.spCommune);
         communes = getCommunes();
-        adapterCommune = new ArrayAdapter<>(
+
+        ArrayAdapter<String> adapterCommune = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_list_item_1,
                 communes);
@@ -171,7 +175,7 @@ public class OrderActivity extends AppCompatActivity {
     private void addSpinnerDistrict() {
         spDistrict = findViewById(R.id.spDistrict);
         districts = getDistricts();
-        adapterDistrict = new ArrayAdapter<>(
+        ArrayAdapter<String> adapterDistrict = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_list_item_1,
                 districts);
@@ -181,7 +185,7 @@ public class OrderActivity extends AppCompatActivity {
     private void addSpinnerProvince() {
         spProvince = findViewById(R.id.spProvince);
         provinces = getProvinces();
-        adapterProvince = new ArrayAdapter<>(
+        ArrayAdapter<String> adapterProvince = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_list_item_1,
                 provinces);
@@ -190,8 +194,8 @@ public class OrderActivity extends AppCompatActivity {
 
     private void addSpinnerStatus() {
         spStatus = findViewById(R.id.spStatus);
-        statuses = getStatuses();
-        adapterStatus = new ArrayAdapter<>(
+        ArrayList<String> statuses = getStatuses();
+        ArrayAdapter<String> adapterStatus = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_list_item_1,
                 statuses);
@@ -349,7 +353,7 @@ public class OrderActivity extends AppCompatActivity {
         if(index != -1){
             productList.get(index).setAmount(productList.get(index).getAmount() + 1);
         }else{
-            productList.add(new ProductOrder(productList.size(), product.getId(), 1));
+            productList.add(new ProductOrder(product.getId(), 1));
         }
     }
 
@@ -484,6 +488,7 @@ public class OrderActivity extends AppCompatActivity {
            if(this.order == null){
                res =  OrderBL.createOrder(order);
            }else{
+               order.setId(this.order.getId());
                res = OrderBL.updateOrder(order);
            }
            if(res){

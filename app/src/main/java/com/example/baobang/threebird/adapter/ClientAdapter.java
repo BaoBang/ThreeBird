@@ -1,40 +1,32 @@
 package com.example.baobang.threebird.adapter;
 
+/**
+ * Created by baobang on 12/14/17.
+ */
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.model.Client;
-import com.example.baobang.threebird.model.bussinesslogic.ClientBL;
 import com.example.baobang.threebird.utils.MySupport;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
-/**
- * Created by baobang on 12/14/17.
- */
 
 public class ClientAdapter extends ArrayAdapter<Client>{
-    Activity context;
-    int resource;
-    List<Client> objects, tempObjects;
-    int itemSelected = -1;
+    private Activity context;
+    private int resource;
+    private List<Client> objects, tempObjects;
+    private int itemSelected = -1;
     public ClientAdapter(@NonNull Activity context, int resource, @NonNull List<Client> objects) {
         super(context, resource, objects);
         this.context = context;
@@ -55,7 +47,7 @@ public class ClientAdapter extends ArrayAdapter<Client>{
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         LayoutInflater layoutInflater = this.context.getLayoutInflater();
-        convertView = layoutInflater.inflate(R.layout.item_client, null);
+        convertView = layoutInflater.inflate(this.resource, null);
         LinearLayout layout = convertView.findViewById(R.id.layoutItem);
         if(position == itemSelected){
             layout.setBackgroundColor(this.context.getResources().getColor(R.color.colorPrimary));
@@ -86,14 +78,11 @@ public class ClientAdapter extends ArrayAdapter<Client>{
 
     private class ClientFilter extends Filter{
 
-        public ClientFilter() {
-        }
-
         @Override
         protected FilterResults performFiltering(CharSequence charSequence) {
             String filterSeq = charSequence.toString().toLowerCase();
             FilterResults result = new FilterResults();
-            if (filterSeq != null && filterSeq.length() > 0) {
+            if (filterSeq.length() > 0) {
                 ArrayList<Client> filter = new ArrayList<>();
                 for (Client client : tempObjects) {
                     // the filtering itself:
