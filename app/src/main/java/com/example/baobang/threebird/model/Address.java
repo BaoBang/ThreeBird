@@ -1,13 +1,7 @@
 package com.example.baobang.threebird.model;
 
 import java.io.Serializable;
-
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
-
-/**
- * Created by baobang on 12/14/17.
- */
 
 public class Address extends RealmObject implements Serializable {
     private String province;

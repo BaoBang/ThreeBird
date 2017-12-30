@@ -3,10 +3,6 @@ package com.example.baobang.threebird.model;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-/**
- * Created by baobang on 12/14/17.
- */
-
 public class User extends RealmObject{
     @PrimaryKey
     private String userName;

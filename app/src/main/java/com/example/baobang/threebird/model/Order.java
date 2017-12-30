@@ -7,9 +7,6 @@ import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-/**
- * Created by baobang on 12/27/17.
- */
 
 public class Order extends RealmObject implements Serializable {
     @PrimaryKey

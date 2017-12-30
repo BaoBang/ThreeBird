@@ -1,11 +1,5 @@
 package com.example.baobang.threebird.utils;
 
-import com.example.baobang.threebird.R;
-
-/**
- * Created by baobang on 12/14/17.
- */
-
 public class Constants {
     public static int CLIENT_REQUEST_CODE = 1;
     public static int PRODUCT_REQUEST_CODE = 2;

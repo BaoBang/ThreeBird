@@ -1,31 +1,20 @@
 package com.example.baobang.threebird.model.bussinesslogic;
 
-import android.app.Activity;
 import android.util.Log;
-
-import com.example.baobang.threebird.activity.LoginActivity;
 import com.example.baobang.threebird.model.User;
-
 import io.realm.Realm;
 import io.realm.RealmResults;
-
-/**
- * Created by baobang on 12/14/17.
- */
 
 public class UserBL {
 
     public static boolean createUser(User user){
-        Realm realm = Realm.getDefaultInstance();
-        try{
-           realm.beginTransaction();
-           User rUser = realm.copyToRealm(user);
-           realm.commitTransaction();
-           return true;
-       }catch (Exception e){
-          Log.e("Lỗi: ", e.getMessage());
-       }finally {
-           realm.close();
+        try (Realm realm = Realm.getDefaultInstance()) {
+            realm.beginTransaction();
+            realm.copyToRealm(user);
+            realm.commitTransaction();
+            return true;
+        } catch (Exception e) {
+            Log.e("Lỗi: ", e.getMessage());
         }
         return false;
     }
@@ -51,19 +40,13 @@ public class UserBL {
     }
 
     public static boolean updateUser( User user){
-        Realm realm = Realm.getDefaultInstance();
-        try{
+        try (Realm realm = Realm.getDefaultInstance()) {
             realm.beginTransaction();
-
             realm.copyToRealmOrUpdate(user);
-
             realm.commitTransaction();
-
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             return false;
-        }finally {
-            realm.close();
         }
     }
 }

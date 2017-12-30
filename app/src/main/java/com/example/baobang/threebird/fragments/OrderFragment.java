@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,19 +17,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
-
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.activity.OrderActivity;
 import com.example.baobang.threebird.adapter.OrderAdapter;
 import com.example.baobang.threebird.model.Order;
 import com.example.baobang.threebird.model.bussinesslogic.OrderBL;
 import com.example.baobang.threebird.utils.Constants;
-
 import java.util.ArrayList;
 import java.util.List;
-
-
 /**
  * A simple {@link Fragment} subclass.
  */

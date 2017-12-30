@@ -7,38 +7,31 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-/**
- * Created by baobang on 12/18/17.
- */
-
 public class CategoryBL {
     public static boolean createBrand(Category category){
-        Realm realm = Realm.getDefaultInstance();
-        try{
-            int nextID  = 0;
+        try (Realm realm = Realm.getDefaultInstance()) {
+            int nextID = 0;
             Number number = realm.where(Category.class).max("id");
-            if(number != null)
-                nextID =  number.intValue() + 1;
+            if (number != null)
+                nextID = number.intValue() + 1;
             realm.beginTransaction();
             category.setId(nextID);
-            Category rBrand = realm.copyToRealm(category);
+            realm.copyToRealm(category);
             realm.commitTransaction();
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e("Lỗi: ", e.getMessage());
-        }finally {
-            realm.close();
         }
         return false;
     }
 
     public static ArrayList<Category> getAllClient(){
-        List<Category> list = null;
+        List<Category> list;
         ArrayList<Category> categories = new ArrayList<>();
         Realm realm = Realm.getDefaultInstance();
         RealmResults<Category> results = realm.where(Category.class).findAll();
         list = realm.copyFromRealm(results);
-        for(Category category : list) categories.add(category);
+        categories.addAll(list);
         realm.close();
         return  categories;
     }

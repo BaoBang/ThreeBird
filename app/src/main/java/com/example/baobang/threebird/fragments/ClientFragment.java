@@ -6,17 +6,14 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.activity.ClientActivity;
 import com.example.baobang.threebird.adapter.ClientAdapter;
@@ -29,7 +26,6 @@ import java.util.ArrayList;
  */
 public class ClientFragment extends Fragment {
 
-    private ListView lvClients;
     private ArrayList<Client> clients;
     private ClientAdapter clientAdapter;
 
@@ -40,8 +36,8 @@ public class ClientFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = addControlls(inflater,container);
-        return view;
+        return addControlls(inflater,container);
+
     }
 
     private View addControlls(LayoutInflater inflater, ViewGroup container) {
@@ -54,7 +50,8 @@ public class ClientFragment extends Fragment {
         }
         setHasOptionsMenu(true);
         // add views
-        lvClients = view.findViewById(R.id.lvClients);
+
+        ListView lvClients; lvClients = view.findViewById(R.id.lvClients);
         clients = ClientBL.getAllClient();
         //
         clientAdapter = new ClientAdapter(getActivity(), R.layout.item_client, clients);
@@ -108,7 +105,7 @@ public class ClientFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == Constants.CLIENT_REQUEST_CODE && resultCode == Activity.RESULT_OK){
                 Bundle bundle = data.getExtras();
-                Client client = (Client) bundle.getSerializable(Constants.CLIENT);
+                Client client = bundle == null ? null : (Client) bundle.getSerializable(Constants.CLIENT);
                 int indexChange = checkClients(client);
                 if( indexChange == -1){
                     clients.add(client);

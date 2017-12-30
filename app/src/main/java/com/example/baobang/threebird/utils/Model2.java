@@ -2,9 +2,6 @@ package com.example.baobang.threebird.utils;
 
 import java.io.Serializable;
 
-/**
- * Created by baobang on 11/29/17.
- */
 
 public class Model2 implements Serializable {
     private int color;

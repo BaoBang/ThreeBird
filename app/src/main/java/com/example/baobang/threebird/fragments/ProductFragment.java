@@ -33,7 +33,6 @@ import java.util.List;
 public class ProductFragment extends Fragment {
 
 
-    private ListView lvProducts;
     private List<Product> products;
     private ProductAdapter productAdapter;
 
@@ -54,7 +53,8 @@ public class ProductFragment extends Fragment {
         setHasOptionsMenu(true);
         // Inflate the layout for this fragment
 
-        lvProducts = view.findViewById(R.id.lvProduct);
+
+        ListView lvProducts = view.findViewById(R.id.lvProduct);
         products = ProductBL.getAllProduct();
         productAdapter = new ProductAdapter(getActivity(), R.layout.item_product, products);
         lvProducts.setAdapter(productAdapter);
@@ -73,7 +73,7 @@ public class ProductFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == Constants.PRODUCT_REQUEST_CODE && resultCode == Activity.RESULT_OK){
             Bundle bundle = data.getExtras();
-            int productId = bundle.getInt(Constants.PRODUCT);
+            int productId = bundle == null ? -1 : bundle.getInt(Constants.PRODUCT);
             Product product = ProductBL.getProduct(productId);
             int indexChange = checkProducts(product);
             if( indexChange == -1){

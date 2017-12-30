@@ -1,7 +1,6 @@
 package com.example.baobang.threebird.utils;
 
 import android.graphics.Color;
-
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.LimitLine;
@@ -11,14 +10,9 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.zip.CheckedOutputStream;
 
-/**
- * Created by baobang on 11/29/17.
- */
 
 public class LineChart implements Serializable {
     private com.github.mikephil.charting.charts.LineChart mChart;
@@ -82,7 +76,7 @@ public class LineChart implements Serializable {
         set1.setCircleRadius(3f);
         set1.setDrawCircleHole(false);
         set1.setValueTextSize(9f);
-        ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
         dataSets.add(set1); // add the datasets
         // create a data object with the datasets
         LineData data = new LineData(xValues, dataSets);

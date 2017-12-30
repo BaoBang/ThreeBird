@@ -2,9 +2,6 @@ package com.example.baobang.threebird.utils;
 
 import java.io.Serializable;
 
-/**
- * Created by baobang on 11/28/17.
- */
 
 public class Model implements Serializable {
     private int image;

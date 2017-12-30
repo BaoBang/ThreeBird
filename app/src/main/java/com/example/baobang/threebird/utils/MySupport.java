@@ -39,9 +39,6 @@ import java.util.List;
 
 import static android.support.v4.graphics.TypefaceCompatUtil.getTempFile;
 
-/**
- * Created by baobang on 12/14/17.
- */
 
 public class MySupport {
     public static boolean checkInput(String input){
@@ -64,8 +61,8 @@ public class MySupport {
         ByteArrayOutputStream baos=new  ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG,quality, baos);
         byte [] b=baos.toByteArray();
-        String temp= Base64.encodeToString(b, Base64.DEFAULT);
-        return temp;
+
+        return Base64.encodeToString(b, Base64.DEFAULT);
     }
 
     public static String BitMapToString(Bitmap bitmap){
@@ -73,15 +70,13 @@ public class MySupport {
         ByteArrayOutputStream baos=new  ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
         byte [] b=baos.toByteArray();
-        String temp= Base64.encodeToString(b, Base64.DEFAULT);
-        return temp;
+        return Base64.encodeToString(b, Base64.DEFAULT);
     }
 
     public static Bitmap StringToBitMap(String encodedString){
         try {
             byte [] encodeByte=Base64.decode(encodedString,Base64.DEFAULT);
-            Bitmap bitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-            return bitmap;
+            return BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
         } catch(Exception e) {
             e.getMessage();
             return null;
@@ -94,7 +89,7 @@ public class MySupport {
 
         final int color = Color.RED;
         final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, Constants.AVATAR_WIDTH , Constants.AVATAR_WIDTH);
+        final Rect rect = new Rect(0, 0, Constants.AVATAR_WIDTH, Constants.AVATAR_HEIGHT);
         final RectF rectF = new RectF(rect);
 
         paint.setAntiAlias(true);
@@ -141,9 +136,11 @@ public class MySupport {
     public static Bitmap getBitmapFromUri(Activity activity, Uri uri) throws IOException {
         ParcelFileDescriptor parcelFileDescriptor =
                 activity.getContentResolver().openFileDescriptor(uri, "r");
-        FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+        FileDescriptor fileDescriptor = parcelFileDescriptor == null ? null : parcelFileDescriptor.getFileDescriptor();
         Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
-        parcelFileDescriptor.close();
+        if(parcelFileDescriptor != null){
+            parcelFileDescriptor.close();
+        }
         return image;
     }
 
@@ -171,7 +168,7 @@ public class MySupport {
 
                     @Override
                     public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
-                        txt.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                        txt.setText(new StringBuilder(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year));
                     }
                 },
                 calendar.get(Calendar.YEAR),

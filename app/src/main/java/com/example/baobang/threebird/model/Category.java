@@ -5,9 +5,6 @@ import java.io.Serializable;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-/**
- * Created by baobang on 12/17/17.
- */
 
 public class Category extends RealmObject implements Serializable{
     @PrimaryKey

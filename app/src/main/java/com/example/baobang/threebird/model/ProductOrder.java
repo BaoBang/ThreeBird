@@ -8,9 +8,6 @@ import io.realm.RealmModel;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-/**
- * Created by baobang on 12/27/17.
- */
 
 public  class ProductOrder extends RealmObject implements Serializable{
 
@@ -41,7 +38,7 @@ public  class ProductOrder extends RealmObject implements Serializable{
         this.amount = amount;
     }
 
-    public long getTotalPrice(){
+    private long getTotalPrice(){
         Product product = ProductBL.getProduct(productId);
         int total = 0;
         if(product != null){

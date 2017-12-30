@@ -14,7 +14,6 @@ import com.example.baobang.threebird.utils.Model2;
 import com.example.baobang.threebird.utils.ViewPagerHander;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,25 +25,16 @@ import me.relex.circleindicator.CircleIndicator;
  */
 public class HomeFragment extends Fragment {
 
-    private LinearLayout slide;
-    private List<Model> models;
-    private ViewPager viewPager;
-    private CircleIndicator circleIndicator;
-
-    private LineChart mChart;
-
-    private LinearLayout fragmentSuccess, fragmentCanCel, fragmentNew;
-
     public HomeFragment() {
         // Required empty public constructor
     }
-
-    public static HomeFragment newInstance() {
-        Bundle args = new Bundle();
-        HomeFragment fragment = new HomeFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
+//
+//    public static HomeFragment newInstance() {
+//        Bundle args = new Bundle();
+//        HomeFragment fragment = new HomeFragment();
+//        fragment.setArguments(args);
+//        return fragment;
+//    }
 
 
     @Override
@@ -58,8 +48,11 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         //slide
 
-        viewPager = view.findViewById(R.id.pager);
-        circleIndicator = view.findViewById(R.id.indicator);
+
+        ViewPager viewPager = view.findViewById(R.id.pager);
+
+        CircleIndicator circleIndicator = view.findViewById(R.id.indicator);
+        List<Model> models;
         models = new ArrayList<>();
         models.add(new Model(R.drawable.image1, "HOÀN THÀNH", 10));
         models.add(new Model(R.drawable.image2, "ĐANG CHỜ", 20));
@@ -69,7 +62,8 @@ public class HomeFragment extends Fragment {
 
         //chart
 
-        mChart = view.findViewById(R.id.chart);
+
+        LineChart mChart;mChart = view.findViewById(R.id.chart);
         ArrayList<Entry> entries = new ArrayList<>();
         entries.add(new Entry(10f, 0));
         entries.add(new Entry(50f, 1));
@@ -100,9 +94,9 @@ public class HomeFragment extends Fragment {
         ItemFragment fragment2 = ItemFragment.newInstance(model22);
         ItemFragment fragment3 = ItemFragment.newInstance(model23);
 
-        fragmentSuccess =  view.findViewById(R.id.fragment_complete);
-        fragmentCanCel =  view.findViewById(R.id.fragment_cancle);
-        fragmentNew =  view.findViewById(R.id.fragment_new);
+        LinearLayout fragmentSuccess  =  view.findViewById(R.id.fragment_complete);
+        LinearLayout fragmentCanCel  =  view.findViewById(R.id.fragment_cancle);
+        LinearLayout fragmentNew =  view.findViewById(R.id.fragment_new);
 
         getFragmentManager().beginTransaction().add(fragmentSuccess.getId(),fragment1, "tag1").commit();
         getFragmentManager().beginTransaction().add(fragmentCanCel.getId(),fragment2, "tag2").commit();

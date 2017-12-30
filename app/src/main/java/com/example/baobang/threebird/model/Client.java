@@ -1,16 +1,8 @@
 package com.example.baobang.threebird.model;
 
-import android.graphics.Bitmap;
-
-import com.example.baobang.threebird.R;
-import com.example.baobang.threebird.utils.Constants;
 import java.io.Serializable;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
-
-/**
- * Created by baobang on 12/14/17.
- */
 
 public class Client extends RealmObject implements Serializable{
     @PrimaryKey
