@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,6 +24,8 @@ import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.model.Brand;
 import com.example.baobang.threebird.model.Category;
 import com.example.baobang.threebird.model.Product;
+import com.example.baobang.threebird.model.bussinesslogic.BrandBL;
+import com.example.baobang.threebird.model.bussinesslogic.CategoryBL;
 import com.example.baobang.threebird.model.bussinesslogic.ProductBL;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.MySupport;
@@ -89,23 +92,34 @@ public class ProductActivity extends AppCompatActivity {
         btnCamera = findViewById(R.id.btnCamera);
         btnPhoto = findViewById(R.id.btnPhoto);
         // spinner brand and categoty
-        spBrand = findViewById(R.id.spProductBrand);
-        spCategory = findViewById(R.id.spProductCategory);
-        // data of spinner
-        categories = getCategories();
-        brands = getBrands();
-        // spinner adapter
-        ArrayAdapter<Brand> brandArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, brands);
-        ArrayAdapter<Category> categoryArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, categories);
-        // set adapter for listview
-        spBrand.setAdapter(brandArrayAdapter);
-        spCategory.setAdapter(categoryArrayAdapter);
+        addSpinnerBrand();
+        addSpinnerCategory();
         // to save list product images
         bitmaps = new ArrayList<>();
 
         if(product != null){
             setDataForInput();
         }
+    }
+
+    private void addSpinnerCategory() {
+        spCategory = findViewById(R.id.spProductCategory);
+        categories = getCategories();
+        for(Category category : categories){
+            Log.e("cate: ",category.getId() + "-"+ category.getName());
+        }
+        ArrayAdapter<Category> categoryArrayAdapter =
+                new ArrayAdapter<>(this,
+                        android.R.layout.simple_list_item_1,
+                        categories);
+        spCategory.setAdapter(categoryArrayAdapter);
+    }
+
+    private void addSpinnerBrand() {
+        spBrand = findViewById(R.id.spProductBrand);
+        brands = getBrands();
+        ArrayAdapter<Brand> brandArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, brands);
+        spBrand.setAdapter(brandArrayAdapter);
     }
 
     private void setDataForInput() {
@@ -298,20 +312,20 @@ public class ProductActivity extends AppCompatActivity {
     }
 
     private List<Brand> getBrands(){
-        List<Brand> brands = new ArrayList<>();
-        brands.add(new Brand(0,"Chọn hãng sản xuất"));
-        brands.add(new Brand(1,"Apple"));
-        brands.add(new Brand(2,"SamSung"));
-        brands.add(new Brand(3,"Oppo"));
+//        brands.add(new Brand(0,"Chọn hãng sản xuất"));
+//        brands.add(new Brand(1,"Apple"));
+//        brands.add(new Brand(2,"SamSung"));
+//        brands.add(new Brand(3,"Oppo"));
+        List<Brand> brands = BrandBL.getAllBrand();
         return brands;
     }
 
     private List<Category> getCategories(){
-        List<Category> categories = new ArrayList<>();
-        categories.add(new Category(0, "Chọn loại sản phẩm"));
-        categories.add(new Category(1, "Phone"));
-        categories.add(new Category(2, "Laptop"));
-        categories.add(new Category(3, "Tablet"));
+//        categories.add(new Category(0, "Chọn loại sản phẩm"));
+//        categories.add(new Category(1, "Phone"));
+//        categories.add(new Category(2, "Laptop"));
+//        categories.add(new Category(3, "Tablet"));
+        List<Category> categories = CategoryBL.getAllCategory();
         return categories;
     }
 }

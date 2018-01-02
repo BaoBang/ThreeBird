@@ -37,7 +37,8 @@
             android:textAllCaps="true"
             android:textColor="@color/bold_word"
             android:textSize="@dimen/text_size_title"
-            />
+            android:paddingTop="@dimen/padding"
+            android:paddingBottom="@dimen/padding"/>
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -48,8 +49,7 @@
                 android:layout_height="wrap_content"
                 android:text="0 Khách hàng mới"
                 android:textColor="@color/bold_word"
-                android:textAllCaps="true"
-                />
+                android:textAllCaps="true"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

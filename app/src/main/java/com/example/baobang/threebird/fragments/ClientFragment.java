@@ -52,7 +52,7 @@ public class ClientFragment extends Fragment {
         // add views
 
         ListView lvClients; lvClients = view.findViewById(R.id.lvClients);
-        clients = ClientBL.getAllClient();
+        clients = ClientBL.getClientOn30Days();
         //
         clientAdapter = new ClientAdapter(getActivity(), R.layout.item_client, clients);
         lvClients.setAdapter(clientAdapter);

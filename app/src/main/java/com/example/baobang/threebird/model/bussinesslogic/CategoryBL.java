@@ -8,7 +8,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 public class CategoryBL {
-    public static boolean createBrand(Category category){
+    public static boolean createCategory(Category category){
         try (Realm realm = Realm.getDefaultInstance()) {
             int nextID = 0;
             Number number = realm.where(Category.class).max("id");
@@ -25,7 +25,7 @@ public class CategoryBL {
         return false;
     }
 
-    public static ArrayList<Category> getAllClient(){
+    public static ArrayList<Category> getAllCategory(){
         List<Category> list;
         ArrayList<Category> categories = new ArrayList<>();
         Realm realm = Realm.getDefaultInstance();

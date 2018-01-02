@@ -38,7 +38,7 @@ public  class ProductOrder extends RealmObject implements Serializable{
         this.amount = amount;
     }
 
-    private long getTotalPrice(){
+    public long getTotalPrice(){
         Product product = ProductBL.getProduct(productId);
         int total = 0;
         if(product != null){

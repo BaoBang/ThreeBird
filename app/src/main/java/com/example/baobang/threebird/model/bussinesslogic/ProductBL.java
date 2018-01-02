@@ -5,6 +5,7 @@ import com.example.baobang.threebird.model.Product;
 import java.util.ArrayList;
 import java.util.List;
 import io.realm.Realm;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 
@@ -42,6 +43,28 @@ public class ProductBL {
         Product product = results == null ? null : realm.copyFromRealm(results);
         realm.close();
         return  product;
+    }
+
+    public static ArrayList<Product> getListSortBy(int brandId, int categoryId){
+        List<Product> list;
+        ArrayList<Product> products = new ArrayList<>();
+        Realm realm = Realm.getDefaultInstance();
+        RealmQuery<Product> query = realm.where(Product.class);
+        if(brandId != -1){
+            query = query.equalTo("brandId", brandId);
+        }
+        if(categoryId  != -1){
+            if(brandId != -1){
+                query = query.and();
+            }
+            query = query.equalTo("categoryId", categoryId);
+        }
+        RealmResults<Product> results = query.findAll();
+
+        list = realm.copyFromRealm(results);
+        products.addAll(list);
+        realm.close();
+        return  products;
     }
 
     public static boolean updateProduct(Product product) {

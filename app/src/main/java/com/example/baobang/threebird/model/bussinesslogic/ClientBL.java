@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.example.baobang.threebird.model.Client;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -42,6 +44,25 @@ public class ClientBL {
         ArrayList<Client> clients = new ArrayList<>();
         Realm realm = Realm.getDefaultInstance();
         RealmResults<Client> results = realm.where(Client.class).findAll();
+        list = realm.copyFromRealm(results);
+        clients.addAll(list);
+        realm.close();
+        return  clients;
+    }
+
+    public static ArrayList<Client> getClientOn30Days(){
+        List<Client> list;
+        ArrayList<Client> clients = new ArrayList<>();
+        Realm realm = Realm.getDefaultInstance();
+        Date end = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(end);
+        calendar.add(Calendar.DATE, -30);
+        Date start = calendar.getTime();
+        RealmResults<Client> results = realm.where(Client.class).
+                greaterThanOrEqualTo("createdAt", start).
+                lessThanOrEqualTo("createdAt", end).
+                findAll();
         list = realm.copyFromRealm(results);
         clients.addAll(list);
         realm.close();

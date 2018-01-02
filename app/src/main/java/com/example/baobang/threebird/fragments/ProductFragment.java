@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,15 +16,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.activity.ProductActivity;
 import com.example.baobang.threebird.adapter.ProductAdapter;
+import com.example.baobang.threebird.model.Brand;
+import com.example.baobang.threebird.model.Category;
 import com.example.baobang.threebird.model.Product;
+import com.example.baobang.threebird.model.bussinesslogic.BrandBL;
+import com.example.baobang.threebird.model.bussinesslogic.CategoryBL;
 import com.example.baobang.threebird.model.bussinesslogic.ProductBL;
 import com.example.baobang.threebird.utils.Constants;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -32,9 +40,13 @@ import java.util.List;
  */
 public class ProductFragment extends Fragment {
 
-
+    private ListView lvProducts;
+    private Spinner spCategory, spBrand;
     private List<Product> products;
     private ProductAdapter productAdapter;
+    private List<String> sortBies;
+    private List<Category> categories;
+    private List<Brand> brands;
 
     public ProductFragment() {
         // Required empty public constructor
@@ -54,7 +66,7 @@ public class ProductFragment extends Fragment {
         // Inflate the layout for this fragment
 
 
-        ListView lvProducts = view.findViewById(R.id.lvProduct);
+        lvProducts = view.findViewById(R.id.lvProduct);
         products = ProductBL.getAllProduct();
         productAdapter = new ProductAdapter(getActivity(), R.layout.item_product, products);
         lvProducts.setAdapter(productAdapter);
@@ -66,7 +78,97 @@ public class ProductFragment extends Fragment {
                 goToAddProductActivity(products.get(i).getId());
             }
         });
+
+        addSpinnerCategory(view);
+        addSpinnerBrand(view);
+        addSpinnerSortBy(view);
         return view;
+    }
+
+    private void addSpinnerSortBy(View view) {
+        Spinner spSortBy = view.findViewById(R.id.spSortBy);
+        sortBies = getSortBies();
+        ArrayAdapter<String> sortByAdapter =
+                new ArrayAdapter<>(
+                        getActivity(),
+                        android.R.layout.simple_list_item_1,
+                        sortBies);
+        spSortBy.setAdapter(sortByAdapter);
+        spSortBy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                doSortBy();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    private void doSortBy() {
+        int brandPosition = spBrand.getSelectedItemPosition();
+        int brandId = -1;
+        if(brandPosition != 0){
+            brandId = brands.get(brandPosition).getId();
+        }
+        int categoryPosition = spCategory.getSelectedItemPosition();
+        int categoryId = -1;
+        if(categoryPosition != 0){
+            categoryId = categories.get(categoryPosition).getId();
+        }
+        products = ProductBL.getListSortBy(brandId, categoryId);
+        updateListView();
+    }
+
+    private void addSpinnerCategory(View view) {
+        spCategory = view.findViewById(R.id.spCategory);
+        categories = getCategories();
+
+        for(Category category : categories){
+            Log.e("cate: ",category.getId() + "-"+ category.getName());
+        }
+
+        ArrayAdapter<Category> categoryArrayAdapter =
+                new ArrayAdapter<>(
+                        getActivity(),
+                        android.R.layout.simple_list_item_1,
+                        categories);
+        spCategory.setAdapter(categoryArrayAdapter);
+        spCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                doSortBy();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    private void addSpinnerBrand(View view) {
+        spBrand = view.findViewById(R.id.spBrand);
+        brands = getBrands();
+        ArrayAdapter<Brand> brandArrayAdapter =
+                new ArrayAdapter<>(
+                        getActivity(),
+                        android.R.layout.simple_list_item_1,
+                        brands);
+        spBrand.setAdapter(brandArrayAdapter);
+        spBrand.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                doSortBy();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     @Override
@@ -115,6 +217,7 @@ public class ProductFragment extends Fragment {
         });
 
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -136,5 +239,35 @@ public class ProductFragment extends Fragment {
         addProductActivity.putExtras(bundle);
         startActivityForResult(addProductActivity, Constants.PRODUCT_REQUEST_CODE);
 
+    }
+
+    private void updateListView(){
+        productAdapter = new ProductAdapter(getActivity(), R.layout.item_product, products);
+        lvProducts.setAdapter(productAdapter);
+    }
+
+    private List<Brand> getBrands(){
+//        BrandBL.createBrand(new Brand(0, "Chọn hãng..."));
+//        BrandBL.createBrand(new Brand(0, "Apple"));
+//        BrandBL.createBrand(new Brand(0, "SamSung"));
+//        BrandBL.createBrand(new Brand(0, "Oppo"));
+        return BrandBL.getAllBrand();
+    }
+
+    private List<Category> getCategories(){
+
+//        CategoryBL.createCategory(new Category(0, "Chọn loại sản phẩm"));
+//        CategoryBL.createCategory(new Category(1, "Phone"));
+//        CategoryBL.createCategory(new Category(2, "Laptop"));
+//        CategoryBL.createCategory(new Category(3, "Tablet"));
+        return CategoryBL.getAllCategory();
+    }
+
+    public List<String> getSortBies() {
+        List<String> sortBies = new ArrayList<>();
+        sortBies.add("Ngày tạo");
+        sortBies.add("Tên sản phẩm");
+        sortBies.add("Giá sản phẩm");
+        return sortBies;
     }
 }

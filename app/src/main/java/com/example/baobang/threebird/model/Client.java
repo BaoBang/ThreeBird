@@ -1,6 +1,8 @@
 package com.example.baobang.threebird.model;
 
 import java.io.Serializable;
+import java.util.Date;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -15,6 +17,7 @@ public class Client extends RealmObject implements Serializable{
     private String email;
     private String avatar;
     private Address address;
+    private Date createdAt;
 
     public Client() {
     }
@@ -28,6 +31,23 @@ public class Client extends RealmObject implements Serializable{
         this.website = website;
         this.email = email;
         this.address = address;
+        createdAt = new Date();
+    }
+
+    public int getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
     public String getAvatar() {

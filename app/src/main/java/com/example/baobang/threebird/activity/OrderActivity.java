@@ -72,6 +72,9 @@ public class OrderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activy_order);
         order = getOrder();
+        if(order != null){
+            productList.addAll(order.getProducts());
+        }
         addControlls();
         addEvents();
     }
@@ -145,8 +148,13 @@ public class OrderActivity extends AppCompatActivity {
         }
         txtAddress.setText(order.getAddress().getAddress());
         txtAmount.setText(String.valueOf(order.getAmount()));
-        txtDeliveryDate.setText(simpleDateFormat.format(order.getLiveryDate()));
 
+        for(ProductOrder productOrder : productList){
+            Product product = ProductBL.getProduct(productOrder.getProductId());
+            addProductToLayout(product);
+        }
+
+        txtDeliveryDate.setText(simpleDateFormat.format(order.getLiveryDate()));
         spPayment.setSelection(order.getPayments());
     }
 

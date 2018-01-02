@@ -26,7 +26,7 @@ public class BrandBL {
         return false;
     }
 
-    public static ArrayList<Brand> getAllClient(){
+    public static ArrayList<Brand> getAllBrand(){
         List<Brand> list;
         ArrayList<Brand> brands = new ArrayList<>();
         Realm realm = Realm.getDefaultInstance();

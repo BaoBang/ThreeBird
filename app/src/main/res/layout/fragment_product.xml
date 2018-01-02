@@ -36,124 +36,120 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/gray"
+                android:paddingBottom="@dimen/padding">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/padding_small"
+                    android:paddingRight="@dimen/padding_small"
+                    android:layout_marginTop="@dimen/margin">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/product_category"
+                        android:textSize="@dimen/text_size"
+                        android:textColor="@color/bold_word"
+                        android:textAllCaps="true"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="50"
+                        android:background="@color/color_white"
+                        android:layout_marginTop="@dimen/margin_vertical">
+                        <Spinner
+                            android:id="@+id/spCategory"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:textSize="@dimen/text_size"
+                            />
+                    </LinearLayout>
+
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Loại hàng hóa:"
-                    android:textSize="@dimen/text_size"
-                    android:textAllCaps="true" />
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/padding_small"
+                    android:paddingRight="@dimen/padding_small"
+                    android:layout_marginTop="@dimen/margin_vertical">
 
-                <Spinner
-                    android:id="@+id/spCategory"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/text_size"
-                    />
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Nhãn hiệu"
-                    android:textAllCaps="true"
-                    android:textSize="@dimen/text_size"
-                    />
-
-                <Spinner
-                    android:id="@+id/spBrand"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/text_size"
-                    />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/product_brand"
+                        android:textAllCaps="true"
+                        android:textSize="@dimen/text_size"
+                        android:textColor="@color/bold_word"
+                        />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="@dimen/margin_vertical"
+                        android:background="@color/color_white">
+                        <Spinner
+                            android:id="@+id/spBrand"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:textSize="@dimen/text_size"
+                            />
+                    </LinearLayout>
 
 
-            </LinearLayout>
+                </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/top_bottom_border"
-                android:orientation="horizontal"
-                android:padding="@dimen/padding"
-                >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_marginTop="@dimen/margin_vertical"
+                    android:paddingLeft="@dimen/padding_small"
+                    android:paddingRight="@dimen/padding_small">
 
-                <TextView
-                    android:id="@+id/textView3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Sort by:"
-                    android:textAllCaps="true"
-                    />
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Sắp xếp"
+                        android:textAllCaps="true"
+                        android:textSize="@dimen/text_size"
+                        android:textColor="@color/bold_word"
+                        />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_vertical"
+                        android:background="@color/color_white">
 
-                <TextView
-                    android:id="@+id/textView2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="DATE"
-                    android:textAllCaps="true"
-                    />
+                        <Spinner
+                            android:id="@+id/spSortBy"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textSize="@dimen/text_size"/>
+                    </LinearLayout>
 
-                <Spinner
-                    android:id="@+id/spinner2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/text_size"
-                    />
-
-                <TextView
-                    android:id="@+id/textView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="MONTH"
-                    android:textAllCaps="true"
-                    android:textSize="@dimen/text_size"
-                    />
-
-                <Spinner
-                    android:id="@+id/spinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/text_size"
-                    />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="YEAR"
-                    android:textAllCaps="true"
-                    android:textSize="@dimen/text_size"
-                    />
-
-                <Spinner
-                    android:id="@+id/spinner3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/text_size"
-                    />
-
-
+                </LinearLayout>
             </LinearLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="472dp"
-                android:layout_gravity="center_vertical">
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="@dimen/margin">
 
                 <ListView
                     android:id="@+id/lvProduct"
