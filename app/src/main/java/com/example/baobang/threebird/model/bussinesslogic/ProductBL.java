@@ -77,4 +77,15 @@ public class ProductBL {
             return false;
         }
     }
+
+    public static boolean deleteProduct(Product product){
+        try (Realm realm = Realm.getDefaultInstance()) {
+            realm.beginTransaction();
+            realm.where(Product.class).equalTo("id", product.getId()).findAll().deleteFirstFromRealm();
+            realm.commitTransaction();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

@@ -7,6 +7,7 @@ public class Constants {
     public static String CLIENT = "CLIENT";
     public static String PRODUCT = "PRODUCT";
     public static String ORDER = "ORDER";
+    public static String OPTION = "OPTION";
     public static int CAMERA_PIC_REQUEST = 1337;
     public static int SELECT_FILE = 1338;
     public static int AVATAR_WIDTH = 100;
@@ -23,4 +24,9 @@ public class Constants {
     public static int CANCEL = 1;
     public static int DELIVERY = 2;
 
+    // option
+    public static int ADD_OPTION = 0;
+    public static int EDIT_OPTION = 1;
+    public static int DETAIL_OPTION = 2;
+    public static int DELETE_OPTION = 3;
 }

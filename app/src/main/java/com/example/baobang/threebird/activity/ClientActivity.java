@@ -46,12 +46,14 @@ public class ClientActivity extends AppCompatActivity {
     ArrayAdapter<ClientGroup> groupAdapter;
     private Bitmap avartar = null;
     private Client client = null;
+    private int option;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
         Bundle bundle = getIntent().getExtras();
         client = (Client) (bundle != null ? bundle.getSerializable(Constants.CLIENT) : null);
+        option = bundle == null ? 0 : bundle.getInt(Constants.OPTION);
 //        ClientGroupBL.createClientGroup(new ClientGroup(0, "Admin"));
 //        ClientGroupBL.createClientGroup(new ClientGroup(0, "Employee"));
 //        ClientGroupBL.createClientGroup(new ClientGroup(0, "Membber"));
@@ -90,7 +92,25 @@ public class ClientActivity extends AppCompatActivity {
         if(client != null){
             setDataForInput();
         }
+        if(option == Constants.DETAIL_OPTION){
+            setDisableInput();
+        }
+    }
 
+    private void setDisableInput() {
+        imgAvatar.setEnabled(false);
+        // input
+        txtName.setEnabled(false);
+        txtPhone.setEnabled(false);
+        txtFax.setEnabled(false);
+        txtWebsite.setEnabled(false);
+        txtEmail.setEnabled(false);
+        txtAddress.setEnabled(false);
+
+        spGroupClient.setEnabled(false);
+        spCommune.setEnabled(false);
+        spProvince.setEnabled(false);
+        spDistrict.setEnabled(false);
     }
 
     private void addSpinerCommune() {
@@ -343,7 +363,7 @@ public class ClientActivity extends AppCompatActivity {
 
     private ArrayList<ClientGroup> getGroups(){
         ArrayList<ClientGroup> list = new ArrayList<>();
-        list.add(new ClientGroup(0, "Nhóm khách hàng..."));
+        list.add(new ClientGroup(-1, "Nhóm khách hàng..."));
         ArrayList<ClientGroup> temp = ClientGroupBL.getAllClientGroup();
         list.addAll(temp);
         return list;

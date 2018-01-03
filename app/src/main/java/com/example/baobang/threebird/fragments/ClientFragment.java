@@ -1,5 +1,7 @@
 package com.example.baobang.threebird.fragments;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,12 +16,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.activity.ClientActivity;
 import com.example.baobang.threebird.adapter.ClientAdapter;
 import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.bussinesslogic.ClientBL;
 import com.example.baobang.threebird.utils.Constants;
+import com.example.baobang.threebird.utils.MySupport;
+
 import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
@@ -61,7 +67,7 @@ public class ClientFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 clientAdapter.setItemSelected(i);
                 clientAdapter.notifyDataSetChanged();
-                goToUserDetailActivity(clients.get(i));
+                openOptionDialog(clients.get(i));
             }
         });
         return view;
@@ -92,7 +98,7 @@ public class ClientFragment extends Fragment {
 
         switch (item.getItemId()){
             case R.id.actionBar_add:
-                goToUserDetailActivity(null);
+                goToUserDetailActivity(null, Constants.ADD_OPTION);
                 break;
             case R.id.actionBar_search:
                 break;
@@ -117,6 +123,41 @@ public class ClientFragment extends Fragment {
         }
     }
 
+    private void openOptionDialog(final Client client){
+        final CharSequence[] items = { "Thêm", "Sửa", "Xem chi tiết", "Xóa"};
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Lựa chọn");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+
+                if (items[item].equals("Thêm")) {
+                    goToUserDetailActivity(null, Constants.ADD_OPTION);
+                } else if (items[item].equals("Sửa")) {
+                    goToUserDetailActivity(client,Constants.EDIT_OPTION);
+                }else if(items[item].equals("Xem chi tiết")){
+                    goToUserDetailActivity(client, Constants.DETAIL_OPTION);
+                }
+                else{
+                    deleteClient(client);
+                }
+            }
+        });
+        builder.show();
+    }
+
+    private void deleteClient(Client client) {
+        boolean res =ClientBL.deleteClient(client);
+        if(res){
+            clients.remove(client);
+            clientAdapter.setTempObjects(clients);
+            clientAdapter.notifyDataSetChanged();
+            Toast.makeText(getContext(), "Xóa thành công", Toast.LENGTH_SHORT).show();
+        }else{
+            MySupport.openDialog(getActivity(), "Có lỗi xảy ra, vui lòng thử lại");
+        }
+    }
+
     private int checkClients(Client client){
         for(int i = 0; i < clients.size(); i++){
             if(client.getId() == clients.get(i).getId()){
@@ -126,11 +167,11 @@ public class ClientFragment extends Fragment {
         return -1;
     }
 
-    private void goToUserDetailActivity(Client client) {
+    private void goToUserDetailActivity(Client client, int option) {
         Intent userDetailActivity = new Intent(getActivity(), ClientActivity.class);
-
         Bundle bundle = new Bundle();
         bundle.putSerializable(Constants.CLIENT,client);
+        bundle.putInt(Constants.OPTION, option);
         userDetailActivity.putExtras(bundle);
         startActivityForResult(userDetailActivity, Constants.CLIENT_REQUEST_CODE);
     }

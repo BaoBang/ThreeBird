@@ -2,6 +2,8 @@ package com.example.baobang.threebird.fragments;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.activity.ProductActivity;
@@ -30,6 +33,7 @@ import com.example.baobang.threebird.model.bussinesslogic.BrandBL;
 import com.example.baobang.threebird.model.bussinesslogic.CategoryBL;
 import com.example.baobang.threebird.model.bussinesslogic.ProductBL;
 import com.example.baobang.threebird.utils.Constants;
+import com.example.baobang.threebird.utils.MySupport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +79,7 @@ public class ProductFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 productAdapter.setItemSelected(i);
                 productAdapter.notifyDataSetChanged();
-                goToAddProductActivity(products.get(i).getId());
+                openOptionDialog(products.get(i).getId());
             }
         });
 
@@ -83,6 +87,46 @@ public class ProductFragment extends Fragment {
         addSpinnerBrand(view);
         addSpinnerSortBy(view);
         return view;
+    }
+
+    private void openOptionDialog(final int productId) {
+        final CharSequence[] items = { "Thêm", "Sửa", "Xem chi tiết", "Xóa"};
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Lựa chọn");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+
+                if (items[item].equals("Thêm")) {
+                    goToAddProductActivity(-1, Constants.ADD_OPTION);
+                } else if (items[item].equals("Sửa")) {
+                    goToAddProductActivity(productId,Constants.EDIT_OPTION);
+                }else if(items[item].equals("Xem chi tiết")){
+                    goToAddProductActivity(productId, Constants.DETAIL_OPTION);
+                }
+                else{
+                    deleteClient(productId);
+                }
+            }
+        });
+        builder.show();
+    }
+
+    private void deleteClient(int productId) {
+        Product product = ProductBL.getProduct(productId);
+        if(product != null){
+            boolean res =ProductBL.deleteProduct(product);
+            if(res){
+                products.remove(product);
+                updateListView();
+                Toast.makeText(getContext(), "Xóa thành công", Toast.LENGTH_SHORT).show();
+            }else{
+                MySupport.openDialog(getActivity(), "Có lỗi xảy ra, vui lòng thử lại");
+            }
+        }else{
+            MySupport.openDialog(getActivity(), "Có lỗi xảy ra, vui lòng thử lại");
+        }
+
     }
 
     private void addSpinnerSortBy(View view) {
@@ -223,7 +267,7 @@ public class ProductFragment extends Fragment {
 
         switch (item.getItemId()){
             case R.id.actionBar_add:
-                goToAddProductActivity(-1);
+                goToAddProductActivity(-1, Constants.ADD_OPTION);
                 break;
             case R.id.actionBar_search:
                 break;
@@ -232,10 +276,11 @@ public class ProductFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private void goToAddProductActivity(int productId) {
+    private void goToAddProductActivity(int productId, int option) {
         Intent addProductActivity = new Intent(getActivity(), ProductActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(Constants.PRODUCT, productId);
+        bundle.putInt(Constants.OPTION, option);
         addProductActivity.putExtras(bundle);
         startActivityForResult(addProductActivity, Constants.PRODUCT_REQUEST_CODE);
 

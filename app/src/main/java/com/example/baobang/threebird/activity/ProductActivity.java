@@ -52,18 +52,19 @@ public class ProductActivity extends AppCompatActivity {
     private Product product = null;
     private Toolbar toolbar;
     private ArrayList<Bitmap> bitmaps;
-
+    private int option;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product);
-        product = getProduct();
+        Bundle bundle = getIntent().getExtras();
+        product = getProduct(bundle);
+        option = bundle == null ? Constants.ADD_OPTION : bundle.getInt(Constants.OPTION);
         addControlls();
         addEvents();
     }
 
-    private Product getProduct() {
-        Bundle bundle = getIntent().getExtras();
+    private Product getProduct(Bundle bundle) {
         int productId = bundle != null ? bundle.getInt(Constants.PRODUCT) : -1;
         if(productId == -1)
             return null;
@@ -100,6 +101,25 @@ public class ProductActivity extends AppCompatActivity {
         if(product != null){
             setDataForInput();
         }
+
+        if(option == Constants.DETAIL_OPTION){
+            setDisableInput();
+        }
+    }
+
+    private void setDisableInput() {
+        // add views
+        txtDetail.setEnabled(false);
+        txtProductId.setEnabled(false);
+        txtProductInventory.setEnabled(false);
+        txtProductName.setEnabled(false);
+        txtProductPrice.setEnabled(false);
+        txtProductPriceInventory.setEnabled(false);
+        // image button Camera and Photo
+        btnCamera.setEnabled(false);
+        btnPhoto.setEnabled(false);
+        spBrand.setEnabled(false);
+        spCategory.setEnabled(false);
     }
 
     private void addSpinnerCategory() {

@@ -99,4 +99,15 @@ public class ClientBL {
             return false;
         }
     }
+
+    public static boolean deleteClient(Client client){
+        try (Realm realm = Realm.getDefaultInstance()) {
+            realm.beginTransaction();
+            realm.where(Client.class).equalTo("id", client.getId()).findAll().deleteFirstFromRealm();
+            realm.commitTransaction();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }
