@@ -35,7 +35,7 @@ dependencies {
 
     compile 'me.relex:circleindicator:1.2.2@aar'
     compile 'com.github.PhilJay:MPAndroidChart:v2.2.4'
-
+    compile 'com.stone.vega.library:VegaLayoutManager:1.0.1'
     // Realm library
     //compile 'io.realm:realm-gradle-plugin:4.3.1'
 }

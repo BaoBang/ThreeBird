@@ -332,19 +332,11 @@ public class ProductActivity extends AppCompatActivity {
     }
 
     private List<Brand> getBrands(){
-//        brands.add(new Brand(0,"Chọn hãng sản xuất"));
-//        brands.add(new Brand(1,"Apple"));
-//        brands.add(new Brand(2,"SamSung"));
-//        brands.add(new Brand(3,"Oppo"));
         List<Brand> brands = BrandBL.getAllBrand();
         return brands;
     }
 
     private List<Category> getCategories(){
-//        categories.add(new Category(0, "Chọn loại sản phẩm"));
-//        categories.add(new Category(1, "Phone"));
-//        categories.add(new Category(2, "Laptop"));
-//        categories.add(new Category(3, "Tablet"));
         List<Category> categories = CategoryBL.getAllCategory();
         return categories;
     }
