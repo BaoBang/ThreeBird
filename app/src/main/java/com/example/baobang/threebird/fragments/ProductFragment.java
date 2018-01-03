@@ -117,7 +117,7 @@ public class ProductFragment extends Fragment {
         if(product != null){
             boolean res =ProductBL.deleteProduct(product);
             if(res){
-                products.remove(product);
+                removeProductFromList(product);
                 updateListView();
                 Toast.makeText(getContext(), "Xóa thành công", Toast.LENGTH_SHORT).show();
             }else{
@@ -126,7 +126,16 @@ public class ProductFragment extends Fragment {
         }else{
             MySupport.openDialog(getActivity(), "Có lỗi xảy ra, vui lòng thử lại");
         }
+    }
 
+    private boolean removeProductFromList(Product product){
+        for(Product p : products){
+            if(p.getId() == product.getId()){
+                products.remove(p);
+                return true;
+            }
+        }
+        return false;
     }
 
     private void addSpinnerSortBy(View view) {

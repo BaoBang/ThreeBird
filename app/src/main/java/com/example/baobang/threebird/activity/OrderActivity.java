@@ -66,12 +66,15 @@ public class OrderActivity extends AppCompatActivity {
 
     private Order order = null;
     private List<ProductOrder> productList = new ArrayList<>();
+    private int option;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activy_order);
-        order = getOrder();
+        Bundle bundle = getIntent().getExtras();
+        order = getOrder(bundle);
+        option = bundle == null ? 0 : bundle.getInt(Constants.OPTION);
         if(order != null){
             productList.addAll(order.getProducts());
         }
@@ -116,6 +119,32 @@ public class OrderActivity extends AppCompatActivity {
         if(order != null){
             setDataForInput();
         }
+
+        if(option == Constants.DETAIL_OPTION){
+            setDisableInput();
+        }
+    }
+
+    private void setDisableInput() {
+        txtName.setEnabled(false);
+        txtOrderId.setEnabled(false);
+        txtPhone.setEnabled(false);
+        txtAddress.setEnabled(false);
+
+        txtAmount.setEnabled(false);
+        txtCreatedAt.setEnabled(false);
+        txtDeliveryDate.setEnabled(false);
+
+        btnCreatedAt.setEnabled(false);
+        btnAddProduct.setEnabled(false);
+        btnDeliveryDate.setEnabled(false);
+        btnAddClient.setEnabled(false);
+
+        spCommune.setEnabled(false);
+        spDistrict.setEnabled(false);
+        spPayment.setEnabled(false);
+        spProvince.setEnabled(false);
+        spStatus.setEnabled(false);
     }
 
     private void setDataForInput() {
@@ -209,7 +238,6 @@ public class OrderActivity extends AppCompatActivity {
                 statuses);
         spStatus.setAdapter(adapterStatus);
     }
-
 
     private void addEvents() {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -568,8 +596,7 @@ public class OrderActivity extends AppCompatActivity {
 //    private ArrayList<Client> getClients(){
 //        return ClientBL.getAllClient();
 //    }
-    public Order getOrder() {
-        Bundle bundle = getIntent().getExtras();
+    public Order getOrder(Bundle bundle) {
         int orderId = bundle != null ? bundle.getInt(Constants.ORDER) : -1;
         if(orderId == -1)
            return null;

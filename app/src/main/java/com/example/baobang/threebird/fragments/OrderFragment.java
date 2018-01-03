@@ -2,6 +2,8 @@ package com.example.baobang.threebird.fragments;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,12 +19,16 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.activity.OrderActivity;
 import com.example.baobang.threebird.adapter.OrderAdapter;
 import com.example.baobang.threebird.model.Order;
 import com.example.baobang.threebird.model.bussinesslogic.OrderBL;
 import com.example.baobang.threebird.utils.Constants;
+import com.example.baobang.threebird.utils.MySupport;
+
 import java.util.ArrayList;
 import java.util.List;
 /**
@@ -62,7 +68,7 @@ public class OrderFragment extends Fragment {
         lvOrders.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                goToCreateOrderActivity(orders.get(i).getId());
+                openOptionDialog(orders.get(i).getId());
             }
         });
 
@@ -176,6 +182,60 @@ public class OrderFragment extends Fragment {
 //        }
 //    }
 
+    private void openOptionDialog(final int orderId){
+        final CharSequence[] items = { "Thêm", "Sửa", "Xem chi tiết", "Xóa"};
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Lựa chọn");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+
+                if (items[item].equals("Thêm")) {
+                    goToCreateOrderActivity(-1, Constants.ADD_OPTION);
+                } else if (items[item].equals("Sửa")) {
+                    goToCreateOrderActivity(orderId,Constants.EDIT_OPTION);
+                }else if(items[item].equals("Xem chi tiết")){
+                    goToCreateOrderActivity(orderId, Constants.DETAIL_OPTION);
+                }
+                else{
+                    deleteOrder(orderId);
+                }
+            }
+        });
+        builder.show();
+    }
+
+    private void deleteOrder(int orderId) {
+        Order order = OrderBL.getOrder(orderId);
+        if(order != null){
+            boolean res =OrderBL.deleteOrder(order);
+            if(res){
+                remove(order);
+                updateListView();
+                Toast.makeText(getContext(), "Xóa thành công", Toast.LENGTH_SHORT).show();
+            }else{
+                MySupport.openDialog(getActivity(), "Có lỗi xảy ra, vui lòng thử lại");
+            }
+        }else{
+            MySupport.openDialog(getActivity(), "Có lỗi xảy ra, vui lòng thử lại");
+        }
+    }
+
+    private boolean remove(Order order){
+        for(Order o : orders){
+            if(o.getId() == order.getId()){
+                orders.remove(o);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void updateListView() {
+        orderAdapter = new OrderAdapter(getActivity(), R.layout.item_order, orders);
+        lvOrders.setAdapter(orderAdapter);
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.action_bar_menu, menu);
@@ -200,7 +260,7 @@ public class OrderFragment extends Fragment {
 
         switch (item.getItemId()){
             case R.id.actionBar_add:
-                goToCreateOrderActivity(-1);
+                goToCreateOrderActivity(-1, Constants.ADD_OPTION);
                 break;
             case R.id.actionBar_search:
                 break;
@@ -209,10 +269,11 @@ public class OrderFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private void goToCreateOrderActivity(int id) {
+    private void goToCreateOrderActivity(int id, int option) {
         Intent addProductActivity = new Intent(getActivity(), OrderActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(Constants.ORDER, id);
+        bundle.putInt(Constants.OPTION, option);
         addProductActivity.putExtras(bundle);
         startActivityForResult(addProductActivity, Constants.ORDER_REQUEST_CODE);
     }

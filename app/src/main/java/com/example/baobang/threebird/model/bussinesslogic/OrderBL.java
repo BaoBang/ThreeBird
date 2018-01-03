@@ -65,4 +65,15 @@ public class OrderBL {
             return false;
         }
     }
+
+    public static boolean deleteOrder(Order order){
+        try (Realm realm = Realm.getDefaultInstance()) {
+            realm.beginTransaction();
+            realm.where(Order.class).equalTo("id", order.getId()).findAll().deleteFirstFromRealm();
+            realm.commitTransaction();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }
