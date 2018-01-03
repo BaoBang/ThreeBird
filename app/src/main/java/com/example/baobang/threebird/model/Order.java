@@ -12,6 +12,7 @@ public class Order extends RealmObject implements Serializable {
     @PrimaryKey
     private int id;
     private String clientName;
+    private int clientId;
     private Date createdAt;
     private int status;
     private String phone;
@@ -32,9 +33,18 @@ public class Order extends RealmObject implements Serializable {
         this.liveryDate = liveryDate;
         this.payments = payments;
         this.paymentValue = paymentValue;
+        clientId = -1;
     }
 
     public Order() {
+    }
+
+    public int getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(int clientId) {
+        this.clientId = clientId;
     }
 
     public int getId() {

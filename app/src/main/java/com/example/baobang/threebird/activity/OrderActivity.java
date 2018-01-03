@@ -67,7 +67,7 @@ public class OrderActivity extends AppCompatActivity {
     private Order order = null;
     private List<ProductOrder> productList = new ArrayList<>();
     private int option;
-
+    private int clientSelectedId = -1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,6 +118,11 @@ public class OrderActivity extends AppCompatActivity {
 
         if(order != null){
             setDataForInput();
+            if(order.getClientId() != -1){
+                Client client = ClientBL.getClient(order.getClientId());
+                Bitmap bitmap = MySupport.StringToBitMap(client.getAvatar());
+                imgAvatar.setImageBitmap(MySupport.getRoundedRectBitmap(bitmap));
+            }
         }
 
         if(option == Constants.DETAIL_OPTION){
@@ -418,6 +423,7 @@ public class OrderActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 dialog.dismiss();
                 getClientFromList(clients.get(i));
+                clientSelectedId = clients.get(i).getId();
             }
         });
     }
@@ -432,7 +438,6 @@ public class OrderActivity extends AppCompatActivity {
             imgAvatar.setImageResource(R.drawable.noimage);
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -520,6 +525,7 @@ public class OrderActivity extends AppCompatActivity {
                    date2,
                    payment,
                    0);
+           order.setClientId(clientSelectedId);
            boolean res;
            if(this.order == null){
                res =  OrderBL.createOrder(order);

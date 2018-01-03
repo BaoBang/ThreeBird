@@ -57,11 +57,53 @@ public class ClientActivity extends AppCompatActivity {
 //        ClientGroupBL.createClientGroup(new ClientGroup(0, "Admin"));
 //        ClientGroupBL.createClientGroup(new ClientGroup(0, "Employee"));
 //        ClientGroupBL.createClientGroup(new ClientGroup(0, "Membber"));
-        addControlls();
+        addControls();
         addEvents();
     }
 
-    private void addControlls() {
+    private void addEvents() {
+        btnUserInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(groupUserInfo.getVisibility() == View.VISIBLE){
+                    SlideView.collapse(groupUserInfo);
+                    btnUserInfo.setImageResource(R.drawable.ic_right_arrow);
+                }else if(groupUserInfo.getVisibility() == View.INVISIBLE){
+                    SlideView.expand(groupUserInfo);
+                    btnUserInfo.setImageResource(R.drawable.ic_down_arrow);
+                }
+            }
+        });
+
+        btnAddressInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(groupAddressInfo.getVisibility() == View.VISIBLE){
+                    SlideView.collapse(groupAddressInfo);
+                    btnAddressInfo.setImageResource(R.drawable.ic_right_arrow);
+                }else if(groupAddressInfo.getVisibility() == View.INVISIBLE){
+                    SlideView.expand(groupAddressInfo);
+                    btnAddressInfo.setImageResource(R.drawable.ic_down_arrow);
+                }
+            }
+        });
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+
+        imgAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startCamera();
+            }
+        });
+    }
+
+    private void addControls() {
         // start setting toolbar
         toolbar = findViewById(R.id.toolBarUserDetail);
         setSupportActionBar(toolbar);
@@ -84,10 +126,10 @@ public class ClientActivity extends AppCompatActivity {
         txtEmail = findViewById(R.id.txtEmail);
         txtAddress = findViewById(R.id.txtAddress);
         // spinner
-        addSpnnerClientGroup();
+        addSpinnerClientGroup();
         addSpinnerProvince();
         addSpinnerDistrict();
-        addSpinerCommune();
+        addSpinnerCommune();
 
         if(client != null){
             setDataForInput();
@@ -97,23 +139,7 @@ public class ClientActivity extends AppCompatActivity {
         }
     }
 
-    private void setDisableInput() {
-        imgAvatar.setEnabled(false);
-        // input
-        txtName.setEnabled(false);
-        txtPhone.setEnabled(false);
-        txtFax.setEnabled(false);
-        txtWebsite.setEnabled(false);
-        txtEmail.setEnabled(false);
-        txtAddress.setEnabled(false);
-
-        spGroupClient.setEnabled(false);
-        spCommune.setEnabled(false);
-        spProvince.setEnabled(false);
-        spDistrict.setEnabled(false);
-    }
-
-    private void addSpinerCommune() {
+    private void addSpinnerCommune() {
 
         spCommune = findViewById(R.id.spCommune);
         communes = getCommunes();
@@ -146,7 +172,7 @@ public class ClientActivity extends AppCompatActivity {
 
     }
 
-    private void addSpnnerClientGroup() {
+    private void addSpinnerClientGroup() {
         spGroupClient = findViewById(R.id.spGroupClient);
         groups = getGroups();
         groupAdapter = new ArrayAdapter<>(
@@ -200,81 +226,25 @@ public class ClientActivity extends AppCompatActivity {
         }
     }
 
-    private void addEvents() {
-        btnUserInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(groupUserInfo.getVisibility() == View.VISIBLE){
-                    SlideView.collapse(groupUserInfo);
-                    btnUserInfo.setImageResource(R.drawable.ic_right_arrow);
-                }else if(groupUserInfo.getVisibility() == View.INVISIBLE){
-                    SlideView.expand(groupUserInfo);
-                    btnUserInfo.setImageResource(R.drawable.ic_down_arrow);
-                }
-            }
-        });
+    private void setDisableInput() {
+        imgAvatar.setEnabled(false);
+        // input
+        txtName.setEnabled(false);
+        txtPhone.setEnabled(false);
+        txtFax.setEnabled(false);
+        txtWebsite.setEnabled(false);
+        txtEmail.setEnabled(false);
+        txtAddress.setEnabled(false);
 
-        btnAddressInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(groupAddressInfo.getVisibility() == View.VISIBLE){
-                    SlideView.collapse(groupAddressInfo);
-                    btnAddressInfo.setImageResource(R.drawable.ic_right_arrow);
-                }else if(groupAddressInfo.getVisibility() == View.INVISIBLE){
-                    SlideView.expand(groupAddressInfo);
-                    btnAddressInfo.setImageResource(R.drawable.ic_down_arrow);
-                }
-            }
-        });
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
-
-        imgAvatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startCamera();
-            }
-        });
+        spGroupClient.setEnabled(false);
+        spCommune.setEnabled(false);
+        spProvince.setEnabled(false);
+        spDistrict.setEnabled(false);
     }
 
     private void startCamera() {
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraIntent, Constants.CAMERA_PIC_REQUEST);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == Activity.RESULT_OK){
-            if (requestCode == Constants.CAMERA_PIC_REQUEST) {
-                Bundle bundle =  data.getExtras();
-                if(bundle != null){
-                    avartar = (Bitmap) bundle.get("data");
-                }
-                imgAvatar.setImageBitmap(avartar);
-            }
-        }
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.action_bar_menu2, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.actionBar_add){
-            addClient();
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     private void addClient() {
@@ -304,7 +274,8 @@ public class ClientActivity extends AppCompatActivity {
 //        if(MySupport.checkInput(fax)){
 //            MySupport.openDialog(this, "Vui lòng nhập vào số fax");
 //            return;
-//        } if(MySupport.checkInput(website)){
+//        }
+//        if(MySupport.checkInput(website)){
 //            MySupport.openDialog(this, "Vui lòng nhập vào website");
 //            return;
 //        }
@@ -312,6 +283,13 @@ public class ClientActivity extends AppCompatActivity {
 //            MySupport.openDialog(this, "Vui lòng nhập vào email");
 //            return;
 //        }
+        if(email.length() > 0){
+            if(!email.matches(Constants.EMAIL_REGULAR)){
+                MySupport.openDialog(this, "Email định dạng không đúng");
+            return;
+            }
+        }
+
         if(spProvince.getSelectedItemPosition() ==0){
             MySupport.openDialog(this, "Vui lòng chọn tỉnh/thành phố");
             return;
@@ -325,7 +303,7 @@ public class ClientActivity extends AppCompatActivity {
             return;
         }
         if(MySupport.checkInput(address)){
-           MySupport.openDialog(this, "Vui lòng nhập vào địa chỉ");
+            MySupport.openDialog(this, "Vui lòng nhập vào địa chỉ");
             return;
         }
         int clientId = -1;
@@ -359,6 +337,37 @@ public class ClientActivity extends AppCompatActivity {
         }
 
 
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == Activity.RESULT_OK){
+            if (requestCode == Constants.CAMERA_PIC_REQUEST) {
+                Bundle bundle =  data.getExtras();
+                if(bundle != null){
+                    avartar = (Bitmap) bundle.get("data");
+                }
+                imgAvatar.setImageBitmap(avartar);
+            }
+        }
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.action_bar_menu2, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.actionBar_add){
+            addClient();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private ArrayList<ClientGroup> getGroups(){
