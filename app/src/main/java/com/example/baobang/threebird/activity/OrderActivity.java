@@ -415,8 +415,8 @@ public class OrderActivity extends AppCompatActivity {
         alertDialog.setTitle("Danh sách khách hàng");
         ListView lv =  convertView.findViewById(R.id.listView);
         final ArrayList<Client> clients = ClientBL.getAllClient();
-        ClientAdapter adapter = new ClientAdapter(this, R.layout.item_client, clients);
-        lv.setAdapter(adapter);
+//        ClientAdapter adapter = new ClientAdapter(this, R.layout.item_client, clients);
+//        lv.setAdapter(adapter);
         final AlertDialog dialog = alertDialog.show();
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

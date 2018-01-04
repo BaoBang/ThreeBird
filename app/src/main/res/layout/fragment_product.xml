@@ -5,193 +5,145 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.example.baobang.threebird.fragments.ProductFragment"
     android:background="@drawable/background_color_gradient">
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolBarProduct"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="0dp"
-        android:padding="0dp"
-        android:background="@color/colorPrimary"
-        app:titleTextColor="@color/colorPrimary"
-        app:title="">
-
-        <TextView
-            android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolBarProduct"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/title_product"
-            android:textSize="@dimen/text_size_title"
-            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
-            android:layout_gravity="center"/>
-    </android.support.v7.widget.Toolbar>
+            android:layout_margin="0dp"
+            android:padding="0dp"
+            android:background="@color/colorPrimary"
+            app:titleTextColor="@color/colorPrimary"
+            app:title="">
 
-    <ScrollView
-        android:layout_marginTop="55dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_product"
+                android:textSize="@dimen/text_size_title"
+                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
+                android:layout_gravity="center"/>
+        </android.support.v7.widget.Toolbar>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/gray"
+            android:paddingBottom="@dimen/padding">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/padding_small"
+                android:paddingRight="@dimen/padding_small"
+                android:layout_marginTop="@dimen/margin">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/product_category"
+                    android:textSize="@dimen/text_size"
+                    android:textColor="@color/bold_word"
+                    android:textAllCaps="true"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="50"
+                    android:background="@color/color_white"
+                    android:layout_marginTop="@dimen/margin_vertical">
+                    <Spinner
+                        android:id="@+id/spCategory"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:textSize="@dimen/text_size"
+                        />
+                </LinearLayout>
+
+
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@color/gray"
-                android:paddingBottom="@dimen/padding">
+                android:paddingLeft="@dimen/padding_small"
+                android:paddingRight="@dimen/padding_small"
+                android:layout_marginTop="@dimen/margin_vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/product_brand"
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/text_size"
+                    android:textColor="@color/bold_word"
+                    />
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:paddingLeft="@dimen/padding_small"
-                    android:paddingRight="@dimen/padding_small"
-                    android:layout_marginTop="@dimen/margin">
-
-                    <TextView
-                        android:layout_width="match_parent"
+                    android:layout_marginTop="@dimen/margin_vertical"
+                    android:background="@color/color_white">
+                    <Spinner
+                        android:id="@+id/spBrand"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/product_category"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
                         android:textSize="@dimen/text_size"
-                        android:textColor="@color/bold_word"
-                        android:textAllCaps="true"/>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="50"
-                        android:background="@color/color_white"
-                        android:layout_marginTop="@dimen/margin_vertical">
-                        <Spinner
-                            android:id="@+id/spCategory"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:textSize="@dimen/text_size"
-                            />
-                    </LinearLayout>
-
-
-
+                        />
                 </LinearLayout>
 
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/margin_vertical"
+                android:paddingLeft="@dimen/padding_small"
+                android:paddingRight="@dimen/padding_small">
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Sắp xếp"
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/text_size"
+                    android:textColor="@color/bold_word"
+                    />
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingLeft="@dimen/padding_small"
-                    android:paddingRight="@dimen/padding_small"
-                    android:layout_marginTop="@dimen/margin_vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/product_brand"
-                        android:textAllCaps="true"
-                        android:textSize="@dimen/text_size"
-                        android:textColor="@color/bold_word"
-                        />
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="@dimen/margin_vertical"
-                        android:background="@color/color_white">
-                        <Spinner
-                            android:id="@+id/spBrand"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:textSize="@dimen/text_size"
-                            />
-                    </LinearLayout>
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
                     android:layout_marginTop="@dimen/margin_vertical"
-                    android:paddingLeft="@dimen/padding_small"
-                    android:paddingRight="@dimen/padding_small">
+                    android:background="@color/color_white">
 
-                    <TextView
-                        android:id="@+id/textView3"
+                    <Spinner
+                        android:id="@+id/spSortBy"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Sắp xếp"
-                        android:textAllCaps="true"
-                        android:textSize="@dimen/text_size"
-                        android:textColor="@color/bold_word"
-                        />
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_vertical"
-                        android:background="@color/color_white">
-
-                        <Spinner
-                            android:id="@+id/spSortBy"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:textSize="@dimen/text_size"/>
-                    </LinearLayout>
-
+                        android:textSize="@dimen/text_size"/>
                 </LinearLayout>
+
             </LinearLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="472dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginTop="@dimen/margin">
-
-                <ListView
-                    android:id="@+id/lvProduct"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="@dimen/margin_vertical"
-                    android:layout_marginLeft="@dimen/margin_vertical"
-                    android:layout_marginBottom="@dimen/margin">
-
-                </ListView>
-                <!--<LinearLayout-->
-                    <!--android:id="@+id/emptyProduct"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_centerInParent="true"-->
-                    <!--android:layout_gravity="center"-->
-                    <!--android:orientation="vertical">-->
-
-                    <!--<ImageView-->
-                        <!--android:layout_width="150dp"-->
-                        <!--android:layout_height="150dp"-->
-                        <!--android:layout_gravity="center"-->
-                        <!--android:src="@drawable/database"-->
-
-                        <!--/>-->
-
-                    <!--<TextView-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:text="Bạn chưa có sản phẩm"-->
-                        <!--android:textAlignment="center"-->
-
-                        <!--/>-->
-
-                    <!--<TextView-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:text="Bấm + để thêm sản phẩm mới"-->
-                        <!--android:textAlignment="center" />-->
-                <!--</LinearLayout>-->
-            </RelativeLayout>
         </LinearLayout>
-    </ScrollView>
-
+        <ListView
+                android:id="@+id/lvProduct"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/margin"
+                android:layout_marginLeft="@dimen/margin_vertical"
+                android:layout_marginRight="@dimen/margin_vertical"/>
+    </LinearLayout>
 </FrameLayout>

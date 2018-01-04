@@ -6,27 +6,31 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.Toast;
-
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.activity.ClientActivity;
 import com.example.baobang.threebird.adapter.ClientAdapter;
+import com.example.baobang.threebird.annimator.VegaLayoutManager;
 import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.bussinesslogic.ClientBL;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.MySupport;
 
 import java.util.ArrayList;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -34,7 +38,7 @@ public class ClientFragment extends Fragment {
 
     private ArrayList<Client> clients;
     private ClientAdapter clientAdapter;
-
+    private RecyclerView rcClients;
     public ClientFragment() {
         // Required empty public constructor
     }
@@ -57,19 +61,22 @@ public class ClientFragment extends Fragment {
         setHasOptionsMenu(true);
         // add views
 
-        ListView lvClients; lvClients = view.findViewById(R.id.lvClients);
+        rcClients = view.findViewById(R.id.rcClients);
+//        rcClients.setHasFixedSize(true);
         clients = ClientBL.getClientOn30Days();
         //
-        clientAdapter = new ClientAdapter(getActivity(), R.layout.item_client, clients);
-        lvClients.setAdapter(clientAdapter);
-        lvClients.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                clientAdapter.setItemSelected(i);
-                clientAdapter.notifyDataSetChanged();
-                openOptionDialog(clients.get(i));
-            }
-        });
+        clientAdapter = new ClientAdapter(clients, rcClients);
+        rcClients.setLayoutManager(new VegaLayoutManager());
+        rcClients.setAdapter(clientAdapter);
+
+//        rcClients.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                clientAdapter.setItemSelected(i);
+//                clientAdapter.notifyDataSetChanged();
+//                openOptionDialog(clients.get(i));
+//            }
+//        });
         return view;
     }
 
@@ -88,6 +95,7 @@ public class ClientFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String s) {
                 clientAdapter.getFilter().filter(s);
+                Log.e("SIZE", clients.size() +"");
                 return false;
             }
         });
@@ -106,7 +114,6 @@ public class ClientFragment extends Fragment {
 
         return super.onOptionsItemSelected(item);
     }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == Constants.CLIENT_REQUEST_CODE && resultCode == Activity.RESULT_OK){
@@ -118,7 +125,6 @@ public class ClientFragment extends Fragment {
                 }else{
                     clients.set(indexChange, client);
                 }
-                clientAdapter.setTempObjects(clients);
                 clientAdapter.notifyDataSetChanged();
         }
     }
@@ -150,7 +156,7 @@ public class ClientFragment extends Fragment {
         boolean res =ClientBL.deleteClient(client);
         if(res){
             clients.remove(client);
-            clientAdapter.setTempObjects(clients);
+//            clientAdapter.setTempObjects(clients);
             clientAdapter.notifyDataSetChanged();
             Toast.makeText(getContext(), "Xóa thành công", Toast.LENGTH_SHORT).show();
         }else{
