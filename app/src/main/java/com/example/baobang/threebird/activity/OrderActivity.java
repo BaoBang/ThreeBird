@@ -296,8 +296,8 @@ public class OrderActivity extends AppCompatActivity {
         alertDialog.setTitle("Danh sách sản phẩm");
         ListView lv =  convertView.findViewById(R.id.listView);
         final ArrayList<Product> products = ProductBL.getAllProduct();
-        ProductAdapter adapter = new ProductAdapter(this, R.layout.item_product, products);
-        lv.setAdapter(adapter);
+//        ProductAdapter adapter = new ProductAdapter(this, R.layout.item_product, products);
+//        lv.setAdapter(adapter);
         final AlertDialog dialog = alertDialog.show();
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

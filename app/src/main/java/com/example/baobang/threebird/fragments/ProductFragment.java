@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -19,13 +20,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.activity.ProductActivity;
 import com.example.baobang.threebird.adapter.ProductAdapter;
+import com.example.baobang.threebird.annimator.VegaLayoutManager;
 import com.example.baobang.threebird.model.Brand;
 import com.example.baobang.threebird.model.Category;
 import com.example.baobang.threebird.model.Product;
@@ -39,12 +39,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class ProductFragment extends Fragment {
 
-    private ListView lvProducts;
+    private RecyclerView rcProducts;
     private Spinner spCategory, spBrand;
     private List<Product> products;
     private ProductAdapter productAdapter;
@@ -70,18 +67,19 @@ public class ProductFragment extends Fragment {
         // Inflate the layout for this fragment
 
 
-        lvProducts = view.findViewById(R.id.lvProduct);
+        rcProducts = view.findViewById(R.id.rcProduct);
         products = ProductBL.getAllProduct();
-        productAdapter = new ProductAdapter(getActivity(), R.layout.item_product, products);
-        lvProducts.setAdapter(productAdapter);
-        lvProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                productAdapter.setItemSelected(i);
-                productAdapter.notifyDataSetChanged();
-                openOptionDialog(products.get(i).getId());
-            }
-        });
+        productAdapter = new ProductAdapter(products, rcProducts);
+        rcProducts.setLayoutManager(new VegaLayoutManager());
+        rcProducts.setAdapter(productAdapter);
+//        lvProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                productAdapter.setItemSelected(i);
+//                productAdapter.notifyDataSetChanged();
+//                openOptionDialog(products.get(i).getId());
+//            }
+//        });
 
         addSpinnerCategory(view);
         addSpinnerBrand(view);
@@ -179,10 +177,6 @@ public class ProductFragment extends Fragment {
         spCategory = view.findViewById(R.id.spCategory);
         categories = getCategories();
 
-        for(Category category : categories){
-            Log.e("cate: ",category.getId() + "-"+ category.getName());
-        }
-
         ArrayAdapter<Category> categoryArrayAdapter =
                 new ArrayAdapter<>(
                         getActivity(),
@@ -236,7 +230,7 @@ public class ProductFragment extends Fragment {
             }else{
                 products.set(indexChange, product);
             }
-            productAdapter.setTempObjects(products);
+//            productAdapter.setTempObjects(products);
             productAdapter.notifyDataSetChanged();
         }
     }
@@ -296,8 +290,8 @@ public class ProductFragment extends Fragment {
     }
 
     private void updateListView(){
-        productAdapter = new ProductAdapter(getActivity(), R.layout.item_product, products);
-        lvProducts.setAdapter(productAdapter);
+//        productAdapter = new ProductAdapter(getActivity(), R.layout.item_product, products);
+//        lvProducts.setAdapter(productAdapter);
     }
 
     private List<Brand> getBrands(){

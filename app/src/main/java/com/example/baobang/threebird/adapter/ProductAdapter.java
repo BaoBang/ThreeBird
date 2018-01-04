@@ -2,18 +2,23 @@ package com.example.baobang.threebird.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.baobang.threebird.R;
+import com.example.baobang.threebird.annimator.RecyclerViewAnimator;
+import com.example.baobang.threebird.annimator.VegaLayoutManager;
 import com.example.baobang.threebird.model.Product;
 import com.example.baobang.threebird.utils.MySupport;
 
@@ -24,62 +29,54 @@ import java.util.List;
  * Created by baobang on 12/19/17.
  */
 
-public class ProductAdapter extends ArrayAdapter<Product> {
+public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductHolder> implements Filterable{
 
-    private Activity context;
-    private int resource;
-    private List<Product> objects;
-    private List<Product> tempObjects;
-    private int itemSelected = -1;
-    public ProductAdapter(@NonNull Activity context, int resource, @NonNull List<Product> objects) {
-        super(context, resource, objects);
-        this.context = context;
-        this.resource = resource;
-        this.objects = objects;
-        tempObjects = new ArrayList<>(objects);
+    private List<Product> products;
+    private List<Product> temproducts;
+    private RecyclerViewAnimator mAnimator;
+    private RecyclerView recyclerView;
+    public ProductAdapter(List<Product> products, RecyclerView recyclerView) {
+        this.products = products;
+        this.temproducts = new ArrayList<>(this.products);
+        this.recyclerView = recyclerView;
+        mAnimator = new RecyclerViewAnimator(recyclerView);
     }
 
-    public void setItemSelected(int itemSelected) {
-        this.itemSelected = itemSelected;
-    }
-
-    public void setTempObjects(List<Product> tempObjects) {
-        this.tempObjects = tempObjects;
-    }
-
-    @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        LayoutInflater layoutInflater = this.context.getLayoutInflater();
-        convertView = layoutInflater.inflate(this.resource, null);
-        LinearLayout layout = convertView.findViewById(R.id.layoutItem);
-        if(position == itemSelected){
-            layout.setBackgroundColor(this.context.getResources().getColor(R.color.colorPrimary));
-        }else{
-            layout.setBackgroundColor(this.context.getResources().getColor(R.color.color_white));
-        }
-        ImageView imgProduct = convertView.findViewById(R.id.imgProduct);
-        TextView txtProductName = convertView.findViewById(R.id.txtProductName);
-        TextView txtPrice = convertView.findViewById(R.id.txtPrice);
-
-        Product product = this.objects.get(position);
-        if(product.getImages().size() > 0){
-            imgProduct.setImageBitmap(MySupport.getRoundedRectBitmap(MySupport.StringToBitMap(product.getImages().first())));
-        }
-        txtProductName.setText(product.getName());
-        txtPrice.setText(product.getPrice() + "");
-
-        return convertView;
+    public ProductAdapter.ProductHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).
+                inflate(R.layout.item_product, parent, false);
+        ProductHolder productHolder = new ProductHolder(view);
+        mAnimator.onCreateViewHolder(view);
+        return productHolder;
     }
+
+    @Override
+    public void onBindViewHolder(ProductAdapter.ProductHolder holder, int position) {
+        Product product = this.products.get(position);
+        if(product.getImages().size() > 0){
+            holder.imgProduct.setImageBitmap(MySupport.getRoundedRectBitmap(MySupport.StringToBitMap(product.getImages().first())));
+        }
+        holder.txtProductName.setText(product.getName());
+        holder.txtPrice.setText(String.valueOf(product.getPrice()));
+        mAnimator.onBindViewHolder(holder.layoutItem, position);
+    }
+
+    @Override
+    public int getItemCount() {
+        return products.size();
+    }
+
     @NonNull
     @Override
     public Filter getFilter() {
-        return new ProductFilter();
+        return new ProductFilter(this);
     }
 
     private class ProductFilter extends Filter{
-
-        public ProductFilter() {
+        private ProductAdapter productAdapter;
+        public ProductFilter( ProductAdapter productAdapter) {
+            this.productAdapter = productAdapter;
         }
 
         @Override
@@ -88,7 +85,7 @@ public class ProductAdapter extends ArrayAdapter<Product> {
             FilterResults result = new FilterResults();
             if (filterSeq != null && filterSeq.length() > 0) {
                 ArrayList<Product> filter = new ArrayList<>();
-                for (Product product : tempObjects) {
+                for (Product product : temproducts) {
                     // the filtering itself:
                     if (product.toString().toLowerCase().contains(filterSeq))
                         filter.add(product);
@@ -97,23 +94,32 @@ public class ProductAdapter extends ArrayAdapter<Product> {
                 result.values = filter;
             } else {
                 // add all objects
-                result.values = tempObjects;
-                result.count = tempObjects.size();
+                result.values = temproducts;
+                result.count = temproducts.size();
             }
             return result;
         }
 
         @Override
         protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-//            // NOTE: this function is *always* called from the UI thread.
-            ArrayList<Product> filtered = (ArrayList<Product>) filterResults.values;
+            productAdapter = new ProductAdapter(products, recyclerView);
+            VegaLayoutManager vegaLayoutManager = (VegaLayoutManager) recyclerView.getLayoutManager();
+            vegaLayoutManager.setDeafaut();
             notifyDataSetChanged();
-            clear();
-            for(Product product : filtered){
-                add(product);
-            }
-            notifyDataSetInvalidated();
+        }
+    }
 
+    public class ProductHolder extends RecyclerView.ViewHolder{
+        ImageView imgProduct;
+        TextView txtProductName;
+        TextView txtPrice;
+        LinearLayout layoutItem;
+        public ProductHolder(View itemView) {
+            super(itemView);
+            imgProduct = itemView.findViewById(R.id.imgProduct);
+            txtProductName = itemView.findViewById(R.id.txtProductName);
+            txtPrice = itemView.findViewById(R.id.txtPrice);
+            layoutItem = itemView.findViewById(R.id.layoutItem);
         }
     }
 }
