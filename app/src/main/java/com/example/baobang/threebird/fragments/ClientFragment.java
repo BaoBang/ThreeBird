@@ -95,7 +95,7 @@ public class ClientFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String s) {
                 clientAdapter.getFilter().filter(s);
-                Log.e("SIZE", clients.size() +"");
+                Log.e("size", clients.size() + "");
                 return false;
             }
         });

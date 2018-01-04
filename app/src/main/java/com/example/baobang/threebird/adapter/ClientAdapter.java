@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.annimator.RecyclerViewAnimator;
+import com.example.baobang.threebird.annimator.VegaLayoutManager;
 import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.utils.MySupport;
 
@@ -29,10 +30,12 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientHold
     private List<Client> clients;
     private List<Client> tempClients;
     private RecyclerViewAnimator mAnimator;
+    private RecyclerView recyclerView;
 
     public ClientAdapter(List<Client> clients, RecyclerView recyclerView) {
         this.clients = clients;
-        this.tempClients = new ArrayList<>(clients);
+        this.tempClients = new ArrayList<>(this.clients);
+        this.recyclerView = recyclerView;
         mAnimator = new RecyclerViewAnimator(recyclerView);
     }
 
@@ -69,14 +72,21 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientHold
 
     @Override
     public Filter getFilter() {
-        return new ClientFilter();
+        return new ClientFilter(this);
     }
 
 
     private class ClientFilter extends Filter{
 
+        private ClientAdapter clientAdapter;
+
+        public ClientFilter(ClientAdapter clientAdapter) {
+            this.clientAdapter = clientAdapter;
+        }
+
         @Override
         protected FilterResults performFiltering(CharSequence charSequence) {
+            Log.e("charSequence", charSequence.toString());
             String filterSeq = charSequence.toString().toLowerCase();
             FilterResults result = new FilterResults();
             if (filterSeq.length() > 0) {
@@ -88,19 +98,24 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientHold
                 }
                 result.values = filter;
                 result.count = filter.size();
-//                animateTo(filter);
+                clients = filter;
 
             } else {
                 // add all objects
                 result.values = tempClients;
                 result.count = tempClients.size();
+                clients = tempClients;
             }
+            Log.e("result", result.count + "");
             return result;
         }
 
         @Override
         protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-            clients = (List<Client>) filterResults.values;
+            clientAdapter = new ClientAdapter(clients
+                    , recyclerView);
+            VegaLayoutManager vegaLayoutManager = (VegaLayoutManager) recyclerView.getLayoutManager();
+            vegaLayoutManager.setDeafaut();
             notifyDataSetChanged();
         }
     }

@@ -27,6 +27,16 @@ public class VegaLayoutManager extends RecyclerView.LayoutManager {
         setAutoMeasureEnabled(true);
     }
 
+    public void setDeafaut(){
+        scroll = 0;
+        locationRects = new SparseArray<>();
+        attachedItems = new SparseBooleanArray();
+        viewTypeHeightMap = new ArrayMap<>();
+        needSnap = false;
+        lastDy = 0;
+        maxScroll = -1;
+    }
+
     @Override
     public RecyclerView.LayoutParams generateDefaultLayoutParams() {
         return new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
