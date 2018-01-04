@@ -44,7 +44,7 @@ public class OrderBL {
         list = realm.copyFromRealm(results);
         orders.addAll(list);
         realm.close();
-        return  orders;
+        return orders;
     }
 
     public static Order getOrder(int orderId) {

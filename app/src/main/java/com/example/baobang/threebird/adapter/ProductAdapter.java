@@ -92,10 +92,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductH
                 }
                 result.count = filter.size();
                 result.values = filter;
+                products = filter;
             } else {
                 // add all objects
                 result.values = temproducts;
                 result.count = temproducts.size();
+                products = temproducts;
             }
             return result;
         }

@@ -5,13 +5,13 @@
     android:minHeight="100dp"
     android:background="@color/gradient_color">
 
-    <ListView
-        android:id="@+id/listView"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/gradient_color"
-        android:layout_marginLeft="@dimen/margin"
-        android:layout_marginRight="@dimen/margin">
+        android:layout_marginLeft="@dimen/margin_vertical"
+        android:layout_marginRight="@dimen/margin_vertical">
 
-    </ListView>
+    </android.support.v7.widget.RecyclerView>
 </LinearLayout>

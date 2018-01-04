@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -16,38 +17,29 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Toast;
-
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.activity.OrderActivity;
 import com.example.baobang.threebird.adapter.OrderAdapter;
+import com.example.baobang.threebird.annimator.VegaLayoutManager;
 import com.example.baobang.threebird.model.Order;
 import com.example.baobang.threebird.model.bussinesslogic.OrderBL;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.MySupport;
-
 import java.util.ArrayList;
 import java.util.List;
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class OrderFragment extends Fragment {
 
-
-    private ListView lvOrders;
+    private RecyclerView rcOrders;
     private List<Order> orders;
     private OrderAdapter orderAdapter;
-
     private LinearLayout layoutOrder, layoutNewOrder, layoutCancelOrder, layoutCompletedOrder;
-
     private int layoutSelected = 0;
     public OrderFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,16 +53,17 @@ public class OrderFragment extends Fragment {
         setHasOptionsMenu(true);
         // Inflate the layout for this fragment
 
-        lvOrders = view.findViewById(R.id.lvOrders);
-        orders = getOrder(-1);
-        orderAdapter = new OrderAdapter(getActivity(), R.layout.item_order, orders);
-        lvOrders.setAdapter(orderAdapter);
-        lvOrders.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                openOptionDialog(orders.get(i).getId());
-            }
-        });
+        rcOrders = view.findViewById(R.id.rcOrders);
+        orders = getOrderListByStatus(-1);
+        orderAdapter = new OrderAdapter(getActivity(), orders, rcOrders);
+        rcOrders.setLayoutManager(new VegaLayoutManager());
+        rcOrders.setAdapter(orderAdapter);
+//        lvOrders.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                openOptionDialog(orders.get(i).getId());
+//            }
+//        });
 
         layoutOrder = view.findViewById(R.id.layoutOrder);
         layoutNewOrder = view.findViewById(R.id.layoutNewOrder);
@@ -81,9 +74,9 @@ public class OrderFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 setBackGround(layoutCancelOrder, 2);
-                orders = getOrder(Constants.CANCEL);
-                orderAdapter = new OrderAdapter(getActivity(), R.layout.item_order, orders);
-                lvOrders.setAdapter(orderAdapter);
+                orders = getOrderListByStatus(Constants.CANCEL);
+                orderAdapter = new OrderAdapter(getActivity(), orders, rcOrders);
+                rcOrders.setAdapter(orderAdapter);
             }
         });
 
@@ -91,9 +84,9 @@ public class OrderFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 setBackGround(layoutCompletedOrder, 3);
-                orders = getOrder(Constants.COMPLETED);
-                orderAdapter = new OrderAdapter(getActivity(), R.layout.item_order, orders);
-                lvOrders.setAdapter(orderAdapter);
+                orders = getOrderListByStatus(Constants.COMPLETED);
+                orderAdapter = new OrderAdapter(getActivity(), orders, rcOrders);
+                rcOrders.setAdapter(orderAdapter);
             }
         });
 
@@ -101,9 +94,9 @@ public class OrderFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 setBackGround(layoutOrder, 0);
-                orders = getOrder(-1);
-                orderAdapter = new OrderAdapter(getActivity(), R.layout.item_order, orders);
-                lvOrders.setAdapter(orderAdapter);
+                orders = getOrderListByStatus(-1);
+                orderAdapter = new OrderAdapter(getActivity(), orders, rcOrders);
+                rcOrders.setAdapter(orderAdapter);
             }
         });
 
@@ -111,9 +104,9 @@ public class OrderFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 setBackGround(layoutNewOrder, 1);
-                orders = getOrder(Constants.DELIVERY);
-                orderAdapter = new OrderAdapter(getActivity(), R.layout.item_order, orders);
-                lvOrders.setAdapter(orderAdapter);
+                orders = getOrderListByStatus(Constants.DELIVERY);
+                orderAdapter = new OrderAdapter(getActivity(), orders, rcOrders);
+                rcOrders.setAdapter(orderAdapter);
             }
         });
         return view;
@@ -134,7 +127,7 @@ public class OrderFragment extends Fragment {
             }else{
                 orders.set(indexChange, order);
             }
-            orderAdapter.setTempObjects(orders);
+//            orderAdapter.setTempObjects(orders);
             orderAdapter.notifyDataSetChanged();
         }
     }
@@ -232,8 +225,8 @@ public class OrderFragment extends Fragment {
     }
 
     private void updateListView() {
-        orderAdapter = new OrderAdapter(getActivity(), R.layout.item_order, orders);
-        lvOrders.setAdapter(orderAdapter);
+//        orderAdapter = new OrderAdapter(getActivity(), R.layout.item_order, orders);
+//        lvOrders.setAdapter(orderAdapter);
     }
 
     @Override
@@ -278,7 +271,7 @@ public class OrderFragment extends Fragment {
         startActivityForResult(addProductActivity, Constants.ORDER_REQUEST_CODE);
     }
 
-    private ArrayList<Order> getOrder(int status){
+    private ArrayList<Order> getOrderListByStatus(int status){
         ArrayList<Order> list = OrderBL.getAllOrder();
         switch (status){
             case 0:

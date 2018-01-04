@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,13 +22,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.adapter.ClientAdapter;
 import com.example.baobang.threebird.adapter.ProductAdapter;
+import com.example.baobang.threebird.annimator.VegaLayoutManager;
 import com.example.baobang.threebird.model.Address;
 import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.Order;
@@ -38,7 +38,6 @@ import com.example.baobang.threebird.model.bussinesslogic.OrderBL;
 import com.example.baobang.threebird.model.bussinesslogic.ProductBL;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.MySupport;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -291,23 +290,24 @@ public class OrderActivity extends AppCompatActivity {
     private void showDialogProduct() {
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(OrderActivity.this, R.drawable.background_color_gradient);
         LayoutInflater inflater = getLayoutInflater();
-        View convertView = (View) inflater.inflate(R.layout.listview_dialog, null);
+        View convertView = (View) inflater.inflate(R.layout.recycleview_dialog, null);
         alertDialog.setView(convertView);
         alertDialog.setTitle("Danh sách sản phẩm");
-        ListView lv =  convertView.findViewById(R.id.listView);
+        RecyclerView rcProudcts =  convertView.findViewById(R.id.recyclerView);
         final ArrayList<Product> products = ProductBL.getAllProduct();
-//        ProductAdapter adapter = new ProductAdapter(this, R.layout.item_product, products);
-//        lv.setAdapter(adapter);
+        ProductAdapter adapter = new ProductAdapter(products, rcProudcts);
+        rcProudcts.setLayoutManager(new VegaLayoutManager());
+        rcProudcts.setAdapter(adapter);
         final AlertDialog dialog = alertDialog.show();
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                getProductFromList(products.get(i));
-                txtAmount.setText(String.valueOf(getAmountAllProduct()));
-                addProductToLayout(products.get(i));
-                dialog.dismiss();
-            }
-        });
+//        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                getProductFromList(products.get(i));
+//                txtAmount.setText(String.valueOf(getAmountAllProduct()));
+//                addProductToLayout(products.get(i));
+//                dialog.dismiss();
+//            }
+//        });
     }
 
     private int checkLayoutProduct(int id){
@@ -410,22 +410,23 @@ public class OrderActivity extends AppCompatActivity {
     private void showDialogClient() {
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(OrderActivity.this, R.drawable.background_color_gradient);
         LayoutInflater inflater = getLayoutInflater();
-        View convertView = (View) inflater.inflate(R.layout.listview_dialog, null);
+        View convertView = (View) inflater.inflate(R.layout.recycleview_dialog, null);
         alertDialog.setView(convertView);
         alertDialog.setTitle("Danh sách khách hàng");
-        ListView lv =  convertView.findViewById(R.id.listView);
+        RecyclerView rcClients =  convertView.findViewById(R.id.recyclerView);
         final ArrayList<Client> clients = ClientBL.getAllClient();
-//        ClientAdapter adapter = new ClientAdapter(this, R.layout.item_client, clients);
-//        lv.setAdapter(adapter);
+        ClientAdapter adapter = new ClientAdapter(clients, rcClients);
+        rcClients.setLayoutManager(new VegaLayoutManager());
+        rcClients.setAdapter(adapter);
         final AlertDialog dialog = alertDialog.show();
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                dialog.dismiss();
-                getClientFromList(clients.get(i));
-                clientSelectedId = clients.get(i).getId();
-            }
-        });
+//        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                dialog.dismiss();
+//                getClientFromList(clients.get(i));
+//                clientSelectedId = clients.get(i).getId();
+//            }
+//        });
     }
 
     private void getClientFromList(Client client) {
