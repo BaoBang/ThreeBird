@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,6 +24,7 @@ import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.activity.OrderActivity;
 import com.example.baobang.threebird.adapter.OrderAdapter;
 import com.example.baobang.threebird.annimator.VegaLayoutManager;
+import com.example.baobang.threebird.listener.OnItemRecyclerViewClickListener;
 import com.example.baobang.threebird.model.Order;
 import com.example.baobang.threebird.model.bussinesslogic.OrderBL;
 import com.example.baobang.threebird.utils.Constants;
@@ -37,6 +39,8 @@ public class OrderFragment extends Fragment {
     private OrderAdapter orderAdapter;
     private LinearLayout layoutOrder, layoutNewOrder, layoutCancelOrder, layoutCompletedOrder;
     private int layoutSelected = 0;
+
+    private OnItemRecyclerViewClickListener onItemRecyclerViewClickListener;
     public OrderFragment() {
         // Required empty public constructor
     }
@@ -54,11 +58,18 @@ public class OrderFragment extends Fragment {
         // Inflate the layout for this fragment
 
         rcOrders = view.findViewById(R.id.rcOrders);
-        orders = getOrderListByStatus(-1);
-        orderAdapter = new OrderAdapter(getActivity(), orders, rcOrders);
+        orders = OrderBL.getAllOrder();
+        onItemRecyclerViewClickListener = new OnItemRecyclerViewClickListener() {
+            @Override
+            public void onItemClick(Object item) {
+                Order order = (Order) item;
+                openOptionDialog(order.getId());
+            }
+        };
+        orderAdapter = new OrderAdapter(getActivity(), orders, rcOrders, onItemRecyclerViewClickListener);
         rcOrders.setLayoutManager(new VegaLayoutManager());
         rcOrders.setAdapter(orderAdapter);
-//        lvOrders.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//        lvOrders.setOnItemClickListener(new AdapterView.OnItemRecyclerViewClickListener() {
 //            @Override
 //            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 //                openOptionDialog(orders.get(i).getId());
@@ -75,8 +86,7 @@ public class OrderFragment extends Fragment {
             public void onClick(View view) {
                 setBackGround(layoutCancelOrder, 2);
                 orders = getOrderListByStatus(Constants.CANCEL);
-                orderAdapter = new OrderAdapter(getActivity(), orders, rcOrders);
-                rcOrders.setAdapter(orderAdapter);
+                updateListView();
             }
         });
 
@@ -85,8 +95,7 @@ public class OrderFragment extends Fragment {
             public void onClick(View view) {
                 setBackGround(layoutCompletedOrder, 3);
                 orders = getOrderListByStatus(Constants.COMPLETED);
-                orderAdapter = new OrderAdapter(getActivity(), orders, rcOrders);
-                rcOrders.setAdapter(orderAdapter);
+                updateListView();
             }
         });
 
@@ -95,8 +104,7 @@ public class OrderFragment extends Fragment {
             public void onClick(View view) {
                 setBackGround(layoutOrder, 0);
                 orders = getOrderListByStatus(-1);
-                orderAdapter = new OrderAdapter(getActivity(), orders, rcOrders);
-                rcOrders.setAdapter(orderAdapter);
+                updateListView();
             }
         });
 
@@ -105,8 +113,7 @@ public class OrderFragment extends Fragment {
             public void onClick(View view) {
                 setBackGround(layoutNewOrder, 1);
                 orders = getOrderListByStatus(Constants.DELIVERY);
-                orderAdapter = new OrderAdapter(getActivity(), orders, rcOrders);
-                rcOrders.setAdapter(orderAdapter);
+                updateListView();
             }
         });
         return view;
@@ -167,14 +174,6 @@ public class OrderFragment extends Fragment {
         this.layoutSelected = layoutSelected;
     }
 
-//    private void setTextColorForViewChild(LinearLayout layout, int color){
-//
-//        for(int i = 0; i < layout.getChildCount(); i++){
-//            TextView textView = (TextView) layout.getChildAt(i);
-//            textView.setTextColor(color);
-//        }
-//    }
-
     private void openOptionDialog(final int orderId){
         final CharSequence[] items = { "Thêm", "Sửa", "Xem chi tiết", "Xóa"};
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -225,8 +224,8 @@ public class OrderFragment extends Fragment {
     }
 
     private void updateListView() {
-//        orderAdapter = new OrderAdapter(getActivity(), R.layout.item_order, orders);
-//        lvOrders.setAdapter(orderAdapter);
+        orderAdapter = new OrderAdapter(getActivity(), orders, rcOrders, onItemRecyclerViewClickListener);
+        rcOrders.setAdapter(orderAdapter);
     }
 
     @Override
@@ -272,7 +271,7 @@ public class OrderFragment extends Fragment {
     }
 
     private ArrayList<Order> getOrderListByStatus(int status){
-        ArrayList<Order> list = OrderBL.getAllOrder();
+        ArrayList<Order> list;
         switch (status){
             case 0:
                 list = OrderBL.getOrderByStatus(Constants.COMPLETED);
@@ -283,7 +282,10 @@ public class OrderFragment extends Fragment {
             case 2:
                 list = OrderBL.getOrderByStatus(Constants.DELIVERY);
                 break;
+            default:
+                list = OrderBL.getAllOrder();
         }
+        Log.e("Size", list.size() +"");
         return list;
     }
 }

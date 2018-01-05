@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.annimator.RecyclerViewAnimator;
 import com.example.baobang.threebird.annimator.VegaLayoutManager;
+import com.example.baobang.threebird.listener.OnItemRecyclerViewClickListener;
 import com.example.baobang.threebird.model.Order;
 import com.example.baobang.threebird.utils.Constants;
 import java.text.SimpleDateFormat;
@@ -32,12 +33,16 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
     private RecyclerViewAnimator mAnimator;
     private RecyclerView recyclerView;
     private Activity context;
-    public OrderAdapter(Activity context, List<Order> orders, RecyclerView recyclerView) {
+
+    private OnItemRecyclerViewClickListener onItemRecyclerViewClickListener;
+
+    public OrderAdapter(Activity context, List<Order> orders, RecyclerView recyclerView, OnItemRecyclerViewClickListener onItemRecyclerViewClickListener) {
         this.orders = orders;
         this.tempOders = new ArrayList<>(this.orders);
         this.recyclerView = recyclerView;
         mAnimator = new RecyclerViewAnimator(recyclerView);
         this.context = context;
+        this.onItemRecyclerViewClickListener = onItemRecyclerViewClickListener;
     }
 
     @Override
@@ -50,7 +55,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
     }
 
     @Override
-    public void onBindViewHolder(OrderHolder holder, int position) {
+    public void onBindViewHolder(OrderHolder holder, final int position) {
         Order order = this.orders.get(position);
         holder.txtId.setText(String.valueOf(order.getId()));
         holder.txtClientName.setText(order.getClientName());
@@ -67,6 +72,14 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
             holder.txtStatus.setText(R.string.delivery);
             holder.txtStatus.setTextColor(this.context.getResources().getColor(R.color.blue));
         }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onItemRecyclerViewClickListener.onItemClick(orders.get(position));
+            }
+        });
+
         mAnimator.onBindViewHolder(holder.layoutItem, position);
     }
 
@@ -130,7 +143,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
 
         @Override
         protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-            orderAdapter = new OrderAdapter(context,orders, recyclerView);
+            orderAdapter = new OrderAdapter(context,orders, recyclerView, onItemRecyclerViewClickListener);
             VegaLayoutManager vegaLayoutManager = (VegaLayoutManager) recyclerView.getLayoutManager();
             vegaLayoutManager.setDeafaut();
             notifyDataSetChanged();

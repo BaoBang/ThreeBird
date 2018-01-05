@@ -16,7 +16,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -28,6 +27,7 @@ import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.adapter.ClientAdapter;
 import com.example.baobang.threebird.adapter.ProductAdapter;
 import com.example.baobang.threebird.annimator.VegaLayoutManager;
+import com.example.baobang.threebird.listener.OnItemRecyclerViewClickListener;
 import com.example.baobang.threebird.model.Address;
 import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.Order;
@@ -295,11 +295,20 @@ public class OrderActivity extends AppCompatActivity {
         alertDialog.setTitle("Danh sách sản phẩm");
         RecyclerView rcProudcts =  convertView.findViewById(R.id.recyclerView);
         final ArrayList<Product> products = ProductBL.getAllProduct();
-        ProductAdapter adapter = new ProductAdapter(products, rcProudcts);
+        final AlertDialog dialog = alertDialog.show();
+        ProductAdapter adapter = new ProductAdapter(products, rcProudcts, new OnItemRecyclerViewClickListener() {
+            @Override
+            public void onItemClick(Object item) {
+                Product product = (Product) item;
+                getProductFromList(product);
+                txtAmount.setText(String.valueOf(getAmountAllProduct()));
+                addProductToLayout(product);
+                dialog.dismiss();
+            }
+        });
         rcProudcts.setLayoutManager(new VegaLayoutManager());
         rcProudcts.setAdapter(adapter);
-        final AlertDialog dialog = alertDialog.show();
-//        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//        lv.setOnItemClickListener(new AdapterView.OnItemRecyclerViewClickListener() {
 //            @Override
 //            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 //                getProductFromList(products.get(i));
@@ -338,7 +347,12 @@ public class OrderActivity extends AppCompatActivity {
             // ad image
             LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             ImageView imageView = new ImageView(this);
-            imageView.setImageBitmap(MySupport.StringToBitMap(product.getImages().first()));
+            if(product.getImages().size() == 0){
+                imageView.setImageResource(R.drawable.noimage);
+            }else{
+                Bitmap bitmap = MySupport.StringToBitMap(product.getImages().first());
+                imageView.setImageBitmap(MySupport.getRoundedRectBitmap(bitmap));
+            }
             imageView.setLayoutParams(imageParams);
             imageView.getLayoutParams().height = Constants.IMAGE_HEIGHT * 2;
             imageView.getLayoutParams().width = Constants.IMAGE_WIDTH * 2;
@@ -415,11 +429,18 @@ public class OrderActivity extends AppCompatActivity {
         alertDialog.setTitle("Danh sách khách hàng");
         RecyclerView rcClients =  convertView.findViewById(R.id.recyclerView);
         final ArrayList<Client> clients = ClientBL.getAllClient();
-        ClientAdapter adapter = new ClientAdapter(clients, rcClients);
+        final AlertDialog dialog = alertDialog.show();
+        ClientAdapter adapter = new ClientAdapter(clients, rcClients, new OnItemRecyclerViewClickListener() {
+            @Override
+            public void onItemClick(Object item) {
+                Client client = (Client) item;
+                dialog.dismiss();
+                getClientFromList(client);
+            }
+        });
         rcClients.setLayoutManager(new VegaLayoutManager());
         rcClients.setAdapter(adapter);
-        final AlertDialog dialog = alertDialog.show();
-//        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//        lv.setOnItemClickListener(new AdapterView.OnItemRecyclerViewClickListener() {
 //            @Override
 //            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 //                dialog.dismiss();

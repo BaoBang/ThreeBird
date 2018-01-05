@@ -1,14 +1,11 @@
 package com.example.baobang.threebird.adapter;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
@@ -17,11 +14,11 @@ import android.widget.TextView;
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.annimator.RecyclerViewAnimator;
 import com.example.baobang.threebird.annimator.VegaLayoutManager;
+import com.example.baobang.threebird.listener.OnItemRecyclerViewClickListener;
 import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.utils.MySupport;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientHolder> implements Filterable{
@@ -32,11 +29,14 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientHold
     private RecyclerViewAnimator mAnimator;
     private RecyclerView recyclerView;
 
-    public ClientAdapter(List<Client> clients, RecyclerView recyclerView) {
+    private OnItemRecyclerViewClickListener onItemClickListener;
+
+    public ClientAdapter(List<Client> clients, RecyclerView recyclerView, OnItemRecyclerViewClickListener onItemClickListener) {
         this.clients = clients;
         this.tempClients = new ArrayList<>(this.clients);
         this.recyclerView = recyclerView;
         mAnimator = new RecyclerViewAnimator(recyclerView);
+        this.onItemClickListener = onItemClickListener;
     }
 
 
@@ -50,7 +50,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientHold
     }
 
     @Override
-    public void onBindViewHolder(ClientHolder holder, int position) {
+    public void onBindViewHolder(ClientHolder holder, final int position) {
 
         Client client = this.clients.get(position);
         holder.txtAddress.setText(client.getAddress().toString());
@@ -61,6 +61,14 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientHold
         }else{
             holder.imgAvatar.setImageResource(R.drawable.noimage);
         }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onItemClickListener.onItemClick(clients.get(position));
+            }
+        });
+
         mAnimator.onBindViewHolder(holder.layoutItem, position);
     }
 
@@ -112,8 +120,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientHold
 
         @Override
         protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-            clientAdapter = new ClientAdapter(clients
-                    , recyclerView);
+            clientAdapter = new ClientAdapter(clients, recyclerView, onItemClickListener);
             VegaLayoutManager vegaLayoutManager = (VegaLayoutManager) recyclerView.getLayoutManager();
             vegaLayoutManager.setDeafaut();
             notifyDataSetChanged();

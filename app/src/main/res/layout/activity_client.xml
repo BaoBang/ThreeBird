@@ -7,6 +7,7 @@
     tools:context="com.example.baobang.threebird.activity.ClientActivity"
     android:orientation="vertical"
     android:background="@drawable/background_color_gradient">
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolBarUserDetail"
         android:layout_width="match_parent"
@@ -23,9 +24,10 @@
             android:text="@string/title_user_detail"
             android:textSize="@dimen/text_size_title"
             style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
-            android:layout_gravity="left"
+            android:layout_gravity="start"
             />
     </android.support.v7.widget.Toolbar>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -39,21 +41,24 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:src="@drawable/user"
-            />
+            android:contentDescription="@string/avatar_description"/>
 
     </LinearLayout>
+
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
+
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin"
                 android:background="@color/color_white_90">
 
                 <TextView
@@ -67,134 +72,158 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="right"
-                    android:paddingRight="@dimen/margin">
-                    <ImageButton
-                        android:id="@+id/btnUserInfo"
+                    android:gravity="end"
+                    android:paddingStart="0dp"
+                    android:paddingEnd="@dimen/margin">
+                    <com.kyleduo.switchbutton.SwitchButton
+                        android:id="@+id/swbUserInfo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_down_arrow"
                         android:layout_gravity="center_vertical"
-                        android:background="#00ffffff"
-                        />
-
+                        android:checked="true"/>
                 </LinearLayout>
 
             </LinearLayout>
+
             <LinearLayout
-                android:id="@+id/groupUserInfo"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/padding">
-                <LinearLayout
-                    android:orientation="horizontal"
+                    android:id="@+id/groupUserInfo"
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/padding">
-
-                    <EditText
-                        android:id="@+id/txtName"
-                        android:hint="@string/name"
+                    android:paddingBottom="@dimen/padding">
+                    <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/text_size"
+                        android:paddingTop="@dimen/padding">
+                        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:labelText="@string/name"
+                            android:layout_marginLeft="@dimen/margin"
+                            android:layout_marginRight="@dimen/margin"
+                            app:primaryColor="@color/colorAccent"
+                            app:panelBackgroundColor="@color/color_white"
+                            app:secondaryColor="@color/colorPrimary">
+                            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                                android:id="@+id/txtName"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/text_size"
+                                android:background="@color/color_white"/>
+                        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/color_white"
                         android:layout_marginLeft="@dimen/margin"
                         android:layout_marginRight="@dimen/margin"
-                        android:padding="@dimen/padding"
-                        android:background="@color/color_white"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/color_white"
-                    android:layout_marginLeft="@dimen/margin"
-                    android:layout_marginRight="@dimen/margin"
-                    android:layout_marginTop="@dimen/padding">
-                    <Spinner
-                        android:id="@+id/spGroupClient"
+                        android:layout_marginTop="@dimen/padding">
+                        <Spinner
+                            android:id="@+id/spGroupClient"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            />
+
+                    </LinearLayout>
+                    <LinearLayout
+
+                        android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        />
+                        android:paddingTop="@dimen/padding">
+                        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/margin"
+                            android:layout_marginRight="@dimen/margin"
+                            app:primaryColor="@color/colorAccent"
+                            app:panelBackgroundColor="@color/color_white"
+                            app:labelText="@string/phone"
+                            app:secondaryColor="@color/colorPrimary">
+                            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                                android:id="@+id/txtPhone"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/text_size"
+                                android:background="@color/color_white"/>
+                        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+                    </LinearLayout>
 
-                </LinearLayout>
-                <LinearLayout
-
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/padding">
-
-                    <EditText
-                        android:id="@+id/txtPhone"
-                        android:hint="@string/phone"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/text_size"
-                        android:layout_marginLeft="@dimen/margin"
-                        android:layout_marginRight="@dimen/margin"
-                        android:padding="@dimen/padding"
-                        android:background="@color/color_white"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingTop="@dimen/padding">
-
-                    <EditText
-                        android:id="@+id/txtFax"
-                        android:hint="@string/fax"
+                        android:orientation="horizontal"
+                        android:paddingTop="@dimen/padding">
+                        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/margin"
+                            android:layout_marginRight="@dimen/margin"
+                            app:primaryColor="@color/colorAccent"
+                            app:panelBackgroundColor="@color/color_white"
+                            app:labelText="@string/fax"
+                            app:secondaryColor="@color/colorPrimary" >
+                            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                                android:id="@+id/txtFax"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/text_size"
+                                android:background="@color/color_white"
+                                app:secondaryColor="@color/colorPrimary"/>
+                        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/text_size"
-                        android:layout_marginLeft="@dimen/margin"
-                        android:layout_marginRight="@dimen/margin"
-                        android:padding="@dimen/padding"
-                        android:background="@color/color_white"/>
+                        android:paddingTop="@dimen/padding">
+                        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/margin"
+                            android:layout_marginRight="@dimen/margin"
+                            app:primaryColor="@color/colorAccent"
+                            app:panelBackgroundColor="@color/color_white"
+                            app:labelText="@string/website"
 
-                </LinearLayout>
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/padding">
-
-                    <EditText
-                        android:id="@+id/txtWebsite"
-                        android:hint="@string/website"
+                            app:secondaryColor="@color/colorPrimary">
+                            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                                android:id="@+id/txtWebsite"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/text_size"
+                                android:background="@color/color_white"/>
+                        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/text_size"
-                        android:layout_marginLeft="@dimen/margin"
-                        android:layout_marginRight="@dimen/margin"
-                        android:padding="@dimen/padding"
-                        android:background="@color/color_white"/>
+                        android:paddingTop="@dimen/padding">
+                        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/margin"
+                            android:layout_marginRight="@dimen/margin"
+                            app:primaryColor="@color/colorAccent"
+                            app:panelBackgroundColor="@color/color_white"
+                            app:labelText="@string/email"
+                            app:secondaryColor="@color/colorPrimary">
+                            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                                android:id="@+id/txtEmail"
+                                android:inputType="textEmailAddress"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/text_size"
+                                android:background="@color/color_white"/>
+                        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+                    </LinearLayout>
+
 
                 </LinearLayout>
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/padding">
-
-                    <EditText
-                        android:id="@+id/txtEmail"
-                        android:hint="@string/email"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/text_size"
-                        android:layout_marginLeft="@dimen/margin"
-                        android:layout_marginRight="@dimen/margin"
-                        android:padding="@dimen/padding"
-                        android:background="@color/color_white"/>
-
-                </LinearLayout>
-
-
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -212,93 +241,98 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="right"
-                    android:paddingRight="@dimen/margin">
-                    <ImageButton
-                        android:id="@+id/btnAddressInfo"
+                    android:gravity="end"
+                    android:paddingStart="0dp"
+                    android:paddingEnd="@dimen/margin">
+                    <com.kyleduo.switchbutton.SwitchButton
+                        android:id="@+id/swbAddressInfo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:background="#00ffffff"
-                        android:src="@drawable/ic_down_arrow"/>
+                        android:checked="true"/>
 
                 </LinearLayout>
 
             </LinearLayout>
+
             <LinearLayout
-                android:id="@+id/groupAddressInfo"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <LinearLayout
-                    android:orientation="horizontal"
+                    android:id="@+id/groupAddressInfo"
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/color_white"
-                    android:layout_marginLeft="@dimen/margin"
-                    android:layout_marginRight="@dimen/margin"
-                    android:layout_marginTop="@dimen/padding">
+                    android:layout_height="wrap_content">
 
-                    <Spinner
-                        android:id="@+id/spProvince"
+                    <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/text_size"/>
-
-                </LinearLayout>
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/color_white"
-                    android:layout_marginLeft="@dimen/margin"
-                    android:layout_marginRight="@dimen/margin"
-                    android:layout_marginTop="@dimen/padding">
-
-                    <Spinner
-                        android:id="@+id/spDistrict"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/text_size"/>
-
-                </LinearLayout>
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/color_white"
-                    android:layout_marginLeft="@dimen/margin"
-                    android:layout_marginRight="@dimen/margin"
-                    android:layout_marginTop="@dimen/padding">
-
-                    <Spinner
-                        android:id="@+id/spCommune"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/text_size"/>
-
-                </LinearLayout>
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/padding"
-                    android:paddingBottom="@dimen/padding">
-
-                    <EditText
-                        android:id="@+id/txtAddress"
-                        android:hint="@string/address"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/text_size"
+                        android:background="@color/color_white"
                         android:layout_marginLeft="@dimen/margin"
                         android:layout_marginRight="@dimen/margin"
-                        android:padding="@dimen/padding"
-                        android:background="@color/color_white"/>
+                        android:layout_marginTop="@dimen/padding">
 
+                        <Spinner
+                            android:id="@+id/spProvince"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/text_size"/>
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/color_white"
+                        android:layout_marginLeft="@dimen/margin"
+                        android:layout_marginRight="@dimen/margin"
+                        android:layout_marginTop="@dimen/padding">
+
+                        <Spinner
+                            android:id="@+id/spDistrict"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/text_size"/>
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/color_white"
+                        android:layout_marginLeft="@dimen/margin"
+                        android:layout_marginRight="@dimen/margin"
+                        android:layout_marginTop="@dimen/padding">
+
+                        <Spinner
+                            android:id="@+id/spCommune"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/text_size"/>
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/padding"
+                        android:paddingBottom="@dimen/padding">
+                        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/margin"
+                            android:layout_marginRight="@dimen/margin"
+                            app:primaryColor="@color/colorAccent"
+                            app:panelBackgroundColor="@color/color_white"
+                            app:labelText="@string/address"
+                            app:secondaryColor="@color/colorPrimary">
+                            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                                android:id="@+id/txtAddress"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/text_size"
+                                android:background="@color/color_white"/>
+                        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
 
         </LinearLayout>
 

@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.annimator.RecyclerViewAnimator;
 import com.example.baobang.threebird.annimator.VegaLayoutManager;
+import com.example.baobang.threebird.listener.OnItemRecyclerViewClickListener;
 import com.example.baobang.threebird.model.Product;
 import com.example.baobang.threebird.utils.MySupport;
 
@@ -35,11 +36,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductH
     private List<Product> temproducts;
     private RecyclerViewAnimator mAnimator;
     private RecyclerView recyclerView;
-    public ProductAdapter(List<Product> products, RecyclerView recyclerView) {
+    private OnItemRecyclerViewClickListener onItemRecyclerViewClickListener;
+
+    public ProductAdapter(List<Product> products, RecyclerView recyclerView,OnItemRecyclerViewClickListener onItemRecyclerViewClickListener) {
         this.products = products;
         this.temproducts = new ArrayList<>(this.products);
         this.recyclerView = recyclerView;
         mAnimator = new RecyclerViewAnimator(recyclerView);
+        this.onItemRecyclerViewClickListener = onItemRecyclerViewClickListener;
     }
 
     @Override
@@ -52,13 +56,21 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductH
     }
 
     @Override
-    public void onBindViewHolder(ProductAdapter.ProductHolder holder, int position) {
+    public void onBindViewHolder(ProductAdapter.ProductHolder holder, final int position) {
         Product product = this.products.get(position);
         if(product.getImages().size() > 0){
             holder.imgProduct.setImageBitmap(MySupport.getRoundedRectBitmap(MySupport.StringToBitMap(product.getImages().first())));
         }
         holder.txtProductName.setText(product.getName());
         holder.txtPrice.setText(String.valueOf(product.getPrice()));
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onItemRecyclerViewClickListener.onItemClick(products.get(position));
+            }
+        });
+
         mAnimator.onBindViewHolder(holder.layoutItem, position);
     }
 
@@ -104,7 +116,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductH
 
         @Override
         protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-            productAdapter = new ProductAdapter(products, recyclerView);
+            productAdapter = new ProductAdapter(products, recyclerView, onItemRecyclerViewClickListener);
             VegaLayoutManager vegaLayoutManager = (VegaLayoutManager) recyclerView.getLayoutManager();
             vegaLayoutManager.setDeafaut();
             notifyDataSetChanged();

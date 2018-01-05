@@ -57,7 +57,8 @@
     <string name="user_info">Thông tin khách hàng</string>
     <string name="address_info">Địa chỉ liên hệ</string>
     <string name="delivery_info">Địa chỉ giao hàng</string>
-
+    <string name="avatar_description">Ảnh đại diện</string>
+    <string name="toggle_button">Mở/đóng</string>
     <!--Action bar-->
     <string name="search">Tìm kiếm</string>
     <string name="add">Thêm mới</string>

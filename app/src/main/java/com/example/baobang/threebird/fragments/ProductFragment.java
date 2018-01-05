@@ -26,6 +26,7 @@ import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.activity.ProductActivity;
 import com.example.baobang.threebird.adapter.ProductAdapter;
 import com.example.baobang.threebird.annimator.VegaLayoutManager;
+import com.example.baobang.threebird.listener.OnItemRecyclerViewClickListener;
 import com.example.baobang.threebird.model.Brand;
 import com.example.baobang.threebird.model.Category;
 import com.example.baobang.threebird.model.Product;
@@ -69,17 +70,15 @@ public class ProductFragment extends Fragment {
 
         rcProducts = view.findViewById(R.id.rcProduct);
         products = ProductBL.getAllProduct();
-        productAdapter = new ProductAdapter(products, rcProducts);
+        productAdapter = new ProductAdapter(products, rcProducts, new OnItemRecyclerViewClickListener() {
+            @Override
+            public void onItemClick(Object item) {
+                Product product = (Product) item;
+                openOptionDialog(product.getId());
+            }
+        });
         rcProducts.setLayoutManager(new VegaLayoutManager());
         rcProducts.setAdapter(productAdapter);
-//        lvProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                productAdapter.setItemSelected(i);
-//                productAdapter.notifyDataSetChanged();
-//                openOptionDialog(products.get(i).getId());
-//            }
-//        });
 
         addSpinnerCategory(view);
         addSpinnerBrand(view);

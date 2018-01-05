@@ -6,11 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +21,7 @@ import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.activity.ClientActivity;
 import com.example.baobang.threebird.adapter.ClientAdapter;
 import com.example.baobang.threebird.annimator.VegaLayoutManager;
+import com.example.baobang.threebird.listener.OnItemRecyclerViewClickListener;
 import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.bussinesslogic.ClientBL;
 import com.example.baobang.threebird.utils.Constants;
@@ -65,18 +63,15 @@ public class ClientFragment extends Fragment {
 //        rcClients.setHasFixedSize(true);
         clients = ClientBL.getClientOn30Days();
         //
-        clientAdapter = new ClientAdapter(clients, rcClients);
+        clientAdapter = new ClientAdapter(clients, rcClients, new OnItemRecyclerViewClickListener() {
+            @Override
+            public void onItemClick(Object item) {
+                openOptionDialog((Client)item);
+            }
+        });
         rcClients.setLayoutManager(new VegaLayoutManager());
         rcClients.setAdapter(clientAdapter);
 
-//        rcClients.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                clientAdapter.setItemSelected(i);
-//                clientAdapter.notifyDataSetChanged();
-//                openOptionDialog(clients.get(i));
-//            }
-//        });
         return view;
     }
 

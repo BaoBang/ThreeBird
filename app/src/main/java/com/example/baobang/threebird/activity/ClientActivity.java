@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -27,6 +28,7 @@ import com.example.baobang.threebird.model.bussinesslogic.ClientGroupBL;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.MySupport;
 import com.example.baobang.threebird.utils.SlideView;
+import com.kyleduo.switchbutton.SwitchButton;
 
 import java.util.ArrayList;
 
@@ -34,7 +36,7 @@ public class ClientActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private LinearLayout groupUserInfo, groupAddressInfo;
-    private ImageButton btnUserInfo, btnAddressInfo;
+    private SwitchButton swbUserInfo, swbAddressInfo;
     private ImageView imgAvatar;
 
     EditText txtName, txtPhone, txtFax, txtWebsite, txtEmail, txtAddress;
@@ -62,32 +64,29 @@ public class ClientActivity extends AppCompatActivity {
     }
 
     private void addEvents() {
-        btnUserInfo.setOnClickListener(new View.OnClickListener() {
+
+        swbUserInfo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View view) {
-                if(groupUserInfo.getVisibility() == View.VISIBLE){
-                    SlideView.collapse(groupUserInfo);
-                    btnUserInfo.setImageResource(R.drawable.ic_right_arrow);
-                }else if(groupUserInfo.getVisibility() == View.INVISIBLE){
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if(isChecked){
                     SlideView.expand(groupUserInfo);
-                    btnUserInfo.setImageResource(R.drawable.ic_down_arrow);
+                }else{
+                    SlideView.collapse(groupUserInfo);
                 }
             }
         });
 
-        btnAddressInfo.setOnClickListener(new View.OnClickListener() {
+        swbAddressInfo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View view) {
-                if(groupAddressInfo.getVisibility() == View.VISIBLE){
-                    SlideView.collapse(groupAddressInfo);
-                    btnAddressInfo.setImageResource(R.drawable.ic_right_arrow);
-                }else if(groupAddressInfo.getVisibility() == View.INVISIBLE){
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if(isChecked){
                     SlideView.expand(groupAddressInfo);
-                    btnAddressInfo.setImageResource(R.drawable.ic_down_arrow);
+                }else{
+                    SlideView.collapse(groupAddressInfo);
+
                 }
             }
         });
-
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -115,8 +114,8 @@ public class ClientActivity extends AppCompatActivity {
         // end setting toolbar
         groupAddressInfo = findViewById(R.id.groupAddressInfo);
         groupUserInfo = findViewById(R.id.groupUserInfo);
-        btnAddressInfo = findViewById(R.id.btnAddressInfo);
-        btnUserInfo = findViewById(R.id.btnUserInfo);
+        swbAddressInfo = findViewById(R.id.swbAddressInfo);
+        swbUserInfo = findViewById(R.id.swbUserInfo);
         imgAvatar = findViewById(R.id.imgAvatar);
         // input
         txtName = findViewById(R.id.txtName);
