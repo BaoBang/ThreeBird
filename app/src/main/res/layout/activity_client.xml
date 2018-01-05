@@ -104,7 +104,7 @@
                             android:layout_marginRight="@dimen/margin"
                             app:primaryColor="@color/colorAccent"
                             app:panelBackgroundColor="@color/color_white"
-                            >
+                            app:errorColor="@color/A400red">
                             <studio.carbonylgroup.textfieldboxes.ExtendedEditText
                                 android:id="@+id/txtName"
                                 android:layout_width="fill_parent"

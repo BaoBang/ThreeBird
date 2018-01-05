@@ -7,6 +7,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -32,6 +34,8 @@ import com.kyleduo.switchbutton.SwitchButton;
 
 import java.util.ArrayList;
 
+import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
+
 public class ClientActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
@@ -39,7 +43,7 @@ public class ClientActivity extends AppCompatActivity {
     private SwitchButton swbUserInfo, swbAddressInfo;
     private ImageView imgAvatar;
 
-    EditText txtName, txtPhone, txtFax, txtWebsite, txtEmail, txtAddress;
+    ExtendedEditText txtName, txtPhone, txtFax, txtWebsite, txtEmail, txtAddress;
 
     Spinner spGroupClient, spProvince, spDistrict, spCommune;
     ArrayList<String> provinces, districts, communes;
@@ -98,6 +102,44 @@ public class ClientActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startCamera();
+            }
+        });
+
+        txtPhone.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(!editable.toString().matches(Constants.PHONE_REGULAR)){
+                    txtPhone.setError("Số điện thoại không đúng");
+                }
+            }
+        });
+
+        txtEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(!editable.toString().matches(Constants.EMAIL_REGULAR)){
+                    txtEmail.setError("Email định dạng không đúng");
+                }
             }
         });
     }
@@ -259,15 +301,23 @@ public class ClientActivity extends AppCompatActivity {
         String address = txtAddress.getText().toString();
 
         if(MySupport.checkInput(name)){
-            MySupport.openDialog(this, "Vui lòng nhập vào họ tên");
+            txtName.setError("Vui lòng nhập vào họ tên");
+            txtName.requestFocus();
             return;
         }
         if(group ==0){
             MySupport.openDialog(this, "Vui lòng chọn nhóm thành viên");
+            spGroupClient.requestFocus();
             return;
         }
         if(MySupport.checkInput(phone)){
-            MySupport.openDialog(this, "Vui lòng nhập vào số điện thoại");
+            txtPhone.setError("Vui lòng nhập vào số điện thoại");
+            txtPhone.requestFocus();
+            return;
+        }
+        if(!phone.matches(Constants.PHONE_REGULAR)){
+            txtPhone.setError("Số điện thoại không đúng");
+            txtPhone.requestFocus();
             return;
         }
 //        if(MySupport.checkInput(fax)){
@@ -284,9 +334,11 @@ public class ClientActivity extends AppCompatActivity {
 //        }
         if(email.length() > 0){
             if(!email.matches(Constants.EMAIL_REGULAR)){
-                MySupport.openDialog(this, "Email định dạng không đúng");
-            return;
+                txtEmail.setError("Email định dạng không đúng");
+                txtEmail.requestFocus();
+                return;
             }
+
         }
 
         if(spProvince.getSelectedItemPosition() ==0){
@@ -302,7 +354,8 @@ public class ClientActivity extends AppCompatActivity {
             return;
         }
         if(MySupport.checkInput(address)){
-            MySupport.openDialog(this, "Vui lòng nhập vào địa chỉ");
+            txtAddress.setError("Vui lòng nhập vào địa chỉ");
+            txtAddress.requestFocus();
             return;
         }
         int clientId = -1;
@@ -337,7 +390,6 @@ public class ClientActivity extends AppCompatActivity {
 
 
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
