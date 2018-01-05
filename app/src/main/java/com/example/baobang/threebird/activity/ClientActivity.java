@@ -83,10 +83,10 @@ public class ClientActivity extends AppCompatActivity {
                     SlideView.expand(groupAddressInfo);
                 }else{
                     SlideView.collapse(groupAddressInfo);
-
                 }
             }
         });
+
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -145,7 +145,7 @@ public class ClientActivity extends AppCompatActivity {
 
         communeAdapter = new ArrayAdapter<>(
                 this,
-                android.R.layout.simple_list_item_1,
+                android.R.layout.simple_spinner_dropdown_item,
                 communes);
         spCommune.setAdapter(communeAdapter);
     }
@@ -155,7 +155,7 @@ public class ClientActivity extends AppCompatActivity {
         districts = getDistricts();
         districtAdapter = new ArrayAdapter<>(
                 this,
-                android.R.layout.simple_list_item_1,
+                android.R.layout.simple_spinner_dropdown_item,
                 districts );
         spDistrict.setAdapter(districtAdapter);
     }
@@ -165,7 +165,7 @@ public class ClientActivity extends AppCompatActivity {
         provinces = getProvinces();
         provinceAdapter = new ArrayAdapter<>(
                 this,
-                android.R.layout.simple_list_item_1,
+                android.R.layout.simple_spinner_dropdown_item,
                 provinces);
         spProvince.setAdapter(provinceAdapter);
 
@@ -176,7 +176,7 @@ public class ClientActivity extends AppCompatActivity {
         groups = getGroups();
         groupAdapter = new ArrayAdapter<>(
                 this,
-                android.R.layout.simple_list_item_1,
+                android.R.layout.simple_spinner_dropdown_item,
                 groups);
         spGroupClient.setAdapter(groupAdapter);
     }
