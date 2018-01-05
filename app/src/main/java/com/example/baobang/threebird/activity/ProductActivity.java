@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,12 +37,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.RealmList;
+import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
 
 public class ProductActivity extends AppCompatActivity {
 
     private ImageView btnCamera, btnPhoto;
     private LinearLayout layoutImage;
-    private EditText txtProductName, txtProductId,
+    private ExtendedEditText txtProductName, txtProductId,
             txtProductInventory, txtProductPriceInventory,
             txtProductPrice, txtDetail;
 
@@ -192,6 +195,86 @@ public class ProductActivity extends AppCompatActivity {
                 MySupport.cameraIntent(ProductActivity.this);
             }
         });
+
+        txtProductId.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
+                    txtProductId.setError("Định dạng không đúng");
+                    txtProductId.requestFocus();
+                }
+            }
+        });
+
+        txtProductPrice.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
+                    txtProductPrice.setError("Định dạng không đúng");
+                    txtProductPrice.requestFocus();
+                }
+            }
+        });
+
+        txtProductPriceInventory.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
+                    txtProductPriceInventory.setError("Định dạng không đúng");
+                    txtProductPriceInventory.requestFocus();
+                }
+            }
+        });
+
+        txtProductInventory.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
+                    txtProductInventory.setError("Định dạng không đúng");
+                    txtProductInventory.requestFocus();
+                }
+            }
+        });
     }
 
     @Override
@@ -271,7 +354,8 @@ public class ProductActivity extends AppCompatActivity {
         String detail = txtDetail.getText().toString();
 
         if(MySupport.checkInput(name)){
-            MySupport.openDialog(this, "Vui lòng nhập vào tên sản phẩm");
+            txtProductName.setError("Vui lòng nhập vào tên sản phẩm");
+            txtProductName.requestFocus();
             return;
         }
         if(spCategory.getSelectedItemPosition() ==0){
@@ -282,26 +366,62 @@ public class ProductActivity extends AppCompatActivity {
             MySupport.openDialog(this, "Vui lòng chọn hãng sản phẩm");
             return;
         }
+
+        if(MySupport.checkInput(productId)){
+            txtProductId.setError("Vui lòng nhập vào mã sản phẩm");
+            txtProductId.requestFocus();
+            return;
+        }
+
+        if(MySupport.checkInput(inventoryStr)){
+            txtProductInventory.setError("Vui lòng nhập vào số lượng tồn kho");
+            txtProductInventory.requestFocus();
+            return;
+        }
         if(MySupport.checkInput(priceInventoryStr)){
-            MySupport.openDialog(this, "Vui lòng nhập vào giá nhập kho");
+            txtProductPriceInventory.setError("Vui lòng nhập vào giá nhập kho");
+            txtProductPriceInventory.requestFocus();
             return;
         }
         if(MySupport.checkInput(priceStr)){
-            MySupport.openDialog(this, "Vui lòng nhập vào đơn giá sản phẩm");
+            txtProductPrice.setError("Vui lòng nhập vào đơn giá sản phẩm");
+            txtProductPrice.requestFocus();
             return;
         }
-        int inventory, priceInventory, price;
+        int id, inventory, priceInventory, price;
+        try{
+            id = Integer.parseInt(productId);
+        }catch (Exception e){
+            txtProductId.setError("Định dạng không đúng");
+            txtProductId.requestFocus();
+            return;
+        }
 
         try{
             inventory = Integer.parseInt(inventoryStr);
-            priceInventory = Integer.parseInt(priceInventoryStr);
-            price = Integer.parseInt(priceStr);
         }catch (Exception e){
-            MySupport.openDialog(this, "Định dạng không đúng");
+            txtProductInventory.setError("Định dạng không đúng");
+            txtProductInventory.requestFocus();
+            return;
+        }
+        try{
+            priceInventory = Integer.parseInt(priceInventoryStr);
+        }catch (Exception e){
+            txtProductPriceInventory.setError("Định dạng không đúng");
+            txtProductPriceInventory.requestFocus();
             return;
         }
 
-        Product product = new Product(Integer.parseInt(productId),
+        try{
+            price = Integer.parseInt(priceStr);
+        }catch (Exception e){
+            txtProductPrice.setError("Định dạng không đúng");
+            txtProductPrice.requestFocus();
+            return;
+        }
+
+
+        Product product = new Product(id,
                 name,categories.get(category).getId(),
                 brands.get(brand).getId(),
                 inventory,

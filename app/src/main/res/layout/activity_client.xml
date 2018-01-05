@@ -97,6 +97,7 @@
                         android:layout_height="wrap_content"
                         android:paddingTop="@dimen/padding">
                         <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                            android:id="@+id/tfbName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             app:labelText="@string/name"
@@ -135,6 +136,7 @@
                         android:layout_height="wrap_content"
                         android:paddingTop="@dimen/padding">
                         <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                            android:id="@+id/tfbPhone"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/margin"
@@ -158,6 +160,7 @@
                         android:orientation="horizontal"
                         android:paddingTop="@dimen/padding">
                         <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                            android:id="@+id/tfbFax"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/margin"
@@ -181,6 +184,7 @@
                         android:layout_height="wrap_content"
                         android:paddingTop="@dimen/padding">
                         <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                            android:id="@+id/tfbWebsite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/margin"
@@ -203,6 +207,7 @@
                         android:layout_height="wrap_content"
                         android:paddingTop="@dimen/padding">
                         <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                            android:id="@+id/tfbEmail"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/margin"
@@ -315,6 +320,7 @@
                         android:paddingTop="@dimen/padding"
                         android:paddingBottom="@dimen/padding">
                         <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                            android:id="@+id/tfbAddress"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/margin"

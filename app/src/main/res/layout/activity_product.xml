@@ -80,16 +80,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/padding">
-                <EditText
+                <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:labelText="@string/product_name"
+                    android:layout_marginLeft="@dimen/margin"
+                    android:layout_marginRight="@dimen/margin"
+                    app:primaryColor="@color/colorAccent"
+                    app:panelBackgroundColor="@color/color_white"
+                    app:errorColor="@color/A400red">
+                <studio.carbonylgroup.textfieldboxes.ExtendedEditText
                     android:id="@+id/txtProductName"
-                    android:hint="@string/product_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_size"
-                    android:layout_marginLeft="@dimen/margin"
-                    android:layout_marginRight="@dimen/margin"
-                    android:padding="@dimen/padding"
+                    android:singleLine="true"
                     android:background="@color/color_white"/>
+                </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
             </LinearLayout>
             <LinearLayout
                 android:orientation="horizontal"
@@ -124,64 +131,94 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/padding">
-                <EditText
+                <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:labelText="@string/product_id"
+                    android:layout_marginLeft="@dimen/margin"
+                    android:layout_marginRight="@dimen/margin"
+                    app:primaryColor="@color/colorAccent"
+                    app:panelBackgroundColor="@color/color_white"
+                    app:errorColor="@color/A400red">
+                <studio.carbonylgroup.textfieldboxes.ExtendedEditText
                     android:id="@+id/txtProductId"
-                    android:hint="@string/product_id"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_size"
                     android:ems="10"
                     android:maxLines="1"
+                    android:singleLine="true"
                     android:inputType="numberDecimal"
-                    android:layout_marginLeft="@dimen/margin"
-                    android:layout_marginRight="@dimen/margin"
-                    android:padding="@dimen/padding"
                     android:background="@color/color_white"/>
+                </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
             </LinearLayout>
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/padding">
-                <EditText
+                <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:labelText="@string/product_inventory"
+                    android:layout_marginLeft="@dimen/margin"
+                    android:layout_marginRight="@dimen/margin"
+                    app:primaryColor="@color/colorAccent"
+                    app:panelBackgroundColor="@color/color_white"
+                    app:errorColor="@color/A400red">
+                <studio.carbonylgroup.textfieldboxes.ExtendedEditText
                     android:id="@+id/txtProductInventory"
-                    android:hint="@string/product_inventory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_size"
                     android:ems="10"
                     android:maxLines="1"
+                    android:singleLine="true"
                     android:inputType="numberDecimal"
-                    android:layout_marginLeft="@dimen/margin"
-                    android:layout_marginRight="@dimen/margin"
-                    android:padding="@dimen/padding"
                     android:background="@color/color_white"/>
+                </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
             </LinearLayout>
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/padding">
-                <EditText
+                <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:labelText="@string/product_inventory_price"
+                    android:layout_marginLeft="@dimen/margin"
+                    android:layout_marginRight="@dimen/margin"
+                    app:primaryColor="@color/colorAccent"
+                    app:panelBackgroundColor="@color/color_white"
+                    app:errorColor="@color/A400red">
+                <studio.carbonylgroup.textfieldboxes.ExtendedEditText
                     android:id="@+id/txtProductPriceInventory"
-                    android:hint="@string/product_inventory_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_size"
                     android:ems="10"
                     android:maxLines="1"
+                    android:singleLine="true"
                     android:inputType="numberDecimal"
-                    android:layout_marginLeft="@dimen/margin"
-                    android:layout_marginRight="@dimen/margin"
-                    android:padding="@dimen/padding"
                     android:background="@color/color_white"/>
+                </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
             </LinearLayout>
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/padding">
-                <EditText
+                <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:labelText="@string/product_price"
+                    android:layout_marginLeft="@dimen/margin"
+                    android:layout_marginRight="@dimen/margin"
+                    app:primaryColor="@color/colorAccent"
+                    app:panelBackgroundColor="@color/color_white"
+                    app:errorColor="@color/A400red">
+                <studio.carbonylgroup.textfieldboxes.ExtendedEditText
                     android:id="@+id/txtProductPrice"
                     android:hint="@string/product_price"
                     android:layout_width="match_parent"
@@ -189,11 +226,10 @@
                     android:textSize="@dimen/text_size"
                     android:ems="10"
                     android:maxLines="1"
+                    android:singleLine="true"
                     android:inputType="numberDecimal"
-                    android:layout_marginLeft="@dimen/margin"
-                    android:layout_marginRight="@dimen/margin"
-                    android:padding="@dimen/padding"
                     android:background="@color/color_white"/>
+                </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
             </LinearLayout>
             <LinearLayout
                 android:orientation="horizontal"
@@ -201,19 +237,24 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/padding"
                 android:paddingBottom="@dimen/padding">
-                <EditText
+                <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:labelText="@string/product_detail"
+                    android:layout_marginLeft="@dimen/margin"
+                    android:layout_marginRight="@dimen/margin"
+                    app:primaryColor="@color/colorAccent"
+                    app:panelBackgroundColor="@color/color_white"
+                    app:errorColor="@color/A400red">
+                <studio.carbonylgroup.textfieldboxes.ExtendedEditText
                     android:id="@+id/txtDetail"
-                    android:hint="@string/product_detail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_size"
                     android:ems="10"
-                    android:minHeight="100dp"
                     android:inputType="textMultiLine"
-                    android:layout_marginLeft="@dimen/margin"
-                    android:layout_marginRight="@dimen/margin"
-                    android:padding="@dimen/padding"
                     android:background="@color/color_white"/>
+                </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
           </LinearLayout>
         </LinearLayout>
     </ScrollView>
