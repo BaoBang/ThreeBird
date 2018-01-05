@@ -6,12 +6,12 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,6 +32,7 @@ import com.example.baobang.threebird.model.Category;
 import com.example.baobang.threebird.model.Product;
 import com.example.baobang.threebird.model.bussinesslogic.BrandBL;
 import com.example.baobang.threebird.model.bussinesslogic.CategoryBL;
+import com.example.baobang.threebird.model.bussinesslogic.OrderBL;
 import com.example.baobang.threebird.model.bussinesslogic.ProductBL;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.MySupport;
@@ -42,11 +43,9 @@ import java.util.List;
 
 public class ProductFragment extends Fragment {
 
-    private RecyclerView rcProducts;
     private Spinner spCategory, spBrand;
     private List<Product> products;
     private ProductAdapter productAdapter;
-    private List<String> sortBies;
     private List<Category> categories;
     private List<Brand> brands;
 
@@ -56,19 +55,22 @@ public class ProductFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_product, container, false);
         Toolbar toolbar = view.findViewById(R.id.toolBarProduct);
         if (toolbar != null) {
-            ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+            AppCompatActivity appCompatActivity = (AppCompatActivity) getActivity();
+            if(appCompatActivity != null ){
+                appCompatActivity.setSupportActionBar(toolbar);
+            }
             toolbar.setTitle(null);
         }
         setHasOptionsMenu(true);
         // Inflate the layout for this fragment
 
 
-        rcProducts = view.findViewById(R.id.rcProduct);
+        RecyclerView rcProducts = view.findViewById(R.id.rcProduct);
         products = ProductBL.getAllProduct();
         productAdapter = new ProductAdapter(products, rcProducts, new OnItemRecyclerViewClickListener() {
             @Override
@@ -109,38 +111,60 @@ public class ProductFragment extends Fragment {
         builder.show();
     }
 
-    private void deleteClient(int productId) {
-        Product product = ProductBL.getProduct(productId);
-        if(product != null){
-            boolean res =ProductBL.deleteProduct(product);
-            if(res){
-                removeProductFromList(product);
-                updateListView();
-                Toast.makeText(getContext(), "Xóa thành công", Toast.LENGTH_SHORT).show();
-            }else{
-                MySupport.openDialog(getActivity(), "Có lỗi xảy ra, vui lòng thử lại");
+    private void deleteClient(final int productId) {
+        final Product product = ProductBL.getProduct(productId);
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+        dialog.setCancelable(false);
+        dialog.setTitle("Thông báo!");
+        dialog.setMessage("Bạn có muốn xóa sản phẩm " + product.getName());
+
+        dialog.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                if(OrderBL.checkProductOrdered(product.getId())){
+                   boolean res =ProductBL.deleteProduct(product);
+                   if(res){
+                       removeProductFromList(product);
+                       updateListView();
+                       Toast.makeText(getContext(), "Xóa thành công", Toast.LENGTH_SHORT).show();
+                   }else{
+                       MySupport.openDialog(getActivity(), "Có lỗi xảy ra, vui lòng thử lại");
+                   }
+                }else{
+                    MySupport.openDialog(getActivity(), "Sản phẩm đã được đặt hàng, không thể xóa");
+                }
             }
-        }else{
-            MySupport.openDialog(getActivity(), "Có lỗi xảy ra, vui lòng thử lại");
-        }
+        }).setNegativeButton("Hủy ", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        final AlertDialog alert = dialog.create();
+        alert.show();
+
+
+
+
+
     }
 
-    private boolean removeProductFromList(Product product){
+    private void removeProductFromList(Product product){
         for(Product p : products){
             if(p.getId() == product.getId()){
                 products.remove(p);
-                return true;
+                return;
             }
         }
-        return false;
     }
 
     private void addSpinnerSortBy(View view) {
         Spinner spSortBy = view.findViewById(R.id.spSortBy);
-        sortBies = getSortBies();
+        List<String> sortBies = getSortBies();
         ArrayAdapter<String> sortByAdapter =
                 new ArrayAdapter<>(
-                        getActivity(),
+                        view.getContext(),
                         android.R.layout.simple_list_item_1,
                         sortBies);
         spSortBy.setAdapter(sortByAdapter);
@@ -178,7 +202,7 @@ public class ProductFragment extends Fragment {
 
         ArrayAdapter<Category> categoryArrayAdapter =
                 new ArrayAdapter<>(
-                        getActivity(),
+                        view.getContext(),
                         android.R.layout.simple_list_item_1,
                         categories);
         spCategory.setAdapter(categoryArrayAdapter);
@@ -200,7 +224,7 @@ public class ProductFragment extends Fragment {
         brands = getBrands();
         ArrayAdapter<Brand> brandArrayAdapter =
                 new ArrayAdapter<>(
-                        getActivity(),
+                        view.getContext(),
                         android.R.layout.simple_list_item_1,
                         brands);
         spBrand.setAdapter(brandArrayAdapter);

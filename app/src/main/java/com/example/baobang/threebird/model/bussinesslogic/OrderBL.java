@@ -2,9 +2,12 @@ package com.example.baobang.threebird.model.bussinesslogic;
 
 import android.util.Log;
 import com.example.baobang.threebird.model.Order;
+import com.example.baobang.threebird.model.ProductOrder;
+
 import java.util.ArrayList;
 import java.util.List;
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 
 public class OrderBL {
@@ -75,5 +78,32 @@ public class OrderBL {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public static boolean checkClientHasOreder(int clientId){
+        boolean result = false;
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<Order> results = realm.where(Order.class).findAll();
+        for(Order order : results){
+            if(order.getClientId() == clientId){
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+
+    public static boolean checkProductOrdered(int productId){
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<Order> results = realm.where(Order.class).findAll();
+        for(Order order : results){
+            RealmList<ProductOrder> products = order.getProducts();
+            for(ProductOrder productOrder : products){
+                if(productOrder.getProductId() == productId){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

@@ -38,6 +38,7 @@ import java.util.List;
 
 import io.realm.RealmList;
 import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
+import studio.carbonylgroup.textfieldboxes.TextFieldBoxes;
 
 public class ProductActivity extends AppCompatActivity {
 
@@ -112,11 +113,28 @@ public class ProductActivity extends AppCompatActivity {
 
     private void setDisableInput() {
         // add views
+        TextFieldBoxes tfbDetail = findViewById(R.id.tfbDetail);
+        tfbDetail.setEnabled(false);
         txtDetail.setEnabled(false);
+
+        TextFieldBoxes tfbProductId = findViewById(R.id.tfbProductId);
+        tfbProductId.setEnabled(false);
         txtProductId.setEnabled(false);
+
+        TextFieldBoxes tfbProductInventory = findViewById(R.id.tfbProductInventory);
+        tfbProductInventory.setEnabled(false);
         txtProductInventory.setEnabled(false);
+
+        TextFieldBoxes tfbProductName = findViewById(R.id.tfbProductName);
+        tfbProductName.setEnabled(false);
         txtProductName.setEnabled(false);
+
+        TextFieldBoxes tfbProductPrice = findViewById(R.id.tfbProductPrice);
+        tfbProductPrice.setEnabled(false);
         txtProductPrice.setEnabled(false);
+
+        TextFieldBoxes tfbProductPriceInventory = findViewById(R.id.tfbProductPriceInventory);
+        tfbProductPriceInventory.setEnabled(false);
         txtProductPriceInventory.setEnabled(false);
         // image button Camera and Photo
         btnCamera.setEnabled(false);
@@ -146,6 +164,7 @@ public class ProductActivity extends AppCompatActivity {
     }
 
     private void setDataForInput() {
+
         txtProductId.setText(String.valueOf(product.getId()));
         txtProductPriceInventory.setText(String.valueOf(product.getPriceInventory()));
         txtProductPrice.setText(String.valueOf(product.getPrice()));

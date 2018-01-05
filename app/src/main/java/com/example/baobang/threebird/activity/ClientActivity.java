@@ -274,33 +274,27 @@ public class ClientActivity extends AppCompatActivity {
         TextFieldBoxes tfbName = findViewById(R.id.tfbName);
         tfbName.setEnabled(false);
         txtName.setEnabled(false);
-        txtName.setFocusable(false);
 
         TextFieldBoxes tfbPhone = findViewById(R.id.tfbPhone);
         tfbPhone.setEnabled(false);
         txtPhone.setEnabled(false);
-        txtPhone.setFocusable(false);
 
         TextFieldBoxes tfbFax = findViewById(R.id.tfbFax);
         tfbFax.setEnabled(false);
         txtFax.setEnabled(false);
-        txtFax.setFocusable(false);
 
         TextFieldBoxes tfbWebsite = findViewById(R.id.tfbWebsite);
         tfbWebsite.setEnabled(false);
         txtWebsite.setEnabled(false);
-        txtWebsite.setFocusable(false);
 
 
         TextFieldBoxes tfbEmail = findViewById(R.id.tfbEmail);
         tfbEmail.setEnabled(false);
         txtEmail.setEnabled(false);
-        txtEmail.setFocusable(false);
 
         TextFieldBoxes tfbAddress = findViewById(R.id.tfbAddress);
         tfbAddress.setEnabled(false);
         txtAddress.setEnabled(false);
-        txtAddress.setFocusable(false);
 
 
         spGroupClient.setEnabled(false);

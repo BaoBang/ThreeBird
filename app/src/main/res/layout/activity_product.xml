@@ -81,6 +81,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/padding">
                 <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:id="@+id/tfbProductName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:labelText="@string/product_name"
@@ -132,6 +133,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/padding">
                 <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:id="@+id/tfbProductId"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:labelText="@string/product_id"
@@ -158,6 +160,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/padding">
                 <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:id="@+id/tfbProductInventory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:labelText="@string/product_inventory"
@@ -184,6 +187,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/padding">
                 <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:id="@+id/tfbProductPriceInventory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:labelText="@string/product_inventory_price"
@@ -210,6 +214,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/padding">
                 <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:id="@+id/tfbProductPrice"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:labelText="@string/product_price"
@@ -238,6 +243,7 @@
                 android:paddingTop="@dimen/padding"
                 android:paddingBottom="@dimen/padding">
                 <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:id="@+id/tfbDetail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:labelText="@string/product_detail"
