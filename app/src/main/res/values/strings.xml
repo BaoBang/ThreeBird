@@ -48,6 +48,7 @@
     <string name="phone">Số điện thoại</string>
     <string name="provinces">Tỉnh/Thành phố</string>
     <string name="district">Quận/Huyện</string>
+    <string name="enter_other_name">Nhập vào tên khác</string>
     <!--user detail-->
     <string name="name">Họ tên</string>
     <string name="group_user">Nhóm khách hàng</string>

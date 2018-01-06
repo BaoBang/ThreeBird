@@ -10,7 +10,7 @@ import io.realm.RealmResults;
 
 
 public class ProductBL {
-    public static boolean createProudct(Product product){
+    public static int createProudct(Product product){
         try (Realm realm = Realm.getDefaultInstance()) {
             int nextID = 0;
             Number number = realm.where(Product.class).max("id");
@@ -20,11 +20,11 @@ public class ProductBL {
             product.setId(nextID);
             realm.copyToRealm(product);
             realm.commitTransaction();
-            return true;
+            return nextID;
         } catch (Exception e) {
             Log.e("Lỗi: ", e.getMessage());
         }
-        return false;
+        return -1;
     }
 
     public static ArrayList<Product> getAllProduct(){
@@ -67,14 +67,14 @@ public class ProductBL {
         return  products;
     }
 
-    public static boolean updateProduct(Product product) {
+    public static int updateProduct(Product product) {
         try (Realm realm = Realm.getDefaultInstance()) {
             realm.beginTransaction();
             realm.copyToRealmOrUpdate(product);
             realm.commitTransaction();
-            return true;
+            return product.getId();
         } catch (Exception e) {
-            return false;
+            return -1;
         }
     }
 

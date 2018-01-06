@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.activity.OrderActivity;
 import com.example.baobang.threebird.adapter.OrderAdapter;
@@ -29,6 +31,7 @@ import com.example.baobang.threebird.model.Order;
 import com.example.baobang.threebird.model.bussinesslogic.OrderBL;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.MySupport;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,12 +49,15 @@ public class OrderFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_order, container, false);
         Toolbar toolbar = view.findViewById(R.id.toolBarOrder);
         if (toolbar != null) {
-            ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+            AppCompatActivity appCompatActivity = (AppCompatActivity) getActivity();
+            if(appCompatActivity != null){
+                appCompatActivity.setSupportActionBar(toolbar);
+            }
             toolbar.setTitle(null);
         }
         setHasOptionsMenu(true);
@@ -188,8 +194,7 @@ public class OrderFragment extends Fragment {
                     goToCreateOrderActivity(orderId,Constants.EDIT_OPTION);
                 }else if(items[item].equals("Xem chi tiết")){
                     goToCreateOrderActivity(orderId, Constants.DETAIL_OPTION);
-                }
-                else{
+                }else{
                     deleteOrder(orderId);
                 }
             }

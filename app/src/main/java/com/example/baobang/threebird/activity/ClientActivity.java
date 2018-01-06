@@ -120,7 +120,8 @@ public class ClientActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 if(!editable.toString().matches(Constants.PHONE_REGULAR)){
-                    txtPhone.setError("Số điện thoại không đúng");
+                    txtPhone.setError("Số điện thoại bắt đầu với +84/0 và tiếp theo từ 9-10 kí tự số");
+                    txtPhone.requestFocus();
                 }
             }
         });
@@ -336,7 +337,7 @@ public class ClientActivity extends AppCompatActivity {
             return;
         }
         if(!phone.matches(Constants.PHONE_REGULAR)){
-            txtPhone.setError("Số điện thoại không đúng");
+            txtPhone.setError("Số điện thoại bắt đầu với +84/0 và tiếp theo từ 9-10 kí tự số");
             txtPhone.requestFocus();
             return;
         }

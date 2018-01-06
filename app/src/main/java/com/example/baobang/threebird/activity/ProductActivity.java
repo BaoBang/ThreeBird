@@ -17,7 +17,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -452,16 +451,17 @@ public class ProductActivity extends AppCompatActivity {
             bitmapStrs.add(MySupport.BitMapToString(bitmap, 50));
         }
         product.setImages(bitmapStrs);
-        boolean res;
+        int result;
         if(this.product == null){
-            res =  ProductBL.createProudct(product);
+            result =  ProductBL.createProudct(product);
         }else{
-            res = ProductBL.updateProduct(product);
+            result = ProductBL.updateProduct(product);
         }
-        if(res){
+        Log.e("Ida", result + "");
+        if(result != -1){
             Intent returnIntent = new Intent();
             Bundle bundle = new Bundle();
-            bundle.putInt(Constants.PRODUCT,product.getId());
+            bundle.putInt(Constants.PRODUCT,result);
             returnIntent.putExtras(bundle);
             setResult(Activity.RESULT_OK,returnIntent);
             finish();

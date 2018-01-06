@@ -9,6 +9,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -45,14 +46,16 @@ import java.util.List;
 import java.util.Locale;
 
 import io.realm.RealmList;
+import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
+import studio.carbonylgroup.textfieldboxes.TextFieldBoxes;
 
 public class OrderActivity extends AppCompatActivity {
 
 
     private Toolbar toolbar;
     private ImageView imgAvatar;
-    private EditText txtName, txtOrderId, txtPhone, txtAddress;
-    private TextView txtCreatedAt, txtAmount, txtDeliveryDate;
+    private ExtendedEditText txtName, txtOrderId, txtPhone, txtAddress, txtCreatedAt, txtDeliveryDate;
+    private TextView txtAmount;
 
     private Spinner spStatus, spProvince,
             spDistrict, spCommune,  spPayment;
@@ -77,11 +80,11 @@ public class OrderActivity extends AppCompatActivity {
         if(order != null){
             productList.addAll(order.getProducts());
         }
-        addControlls();
+        addControls();
         addEvents();
     }
 
-    private void addControlls() {
+    private void addControls() {
         toolbar = findViewById(R.id.toolBarCreateOrder);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -97,10 +100,18 @@ public class OrderActivity extends AppCompatActivity {
         txtPhone = findViewById(R.id.txtPhone);
         txtAddress = findViewById(R.id.txtAddress);
 
+        TextFieldBoxes tfbCreatedAt = findViewById(R.id.tfbCreateAt);
+        tfbCreatedAt.setEnabled(false);
+        txtCreatedAt = findViewById(R.id.txtCreatedAt);
+        txtCreatedAt.setEnabled(false);
+
+        TextFieldBoxes tfbDeliveryDate = findViewById(R.id.tfbDeliveryDate);
+        tfbDeliveryDate.setEnabled(false);
+        txtDeliveryDate = findViewById(R.id.txtDeliveryDate);
+        txtDeliveryDate.setEnabled(false);
+
         txtAmount = findViewById(R.id.txtAmount);
         txtAmount.setText(String.valueOf(getAmountAllProduct()));
-        txtCreatedAt = findViewById(R.id.txtCreatedAt);
-        txtDeliveryDate = findViewById(R.id.txtDeliveryDate);
 
         btnCreatedAt = findViewById(R.id.btnCreatedAt);
         btnAddProduct = findViewById(R.id.btnAddProduct);
@@ -130,9 +141,20 @@ public class OrderActivity extends AppCompatActivity {
     }
 
     private void setDisableInput() {
+        TextFieldBoxes tfbName = findViewById(R.id.tfbName);
+        tfbName.setEnabled(false);
         txtName.setEnabled(false);
+
+        TextFieldBoxes tfbOrderId = findViewById(R.id.tfbOrderId);
+        tfbOrderId.setEnabled(false);
         txtOrderId.setEnabled(false);
+
+        TextFieldBoxes tfbPhone = findViewById(R.id.tfbPhone);
+        tfbPhone.setEnabled(false);
         txtPhone.setEnabled(false);
+
+        TextFieldBoxes tfbAddress = findViewById(R.id.tfbAddress);
+        tfbAddress.setEnabled(false);
         txtAddress.setEnabled(false);
 
         txtAmount.setEnabled(false);
@@ -152,6 +174,11 @@ public class OrderActivity extends AppCompatActivity {
     }
 
     private void setDataForInput() {
+        Client client = ClientBL.getClient(order.getClientId());
+        if(client != null && client.getAvatar().length() > 0){
+            Bitmap bitmap = MySupport.StringToBitMap(client.getAvatar());
+            imgAvatar.setImageBitmap(MySupport.getRoundedRectBitmap(bitmap));
+        }
         txtName.setText(order.getClientName());
         txtOrderId.setText(String.valueOf(order.getId()));
 
@@ -283,6 +310,46 @@ public class OrderActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 showDialogProduct();
+            }
+        });
+
+        txtOrderId.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
+                    txtOrderId.setError("Nhập vào kí tự số!");
+                    txtOrderId.requestFocus();
+                }
+            }
+        });
+
+        txtPhone.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(!editable.toString().matches(Constants.PHONE_REGULAR)){
+                    txtPhone.setError("Số điện thoại bắt đầu với +84/0 và tiếp theo từ 9-10 kí tự số");
+                    txtPhone.requestFocus();
+                }
             }
         });
     }
@@ -436,6 +503,7 @@ public class OrderActivity extends AppCompatActivity {
                 Client client = (Client) item;
                 dialog.dismiss();
                 getClientFromList(client);
+                clientSelectedId = client.getId();
             }
         });
         rcClients.setLayoutManager(new VegaLayoutManager());
@@ -479,6 +547,7 @@ public class OrderActivity extends AppCompatActivity {
     private void addOrder() {
        try {
            String name = txtName.getText().toString();
+           String orderId = txtOrderId.getText().toString();
            String createdAtStr = txtCreatedAt.getText().toString();
            int status = spStatus.getSelectedItemPosition();
            String phone = txtPhone.getText().toString();
@@ -490,19 +559,38 @@ public class OrderActivity extends AppCompatActivity {
            int payment = spPayment.getSelectedItemPosition();
 
            if(MySupport.checkInput(name)){
-               MySupport.openDialog(this, "Vui lòng nhập vào tên khách hàng");
+               txtName.setError("Vui lòng nhập vào tên khách hàng");
+               txtName.requestFocus();
+               return;
+           }
+           if(MySupport.checkInput(orderId)){
+               txtOrderId.setError("Vui lòng nhập vào số hóa đơn");
+               txtOrderId.requestFocus();
                return;
            }
            if(MySupport.checkInput(createdAtStr)){
                MySupport.openDialog(this, "Vui lòng chọn ngày lập hóa đơn");
                return;
            }
+           Date date = new Date(createdAtStr);
+           SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", new Locale("vi", "VN"));
+           if(date.before(simpleDateFormat.getCalendar().getTime())){
+               MySupport.openDialog(this, "Ngày đặt hàng không hợp lệ");
+               return;
+           }
+
            if(status == 0){
                MySupport.openDialog(this, "Vui lòng chọn trạng thái của hóa đơn");
                return;
            }
            if(MySupport.checkInput(phone)){
-               MySupport.openDialog(this, "Vui lòng nhâp vào số điện thoại");
+               txtPhone.setError("Vui lòng nhâp vào số điện thoại");
+               txtPhone.requestFocus();
+               return;
+           }
+           if(!phone.matches(Constants.PHONE_REGULAR)){
+               txtPhone.setError("Số điện thoại không đúng");
+               txtPhone.requestFocus();
                return;
            }
            if(province == 0){
@@ -518,15 +606,23 @@ public class OrderActivity extends AppCompatActivity {
                return;
            }
            if(MySupport.checkInput(address)){
-               MySupport.openDialog(this, "Vui lòng nhâp vào địa chỉ");
+               txtAddress.setError("Vui lòng nhâp vào địa chỉ");
+               txtAddress.requestFocus();
                return;
            }
+
+           if(productList.size() == 0){
+               MySupport.openDialog(this, "Vui lòng chọn sản phẩm");
+               return;
+           }
+
            if(MySupport.checkInput(deliveryDateStr)){
                MySupport.openDialog(this, "Vui lòng chọn ngày giao hàng");
                return;
            }
-           Date date = new Date(createdAtStr);
+
            Date date2 = new Date(deliveryDateStr);
+
            if(date.after(date2)){
                MySupport.openDialog(this, "Ngày giao hàng không hợp lệ");
                return;

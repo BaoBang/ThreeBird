@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -48,7 +49,8 @@ public class ProductFragment extends Fragment {
     private ProductAdapter productAdapter;
     private List<Category> categories;
     private List<Brand> brands;
-
+    private RecyclerView rcProducts;
+    private OnItemRecyclerViewClickListener onItemRecyclerViewClickListener;
     public ProductFragment() {
         // Required empty public constructor
     }
@@ -70,18 +72,17 @@ public class ProductFragment extends Fragment {
         // Inflate the layout for this fragment
 
 
-        RecyclerView rcProducts = view.findViewById(R.id.rcProduct);
+        rcProducts = view.findViewById(R.id.rcProduct);
         products = ProductBL.getAllProduct();
-        productAdapter = new ProductAdapter(products, rcProducts, new OnItemRecyclerViewClickListener() {
+        onItemRecyclerViewClickListener =new OnItemRecyclerViewClickListener() {
             @Override
             public void onItemClick(Object item) {
                 Product product = (Product) item;
                 openOptionDialog(product.getId());
             }
-        });
+        };
         rcProducts.setLayoutManager(new VegaLayoutManager());
-        rcProducts.setAdapter(productAdapter);
-
+        updateRecyclerView();
         addSpinnerCategory(view);
         addSpinnerBrand(view);
         addSpinnerSortBy(view);
@@ -104,14 +105,14 @@ public class ProductFragment extends Fragment {
                     goToAddProductActivity(productId, Constants.DETAIL_OPTION);
                 }
                 else{
-                    deleteClient(productId);
+                    deleteProduct(productId);
                 }
             }
         });
         builder.show();
     }
 
-    private void deleteClient(final int productId) {
+    private void deleteProduct(final int productId) {
         final Product product = ProductBL.getProduct(productId);
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
@@ -122,11 +123,11 @@ public class ProductFragment extends Fragment {
         dialog.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
-                if(OrderBL.checkProductOrdered(product.getId())){
+                if(!OrderBL.checkProductOrdered(product.getId())){
                    boolean res =ProductBL.deleteProduct(product);
                    if(res){
                        removeProductFromList(product);
-                       updateListView();
+                       updateRecyclerView();
                        Toast.makeText(getContext(), "Xóa thành công", Toast.LENGTH_SHORT).show();
                    }else{
                        MySupport.openDialog(getActivity(), "Có lỗi xảy ra, vui lòng thử lại");
@@ -193,7 +194,7 @@ public class ProductFragment extends Fragment {
             categoryId = categories.get(categoryPosition).getId();
         }
         products = ProductBL.getListSortBy(brandId, categoryId);
-        updateListView();
+        updateRecyclerView();
     }
 
     private void addSpinnerCategory(View view) {
@@ -246,6 +247,7 @@ public class ProductFragment extends Fragment {
         if(requestCode == Constants.PRODUCT_REQUEST_CODE && resultCode == Activity.RESULT_OK){
             Bundle bundle = data.getExtras();
             int productId = bundle == null ? -1 : bundle.getInt(Constants.PRODUCT);
+            Log.e("Id", productId + "");
             Product product = ProductBL.getProduct(productId);
             int indexChange = checkProducts(product);
             if( indexChange == -1){
@@ -253,8 +255,8 @@ public class ProductFragment extends Fragment {
             }else{
                 products.set(indexChange, product);
             }
-//            productAdapter.setTempObjects(products);
-            productAdapter.notifyDataSetChanged();
+            productAdapter = new ProductAdapter(products, rcProducts, onItemRecyclerViewClickListener);
+            rcProducts.setAdapter(productAdapter);
         }
     }
 
@@ -312,9 +314,9 @@ public class ProductFragment extends Fragment {
 
     }
 
-    private void updateListView(){
-//        productAdapter = new ProductAdapter(getActivity(), R.layout.item_product, products);
-//        lvProducts.setAdapter(productAdapter);
+    private void updateRecyclerView(){
+        productAdapter = new ProductAdapter(products, rcProducts, onItemRecyclerViewClickListener);
+        rcProducts.setAdapter(productAdapter);
     }
 
     private List<Brand> getBrands(){
