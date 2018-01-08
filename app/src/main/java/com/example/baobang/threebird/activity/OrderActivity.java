@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import com.example.baobang.threebird.R;
@@ -171,6 +171,8 @@ public class OrderActivity extends AppCompatActivity {
         spPayment.setEnabled(false);
         spProvince.setEnabled(false);
         spStatus.setEnabled(false);
+
+        layoutProduct.setEnabled(false);
     }
 
     private void setDataForInput() {
@@ -396,35 +398,92 @@ public class OrderActivity extends AppCompatActivity {
         return -1;
     }
 
-    private void addProductToLayout(Product product) {
+    private void updateAmountOfProductInCard(int index, int productId){
+        LinearLayout layout = (LinearLayout) layoutProduct.getChildAt(index);
+        TextView textView = (TextView) layout.getChildAt(2);
+        String text = "Số lượng: " + getAmountProduct(productId);
+        textView.setText(text);
+    }
+
+    private LinearLayout createLinearLayout(int id){
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setId(id);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f);
+        layoutParams.setMargins(0, 0, Constants.MARGIN_SMALL, 0);
+        layout.setLayoutParams(layoutParams);
+        return layout;
+    }
+
+    private RelativeLayout createRelativeLayout(){
+        RelativeLayout relativeLayout = new RelativeLayout(this);
+        RelativeLayout.LayoutParams paramsRelativeLayout = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        relativeLayout.setLayoutParams(paramsRelativeLayout);
+        return  relativeLayout;
+    }
+
+    private ImageView createImageView(Product product){
+        RelativeLayout.LayoutParams imageParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        ImageView imageView = new ImageView(this);
+        if(product.getImages().size() == 0){
+            imageView.setImageResource(R.drawable.noimage);
+        }else{
+            Bitmap bitmap = MySupport.StringToBitMap(product.getImages().first());
+            imageView.setImageBitmap(MySupport.getRoundedRectBitmap(bitmap));
+        }
+        imageView.setLayoutParams(imageParams);
+        imageView.getLayoutParams().height = Constants.IMAGE_HEIGHT * 2;
+        imageView.getLayoutParams().width = Constants.IMAGE_WIDTH * 2;
+//        imageParams.gravity = Gravity.CENTER;
+        return  imageView;
+    }
+
+    private ImageButton createImageRemoveButton(ImageView imgView){
+        RelativeLayout.LayoutParams imageButtonParams = new RelativeLayout.LayoutParams(32, 32);
+        imageButtonParams.setMargins(0, 10, 0, 0);
+        imageButtonParams.addRule(RelativeLayout.END_OF, imgView.getId());
+        ImageButton btnRemove = new ImageButton(imgView.getContext());
+        btnRemove.setImageResource(R.drawable.ic_close_red);
+        btnRemove.setLayoutParams(imageButtonParams);
+        return  btnRemove;
+    }
+
+    private void updateProudctAmount(){
+        txtAmount.setText(getAmountAllProduct() + "");
+    }
+
+    private void addProductToLayout(final Product product) {
         int index = checkLayoutProduct(product.getId());
         if(index != -1){
-            LinearLayout layout = (LinearLayout) layoutProduct.getChildAt(index);
-            TextView textView = (TextView) layout.getChildAt(2);
-            String text = "Số lượng: " + getAmountProduct(product.getId());
-            textView.setText(text);
+            updateAmountOfProductInCard(index, product.getId());
         }else{
-            LinearLayout layout = new LinearLayout(this);
-            layout.setOrientation(LinearLayout.VERTICAL);
-            layout.setId(product.getId());
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f);
-            layoutParams.setMargins(0, 0, Constants.MARGIN_SMALL, 0);
-            layout.setLayoutParams(layoutParams);
 
-            // ad image
-            LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            ImageView imageView = new ImageView(this);
-            if(product.getImages().size() == 0){
-                imageView.setImageResource(R.drawable.noimage);
-            }else{
-                Bitmap bitmap = MySupport.StringToBitMap(product.getImages().first());
-                imageView.setImageBitmap(MySupport.getRoundedRectBitmap(bitmap));
-            }
-            imageView.setLayoutParams(imageParams);
-            imageView.getLayoutParams().height = Constants.IMAGE_HEIGHT * 2;
-            imageView.getLayoutParams().width = Constants.IMAGE_WIDTH * 2;
-            imageParams.gravity = Gravity.CENTER;
-            layout.addView(imageView);
+            final LinearLayout layout =createLinearLayout(product.getId());
+            //layout contain image product and button remove
+            RelativeLayout relativeLayout = createRelativeLayout();
+            // image product
+            ImageView imageView = createImageView(product);
+            // image button remove
+            ImageButton imageButtonRemove = createImageRemoveButton(imageView);
+            if(option == Constants.DETAIL_OPTION) imageButtonRemove.setEnabled(false);
+
+            relativeLayout.addView(imageView);
+            relativeLayout.addView(imageButtonRemove);
+            imageButtonRemove.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    for(ProductOrder productOrder : productList){
+                        if(productOrder.getProductId() == product.getId()){
+                            productList.remove(productOrder);
+                            break;
+                        }
+                    }
+                    layoutProduct.removeView(layout);
+                    updateProudctAmount();
+                }
+            });
+
+            layout.addView(relativeLayout);
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             // add product name
@@ -447,6 +506,52 @@ public class OrderActivity extends AppCompatActivity {
             layout.addView(txtPrice);
 
             layoutProduct.addView(layout);
+
+
+
+//            LinearLayout layout = new LinearLayout(this);
+//            layout.setOrientation(LinearLayout.VERTICAL);
+//            layout.setId(product.getId());
+//            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f);
+//            layoutParams.setMargins(0, 0, Constants.MARGIN_SMALL, 0);
+//            layout.setLayoutParams(layoutParams);
+//
+//            // ad image
+//            LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//            ImageView imageView = new ImageView(this);
+//            if(product.getImages().size() == 0){
+//                imageView.setImageResource(R.drawable.noimage);
+//            }else{
+//                Bitmap bitmap = MySupport.StringToBitMap(product.getImages().first());
+//                imageView.setImageBitmap(MySupport.getRoundedRectBitmap(bitmap));
+//            }
+//            imageView.setLayoutParams(imageParams);
+//            imageView.getLayoutParams().height = Constants.IMAGE_HEIGHT * 2;
+//            imageView.getLayoutParams().width = Constants.IMAGE_WIDTH * 2;
+//            imageParams.gravity = Gravity.CENTER;
+//            layout.addView(imageView);
+//
+//            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//            // add product name
+//            TextView txtName = new TextView(this);
+//            txtName.setLayoutParams(params);
+//            String text = "Tên sản phẩm: " + product.getName();
+//            txtName.setText(text);
+//            layout.addView(txtName);
+//            // add amount
+//            TextView txtAmount = new TextView(this);
+//            txtAmount.setLayoutParams(params);
+//            text = "Số lượng: "+getAmountProduct(product.getId());
+//            txtAmount.setText(text);
+//            layout.addView(txtAmount);
+//            // add price
+//            TextView txtPrice = new TextView(this);
+//            txtPrice.setLayoutParams(params);
+//            text = "Đơn giá: " + product.getPrice() + "đ";
+//            txtPrice.setText(text);
+//            layout.addView(txtPrice);
+//
+//            layoutProduct.addView(layout);
         }
 
 
@@ -539,7 +644,11 @@ public class OrderActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.actionBar_add){
-            addOrder();
+            if(option != Constants.DETAIL_OPTION){
+                addOrder();
+            }else{
+                finish();
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -645,6 +754,11 @@ public class OrderActivity extends AppCompatActivity {
                    0);
            order.setClientId(clientSelectedId);
            boolean res;
+           Product product = checkInventory();
+           if(product != null){
+               MySupport.openDialog(this, "Sản phẩm " + product.getName() +" hiện còn " + product.getInvetory() + " sản phẩm");
+               return;
+           }
            if(this.order == null){
                res =  OrderBL.createOrder(order);
            }else{
@@ -652,6 +766,7 @@ public class OrderActivity extends AppCompatActivity {
                res = OrderBL.updateOrder(order);
            }
            if(res){
+               orderCompletetion(order);
                Intent returnIntent = new Intent();
                Bundle bundle = new Bundle();
                bundle.putInt(Constants.ORDER,order.getId());
@@ -666,6 +781,24 @@ public class OrderActivity extends AppCompatActivity {
        }catch (Exception e){
            MySupport.openDialog(this, "Lỗi: " + e.getMessage());
        }
+    }
+
+    private Product checkInventory(){
+        for(ProductOrder productOrder : productList){
+            Product product = ProductBL.getProduct(productOrder.getProductId());
+            if(product.getInvetory()  < productOrder.getAmount()){
+                return product;
+            }
+        }
+        return null;
+    }
+
+    private void orderCompletetion(Order order) {
+        for(ProductOrder productOrder : productList){
+            Product product = ProductBL.getProduct(productOrder.getProductId());
+            product.setInvetory(product.getInvetory() - productOrder.getAmount());
+            ProductBL.updateProduct(product);
+        }
     }
 
 

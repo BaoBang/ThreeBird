@@ -4,12 +4,12 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,19 +42,22 @@ public class ClientFragment extends Fragment {
         // Required empty public constructor
     }
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        return addControlls(inflater,container);
+        return addControls(inflater,container);
 
     }
 
-    private View addControlls(LayoutInflater inflater, ViewGroup container) {
+    private View addControls(LayoutInflater inflater, ViewGroup container) {
         View view = inflater.inflate(R.layout.fragment_client, container, false);
         // add toolbar
         Toolbar toolbar = view.findViewById(R.id.toolBarClient);
         if (toolbar != null) {
-            ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+            AppCompatActivity appCompatActivity = (AppCompatActivity) getActivity();
+            if(appCompatActivity != null){
+                appCompatActivity.setSupportActionBar(toolbar);
+            }
             toolbar.setTitle(null);
         }
         setHasOptionsMenu(true);
@@ -91,7 +94,6 @@ public class ClientFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String s) {
                 clientAdapter.getFilter().filter(s);
-                Log.e("size", clients.size() + "");
                 return false;
             }
         });
@@ -149,7 +151,10 @@ public class ClientFragment extends Fragment {
     }
 
     private void deleteClient(final Client client) {
-
+        if(OrderBL.checkClientHasOreder(client.getId())){
+            MySupport.openDialog(getActivity(), "Khách hàng đã lập hóa đơn không thể xóa.");
+            return;
+        }
         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
         dialog.setCancelable(false);
         dialog.setTitle("Thông báo!");
@@ -158,9 +163,6 @@ public class ClientFragment extends Fragment {
         dialog.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
-                if(OrderBL.checkClientHasOreder(client.getId())){
-                    MySupport.openDialog(getActivity(), "Khách hàng đã lập hóa đơn không thể xóa.");
-                }else{
                     boolean res =ClientBL.deleteClient(client);
                     if(res){
                         clients.remove(client);
@@ -169,7 +171,6 @@ public class ClientFragment extends Fragment {
                     }else{
                         MySupport.openDialog(getActivity(), "Có lỗi xảy ra, vui lòng thử lại");
                     }
-                }
             }
         }).setNegativeButton("Hủy ", new DialogInterface.OnClickListener() {
                     @Override

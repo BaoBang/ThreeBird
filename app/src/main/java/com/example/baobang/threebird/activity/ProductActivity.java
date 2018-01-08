@@ -12,13 +12,17 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
 import com.example.baobang.threebird.R;
@@ -33,7 +37,9 @@ import com.example.baobang.threebird.utils.MySupport;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.realm.RealmList;
 import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
@@ -54,8 +60,9 @@ public class ProductActivity extends AppCompatActivity {
 
     private Product product = null;
     private Toolbar toolbar;
-    private ArrayList<Bitmap> bitmaps;
+    private HashMap<Integer,Bitmap> bitmaps = new HashMap<>();
     private int option;
+    private int key = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,7 +106,6 @@ public class ProductActivity extends AppCompatActivity {
         addSpinnerBrand();
         addSpinnerCategory();
         // to save list product images
-        bitmaps = new ArrayList<>();
 
         if(product != null){
             setDataForInput();
@@ -140,6 +146,7 @@ public class ProductActivity extends AppCompatActivity {
         btnPhoto.setEnabled(false);
         spBrand.setEnabled(false);
         spCategory.setEnabled(false);
+        layoutImage.setEnabled(false);
     }
 
     private void addSpinnerCategory() {
@@ -184,11 +191,10 @@ public class ProductActivity extends AppCompatActivity {
                 break;
             }
         }
-        bitmaps = new ArrayList<>();
         for(String bitmapStr : product.getImages()){
             Bitmap bitmap = MySupport.StringToBitMap(bitmapStr);
-            bitmaps.add(bitmap);
-            addImageView(layoutImage, bitmap);
+            bitmaps.put( key, bitmap);
+            addImageView(layoutImage, key++, bitmap);
         }
     }
 
@@ -305,8 +311,8 @@ public class ProductActivity extends AppCompatActivity {
                 if(bundle != null){
                     Bitmap bitmap = (Bitmap) bundle.get("data");
                     bitmap = MySupport.getResizedBitmap(bitmap, Constants.IMAGE_WIDTH, Constants.IMAGE_HEIGHT);
-                    bitmaps.add(bitmap);
-                    addImageView(layoutImage, bitmap);
+                    bitmaps.put(key, bitmap);
+                    addImageView(layoutImage, key++, bitmap);
                 }
 
             }else if(requestCode == Constants.SELECT_FILE){
@@ -318,30 +324,71 @@ public class ProductActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.noimage);
                 }
-                bitmaps.add(bitmap);
-                addImageView(layoutImage, bitmap);
+                bitmaps.put(key, bitmap);
+                addImageView(layoutImage, key++, bitmap);
             }
         }
     }
 
-    private void addImageView(LinearLayout layoutImage, Bitmap bitmap){
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(100, 100);
-        params.setMargins(
-                0,
-                Constants.MARGIN * 2,
-                0,
-                0);
+//  <RelativeLayout
+//    android:layout_width="wrap_content"
+//    android:layout_height="wrap_content"
+//    android:layout_gravity="center_vertical">
+//                    <ImageView
+//    android:id="@+id/test"
+//    android:layout_width="55dp"
+//    android:layout_height="55dp"
+//    android:src="@drawable/database"/>
+//                    <ImageButton
+//    android:layout_width="16dp"
+//    android:layout_height="16dp"
+//    android:src="@drawable/ic_close_red"
+//    android:layout_alignEnd="@id/test"/>
+//                </RelativeLayout>
 
+    private RelativeLayout createRelativeLayout(){
+        RelativeLayout relativeLayout = new RelativeLayout(this);
+        RelativeLayout.LayoutParams paramsRelativeLayout = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        relativeLayout.setGravity(Gravity.CENTER_VERTICAL);
+        relativeLayout.setLayoutParams(paramsRelativeLayout);
+        return  relativeLayout;
+    }
+
+    private ImageButton createImageRemoveButton(ImageView imgView){
+        RelativeLayout.LayoutParams imageButtonParams = new RelativeLayout.LayoutParams(20, 20);
+        imageButtonParams.addRule(RelativeLayout.ALIGN_END, imgView.getId());
+
+        ImageButton btnRemove = new ImageButton(imgView.getContext());
+        btnRemove.setImageResource(R.drawable.ic_close_red);
+        btnRemove.setLayoutParams(imageButtonParams);
+
+        return  btnRemove;
+    }
+
+    private void addImageView(final LinearLayout layoutImage, final int key, Bitmap bitmap){
+
+        final RelativeLayout relativeLayout = createRelativeLayout();
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(115, 115);
         ImageView imageView = new ImageView(this);
         imageView.setImageBitmap(bitmap);
         imageView.setLayoutParams(params);
-        imageView.setPadding(Constants.PADDING ,
-                Constants.PADDING * 3,
-                Constants.PADDING ,
-                Constants.PADDING * 3);
         imageView.setBackgroundResource(R.drawable.button_background_white);
+        imageView.setPadding(15,15,15,15);
 
-        layoutImage.addView(imageView);
+        ImageButton imageButton = createImageRemoveButton(imageView);
+        if(option == Constants.DETAIL_OPTION) imageButton.setEnabled(false);
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                layoutImage.removeView(relativeLayout);
+                bitmaps.remove(key);
+            }
+        });
+
+        relativeLayout.addView(imageView);
+        relativeLayout.addView(imageButton);
+        layoutImage.addView(relativeLayout);
     }
 
     @Override
@@ -355,7 +402,11 @@ public class ProductActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if(item.getItemId() == R.id.actionBar_add){
-            addProduct();
+            if(option != Constants.DETAIL_OPTION){
+                addProduct();
+            }else{
+                finish();
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -447,7 +498,8 @@ public class ProductActivity extends AppCompatActivity {
                 price,
                 detail);
         RealmList<String> bitmapStrs = new RealmList<>();
-        for(Bitmap bitmap : bitmaps){
+        for(Integer key : bitmaps.keySet()){
+            Bitmap bitmap = bitmaps.get(key);
             bitmapStrs.add(MySupport.BitMapToString(bitmap, 50));
         }
         product.setImages(bitmapStrs);

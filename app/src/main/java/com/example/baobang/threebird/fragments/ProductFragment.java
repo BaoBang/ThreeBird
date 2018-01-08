@@ -115,6 +115,16 @@ public class ProductFragment extends Fragment {
     private void deleteProduct(final int productId) {
         final Product product = ProductBL.getProduct(productId);
 
+        if(product != null && product.getInvetory() > 0){
+            MySupport.openDialog(getActivity(), "Sản phẩm " + product.getName() +" hiện còn " + product.getInvetory() + " sản phẩm, không thể xóa");
+            return;
+        }
+
+        if(OrderBL.checkProductOrdered(product.getId())){
+            MySupport.openDialog(getActivity(), "Sản phẩm đã được đặt hàng, không thể xóa");
+            return;
+        }
+
         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
         dialog.setCancelable(false);
         dialog.setTitle("Thông báo!");
@@ -123,32 +133,23 @@ public class ProductFragment extends Fragment {
         dialog.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
-                if(!OrderBL.checkProductOrdered(product.getId())){
                    boolean res =ProductBL.deleteProduct(product);
                    if(res){
                        removeProductFromList(product);
-                       updateRecyclerView();
+                       productAdapter.notifyDataSetChanged();
+//                       updateRecyclerView();
                        Toast.makeText(getContext(), "Xóa thành công", Toast.LENGTH_SHORT).show();
                    }else{
                        MySupport.openDialog(getActivity(), "Có lỗi xảy ra, vui lòng thử lại");
                    }
-                }else{
-                    MySupport.openDialog(getActivity(), "Sản phẩm đã được đặt hàng, không thể xóa");
-                }
             }
         }).setNegativeButton("Hủy ", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
             }
         });
         final AlertDialog alert = dialog.create();
         alert.show();
-
-
-
-
-
     }
 
     private void removeProductFromList(Product product){
@@ -194,10 +195,12 @@ public class ProductFragment extends Fragment {
             categoryId = categories.get(categoryPosition).getId();
         }
         products = ProductBL.getListSortBy(brandId, categoryId);
-        updateRecyclerView();
+        productAdapter.notifyDataSetChanged();
+//        updateRecyclerView();
     }
 
     private void addSpinnerCategory(View view) {
+        spCategory = view.findViewById(R.id.spCategory);
         spCategory = view.findViewById(R.id.spCategory);
         categories = getCategories();
 

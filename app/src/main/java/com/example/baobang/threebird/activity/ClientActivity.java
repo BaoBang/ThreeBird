@@ -436,7 +436,12 @@ public class ClientActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.actionBar_add){
-            addClient();
+            if(option != Constants.DETAIL_OPTION){
+                addClient();
+            }
+            else{
+                finish();
+            }
         }
 
         return super.onOptionsItemSelected(item);
