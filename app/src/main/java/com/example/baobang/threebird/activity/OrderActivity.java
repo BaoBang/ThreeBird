@@ -1,5 +1,6 @@
 package com.example.baobang.threebird.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -359,7 +360,7 @@ public class OrderActivity extends AppCompatActivity {
     private void showDialogProduct() {
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(OrderActivity.this, R.drawable.background_color_gradient);
         LayoutInflater inflater = getLayoutInflater();
-        View convertView = (View) inflater.inflate(R.layout.recycleview_dialog, null);
+        @SuppressLint("InflateParams") View convertView = inflater.inflate(R.layout.recycleview_dialog, null);
         alertDialog.setView(convertView);
         alertDialog.setTitle("Danh sách sản phẩm");
         RecyclerView rcProudcts =  convertView.findViewById(R.id.recyclerView);
@@ -449,7 +450,7 @@ public class OrderActivity extends AppCompatActivity {
     }
 
     private void updateProudctAmount(){
-        txtAmount.setText(getAmountAllProduct() + "");
+        txtAmount.setText(String.valueOf(getAmountAllProduct() ));
     }
 
     private void addProductToLayout(final Product product) {
@@ -596,7 +597,7 @@ public class OrderActivity extends AppCompatActivity {
     private void showDialogClient() {
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(OrderActivity.this, R.drawable.background_color_gradient);
         LayoutInflater inflater = getLayoutInflater();
-        View convertView = (View) inflater.inflate(R.layout.recycleview_dialog, null);
+        @SuppressLint("InflateParams") View convertView = inflater.inflate(R.layout.recycleview_dialog, null);
         alertDialog.setView(convertView);
         alertDialog.setTitle("Danh sách khách hàng");
         RecyclerView rcClients =  convertView.findViewById(R.id.recyclerView);
@@ -766,7 +767,7 @@ public class OrderActivity extends AppCompatActivity {
                res = OrderBL.updateOrder(order);
            }
            if(res){
-               orderCompletetion(order);
+               orderCompletatitio();
                Intent returnIntent = new Intent();
                Bundle bundle = new Bundle();
                bundle.putInt(Constants.ORDER,order.getId());
@@ -793,7 +794,7 @@ public class OrderActivity extends AppCompatActivity {
         return null;
     }
 
-    private void orderCompletetion(Order order) {
+    private void orderCompletatitio() {
         for(ProductOrder productOrder : productList){
             Product product = ProductBL.getProduct(productOrder.getProductId());
             product.setInvetory(product.getInvetory() - productOrder.getAmount());

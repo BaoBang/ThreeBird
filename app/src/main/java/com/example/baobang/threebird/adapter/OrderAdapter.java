@@ -2,12 +2,10 @@ package com.example.baobang.threebird.adapter;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.LinearLayout;
@@ -23,9 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Created by baobang on 12/27/17.
- */
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder> implements Filterable {
     private List<Order> orders;
@@ -55,7 +50,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
     }
 
     @Override
-    public void onBindViewHolder(OrderHolder holder, final int position) {
+    public void onBindViewHolder(final OrderHolder holder, int position) {
+        holder.setPostion(position);
         Order order = this.orders.get(position);
         holder.txtId.setText(String.valueOf(order.getId()));
         holder.txtClientName.setText(order.getClientName());
@@ -76,7 +72,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onItemRecyclerViewClickListener.onItemClick(orders.get(position));
+                onItemRecyclerViewClickListener.onItemClick(orders.get(holder.getPostion()));
             }
         });
 
@@ -88,14 +84,24 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
         return orders.size();
     }
 
-    public  class OrderHolder extends RecyclerView.ViewHolder{
+    class OrderHolder extends RecyclerView.ViewHolder{
         TextView txtId;
         TextView txtClientName;
         TextView txtCreatedAt;
         TextView txtPayment;
         TextView txtStatus;
         LinearLayout layoutItem;
-        public OrderHolder(View itemView) {
+        int postion = -1;
+
+        private int getPostion() {
+            return postion;
+        }
+
+        private void setPostion(int postion) {
+            this.postion = postion;
+        }
+
+        private OrderHolder(View itemView) {
             super(itemView);
             txtId = itemView.findViewById(R.id.txtOrderId);
             txtClientName = itemView.findViewById(R.id.txtClientName);
@@ -115,7 +121,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
     private class OrderFilter extends Filter{
         private OrderAdapter orderAdapter;
 
-        public OrderFilter(OrderAdapter productAdapter) {
+        private OrderFilter(OrderAdapter productAdapter) {
             this.orderAdapter = productAdapter;
         }
 

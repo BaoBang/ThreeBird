@@ -36,10 +36,8 @@ import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.MySupport;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import io.realm.RealmList;
 import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
@@ -523,13 +521,11 @@ public class ProductActivity extends AppCompatActivity {
     }
 
     private List<Brand> getBrands(){
-        List<Brand> brands = BrandBL.getAllBrand();
-        return brands;
+        return BrandBL.getAllBrand();
     }
 
     private List<Category> getCategories(){
-        List<Category> categories = CategoryBL.getAllCategory();
-        return categories;
+        return CategoryBL.getAllCategory();
     }
 }
 

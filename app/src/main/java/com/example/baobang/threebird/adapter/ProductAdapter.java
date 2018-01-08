@@ -1,15 +1,10 @@
 package com.example.baobang.threebird.adapter;
 
-import android.app.Activity;
-import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
@@ -25,10 +20,6 @@ import com.example.baobang.threebird.utils.MySupport;
 
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- * Created by baobang on 12/19/17.
- */
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductHolder> implements Filterable{
 
@@ -62,8 +53,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductH
             holder.imgProduct.setImageBitmap(MySupport.getRoundedRectBitmap(MySupport.StringToBitMap(product.getImages().first())));
         }
         holder.txtProductName.setText(product.getName());
-        holder.txtPrice.setText(String.valueOf(product.getPrice()));
-
+        String text = String.valueOf(product.getPrice()) + " VNĐ";
+        holder.txtPrice.setText(text);
+        text = "Số lượng: " + String.valueOf(product.getInvetory());
+        holder.txtAmount.setText(text);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,7 +80,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductH
 
     private class ProductFilter extends Filter{
         private ProductAdapter productAdapter;
-        public ProductFilter( ProductAdapter productAdapter) {
+        private ProductFilter( ProductAdapter productAdapter) {
             this.productAdapter = productAdapter;
         }
 
@@ -95,7 +88,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductH
         protected FilterResults performFiltering(CharSequence charSequence) {
             String filterSeq = charSequence.toString().toLowerCase();
             FilterResults result = new FilterResults();
-            if (filterSeq != null && filterSeq.length() > 0) {
+            if (filterSeq.length() > 0) {
                 ArrayList<Product> filter = new ArrayList<>();
                 for (Product product : temproducts) {
                     // the filtering itself:
@@ -127,12 +120,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductH
         ImageView imgProduct;
         TextView txtProductName;
         TextView txtPrice;
+        TextView txtAmount;
         LinearLayout layoutItem;
-        public ProductHolder(View itemView) {
+        private ProductHolder(View itemView) {
             super(itemView);
             imgProduct = itemView.findViewById(R.id.imgProduct);
             txtProductName = itemView.findViewById(R.id.txtProductName);
             txtPrice = itemView.findViewById(R.id.txtPrice);
+            txtAmount = itemView.findViewById(R.id.txtAmount);
             layoutItem = itemView.findViewById(R.id.layoutItem);
         }
     }

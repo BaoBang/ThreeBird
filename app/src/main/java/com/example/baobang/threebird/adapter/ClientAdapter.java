@@ -50,8 +50,8 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientHold
     }
 
     @Override
-    public void onBindViewHolder(ClientHolder holder, final int position) {
-
+    public void onBindViewHolder(final ClientHolder holder, int position) {
+        holder.setPostion(position);
         Client client = this.clients.get(position);
         holder.txtAddress.setText(client.getAddress().toString());
         holder.txtName.setText(client.getName());
@@ -65,7 +65,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientHold
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onItemClickListener.onItemClick(clients.get(position));
+                onItemClickListener.onItemClick(clients.get(holder.getPostion()));
             }
         });
 
@@ -88,7 +88,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientHold
 
         private ClientAdapter clientAdapter;
 
-        public ClientFilter(ClientAdapter clientAdapter) {
+        private ClientFilter(ClientAdapter clientAdapter) {
             this.clientAdapter = clientAdapter;
         }
 
@@ -127,12 +127,22 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientHold
         }
     }
 
-    public class ClientHolder extends RecyclerView.ViewHolder{
+    class ClientHolder extends RecyclerView.ViewHolder{
         TextView txtName;
         TextView txtAddress;
         ImageView imgAvatar;
         LinearLayout layoutItem;
-        public ClientHolder(View itemView) {
+        int postion = -1;
+
+        private int getPostion() {
+            return postion;
+        }
+
+        private void setPostion(int postion) {
+            this.postion = postion;
+        }
+
+        private ClientHolder(View itemView) {
             super(itemView);
             layoutItem = itemView.findViewById(R.id.layoutItem);
             txtName = itemView.findViewById(R.id.txtName);

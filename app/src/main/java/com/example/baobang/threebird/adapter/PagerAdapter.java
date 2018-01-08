@@ -1,7 +1,7 @@
 package com.example.baobang.threebird.adapter;
 
 import android.content.Context;
-import android.support.v4.view.ViewPager;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +12,6 @@ import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.utils.Model;
 import java.util.List;
 
-/**
- * Created by baobang on 11/28/17.
- */
 
 public class PagerAdapter extends android.support.v4.view.PagerAdapter {
     private List<Model> models;
@@ -31,33 +28,41 @@ public class PagerAdapter extends android.support.v4.view.PagerAdapter {
     }
 
     @Override
-    public boolean isViewFromObject(View view, Object object) {
+    public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
         return view == object;
     }
 
     @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        ((ViewPager)container).removeView((LinearLayout) object);
+    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+        container.removeView((LinearLayout) object);
     }
 
+    @NonNull
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
+    public Object instantiateItem(@NonNull ViewGroup container, int position) {
         LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = null;
         if(layoutInflater != null){
            view = layoutInflater.inflate(R.layout.item, container, false);
         }
         Model model = this.models.get(position);
-        ImageView img = view.findViewById(R.id.img);
-        TextView txtTitle = view.findViewById(R.id.txtTitle);
-        TextView txtAmount = view.findViewById(R.id.txtAmount);
-        img.setImageResource(model.getImage());
-        txtTitle.setText(model.getTitle());
-        txtAmount.setText(model.getAmount() + "");
+        ImageView img = view == null ? null : (ImageView) view.findViewById(R.id.img);
+        TextView txtTitle = view == null ? null : (TextView) view.findViewById(R.id.txtTitle);
+        TextView txtAmount = view == null ? null : (TextView) view.findViewById(R.id.txtAmount);
+        if(img != null){
+            img.setImageResource(model.getImage());
+        }
+        if(txtTitle != null){
+            txtTitle.setText(model.getTitle());
+        }
+
+        if(txtAmount != null){
+            txtAmount.setText(String.valueOf(model.getAmount()));
+        }
 
         // add view to Viewpager
-        ((ViewPager)container).addView(view);
+        container.addView(view);
 
-        return view;
+        return view == null ? new View(context) : view;
     }
 }

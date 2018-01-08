@@ -7,9 +7,6 @@ import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.ViewGroup;
 
-/**
- * Created by xmuSistone on 2017/9/20.
- */
 public class VegaLayoutManager extends RecyclerView.LayoutManager {
 
     private int scroll = 0;
@@ -100,7 +97,7 @@ public class VegaLayoutManager extends RecyclerView.LayoutManager {
         }
     }
 
-    /**
+    /*
      * 对外提供接口，找到第一个可视view的index
      */
     public int findFirstVisibleItemPosition() {
@@ -115,7 +112,7 @@ public class VegaLayoutManager extends RecyclerView.LayoutManager {
         return 0;
     }
 
-    /**
+    /*
      * 计算可滑动的最大值
      */
     private void computeMaxScroll() {

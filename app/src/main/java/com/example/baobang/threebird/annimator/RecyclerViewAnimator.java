@@ -53,7 +53,7 @@ public class RecyclerViewAnimator {
     }
 
     public void onCreateViewHolder(View item) {
-        /**
+        /*
          * mFirstViewInit is used because we only want to show animation once at initialization.
          * (onCreateViewHolder can be called after if you use multiple view types).
          */
@@ -64,7 +64,7 @@ public class RecyclerViewAnimator {
     }
 
     public void onBindViewHolder(View item, int position) {
-        /**
+        /*
          * After init, animate once item by item when user scroll down.
          */
         if (!mFirstViewInit && position > mLastPosition) {
@@ -89,7 +89,7 @@ public class RecyclerViewAnimator {
                 spring.addListener(new SimpleSpringListener() {
                     @Override
                     public void onSpringUpdate(Spring spring) {
-                        /**
+                        /*
                          * Decrease translationY until 0.
                          */
                         float val = (float) (mHeight - spring.getCurrentValue());
