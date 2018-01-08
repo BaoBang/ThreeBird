@@ -2,7 +2,6 @@ package com.example.baobang.threebird.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -12,7 +11,7 @@ import android.widget.TextView;
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.model.User;
 import com.example.baobang.threebird.model.bussinesslogic.UserBL;
-import com.example.baobang.threebird.utils.MySupport;
+import com.example.baobang.threebird.utils.Utils;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -40,19 +39,9 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void addEvents() {
-        btnSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                    doSignUp();
-            }
-        });
+        btnSignUp.setOnClickListener(view -> doSignUp());
 
-        txtCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        txtCancel.setOnClickListener(view -> finish());
     }
 
     private void doSignUp() {
@@ -60,28 +49,28 @@ public class RegisterActivity extends AppCompatActivity {
         String passWord = txtPassword.getText().toString().trim();
         String passWordConfirm = txtPasswordConfirm.getText().toString().trim();
 
-        if(MySupport.checkInput(userName)){
-            MySupport.openDialog(this,
+        if(Utils.checkInput(userName)){
+            Utils.openDialog(this,
                     "Nhập vào tài khoản.");
             return;
         }
-        if(MySupport.checkInput(passWord)){
-            MySupport.openDialog(this,
+        if(Utils.checkInput(passWord)){
+            Utils.openDialog(this,
                     "Nhập vào mật khẩu.");
             return;
         }
-        if(MySupport.checkInput(passWordConfirm)){
-            MySupport.openDialog(this,
+        if(Utils.checkInput(passWordConfirm)){
+            Utils.openDialog(this,
                     "Nhập vào xác nhận mật khẩu.");
             return;
         }
         if(!passWord.equals(passWordConfirm)){
-            MySupport.openDialog(this,
+            Utils.openDialog(this,
                     "Mật khẩu và xác nhận mật khẩu không trùng nhau");
             return;
         }
         if(UserBL.checkUser( userName)){
-            MySupport.openDialog(this,
+            Utils.openDialog(this,
                     "Tài khoản đã tồn tại");
             return;
         }
@@ -89,10 +78,10 @@ public class RegisterActivity extends AppCompatActivity {
         user.setUserName(userName);
         user.setPassWord(passWord);
         if(!UserBL.createUser(user)){
-            MySupport.openDialog(this,
+            Utils.openDialog(this,
                     "Không thể tạo tài khoản");
         }else{
-            MySupport.openDialog(this,
+            Utils.openDialog(this,
                     "Tạo tài khoản thành công");
         }
 

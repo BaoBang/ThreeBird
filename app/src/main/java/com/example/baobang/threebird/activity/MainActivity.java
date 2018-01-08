@@ -1,7 +1,6 @@
 package com.example.baobang.threebird.activity;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -79,12 +78,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     private void addEvents() {
-        navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                selectedFragment(item);
-                return true;
-            }
+        navigation.setOnNavigationItemSelectedListener(item -> {
+            selectedFragment(item);
+            return true;
         });
     }
     private void addControlls(Bundle savedInstanceState) {

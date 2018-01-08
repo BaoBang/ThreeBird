@@ -4,8 +4,12 @@ import android.util.Log;
 import com.example.baobang.threebird.model.Order;
 import com.example.baobang.threebird.model.ProductOrder;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
@@ -28,22 +32,28 @@ public class OrderBL {
         return false;
     }
 
-    public static ArrayList<Order> getAllOrder(){
+
+
+    public static ArrayList<Order> getAllOrderByStatusInDay(){
         List<Order> list;
         ArrayList<Order> orders = new ArrayList<>();
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<Order> results = realm.where(Order.class).findAll();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", new Locale("vi", "VN"));
+        Date date = simpleDateFormat.getCalendar().getTime();
+        RealmResults<Order> results = realm.where(Order.class).greaterThanOrEqualTo("createdAt", date).findAll();
         list = realm.copyFromRealm(results);
         orders.addAll(list);
         realm.close();
-        return  orders;
+        return orders;
     }
 
-    public static ArrayList<Order> getOrderByStatus(int status){
+    public static ArrayList<Order> getOrderByStatusInDay(int status){
         List<Order> list;
         ArrayList<Order> orders = new ArrayList<>();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", new Locale("vi", "VN"));
+        Date date = simpleDateFormat.getCalendar().getTime();
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<Order> results = realm.where(Order.class).equalTo("status", status).findAll();
+        RealmResults<Order> results = realm.where(Order.class).greaterThanOrEqualTo("createdAt", date).equalTo("status", status).findAll();
         list = realm.copyFromRealm(results);
         orders.addAll(list);
         realm.close();

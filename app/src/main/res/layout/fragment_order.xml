@@ -61,6 +61,7 @@
                     android:background="@drawable/background_color">
 
                     <TextView
+                        android:id="@+id/txtAmountAllOrder"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="0"
@@ -94,6 +95,7 @@
                     android:layout_margin="5dp"
                     android:background="@drawable/background_border_white">
                     <TextView
+                        android:id="@+id/txtAmountNewOrder"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="0"
@@ -126,6 +128,7 @@
                     android:layout_margin="5dp"
                     android:background="@drawable/background_border_white">
                     <TextView
+                        android:id="@+id/txtAmountCancelOrder"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="0"
@@ -157,6 +160,7 @@
                     android:layout_weight="25"
                     android:background="@drawable/background_border_white">
                     <TextView
+                        android:id="@+id/txtAmountCompletedOrder"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingLeft="@dimen/padding_small"

@@ -3,15 +3,14 @@ package com.example.baobang.threebird.activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.model.User;
 import com.example.baobang.threebird.model.bussinesslogic.UserBL;
-import com.example.baobang.threebird.utils.MySupport;
+import com.example.baobang.threebird.utils.Utils;
+
 import io.realm.Realm;
 
 /**
@@ -48,46 +47,30 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void addEvents() {
-        btnLogin.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        btnLogin.setOnClickListener(view -> doLogin());
 
-              doLogin();
-            }
-        });
+        txtSignIn.setOnClickListener(view -> clickSignIn());
 
-        txtSignIn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                clickSignIn();
-            }
-        });
-
-        txtForgetPassword.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                clickForgetPassword();
-            }
-        });
+        txtForgetPassword.setOnClickListener(view -> clickForgetPassword());
     }
 
     private void doLogin() {
         String userName = txtUserName.getText().toString().trim();
         String password = txtPassword.getText().toString().trim();
         if(userName.equals("")){
-            MySupport.openDialog(LoginActivity.this,
+            Utils.openDialog(LoginActivity.this,
                     "Nhập vào tài khoản.");
             return;
         }
         if(password.equals("")){
-            MySupport.openDialog(LoginActivity.this,
+            Utils.openDialog(LoginActivity.this,
                     "Nhập vào mật khẩu.");
             return;
         }
         if(checkLogin(userName, password)){
             startMainActivity();
         }else{
-            MySupport.openDialog(LoginActivity.this, "Tài khoản hoặc mật khẩu không đúng.");
+            Utils.openDialog(LoginActivity.this, "Tài khoản hoặc mật khẩu không đúng.");
         }
     }
 

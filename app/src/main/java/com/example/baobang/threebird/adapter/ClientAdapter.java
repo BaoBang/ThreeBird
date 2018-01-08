@@ -16,7 +16,7 @@ import com.example.baobang.threebird.annimator.RecyclerViewAnimator;
 import com.example.baobang.threebird.annimator.VegaLayoutManager;
 import com.example.baobang.threebird.listener.OnItemRecyclerViewClickListener;
 import com.example.baobang.threebird.model.Client;
-import com.example.baobang.threebird.utils.MySupport;
+import com.example.baobang.threebird.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,18 +56,13 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientHold
         holder.txtAddress.setText(client.getAddress().toString());
         holder.txtName.setText(client.getName());
         if(client.getAvatar() != null && client.getAvatar().length() > 0){
-            Bitmap avatar = MySupport.StringToBitMap(client.getAvatar());
-            holder.imgAvatar.setImageBitmap(MySupport.getRoundedRectBitmap(avatar));
+            Bitmap avatar = Utils.StringToBitMap(client.getAvatar());
+            holder.imgAvatar.setImageBitmap(Utils.getRoundedRectBitmap(avatar));
         }else{
             holder.imgAvatar.setImageResource(R.drawable.noimage);
         }
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onItemClickListener.onItemClick(clients.get(holder.getPostion()));
-            }
-        });
+        holder.itemView.setOnClickListener(view -> onItemClickListener.onItemClick(clients.get(holder.getPostion())));
 
         mAnimator.onBindViewHolder(holder.layoutItem, position);
     }

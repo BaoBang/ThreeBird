@@ -36,7 +36,7 @@ import com.example.baobang.threebird.model.bussinesslogic.CategoryBL;
 import com.example.baobang.threebird.model.bussinesslogic.OrderBL;
 import com.example.baobang.threebird.model.bussinesslogic.ProductBL;
 import com.example.baobang.threebird.utils.Constants;
-import com.example.baobang.threebird.utils.MySupport;
+import com.example.baobang.threebird.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,12 +116,12 @@ public class ProductFragment extends Fragment {
         final Product product = ProductBL.getProduct(productId);
 
         if(product != null && product.getInvetory() > 0){
-            MySupport.openDialog(getActivity(), "Sản phẩm " + product.getName() +" hiện còn " + product.getInvetory() + " sản phẩm, không thể xóa");
+            Utils.openDialog(getActivity(), "Sản phẩm " + product.getName() +" hiện còn " + product.getInvetory() + " sản phẩm, không thể xóa");
             return;
         }
 
         if(OrderBL.checkProductOrdered(product.getId())){
-            MySupport.openDialog(getActivity(), "Sản phẩm đã được đặt hàng, không thể xóa");
+            Utils.openDialog(getActivity(), "Sản phẩm đã được đặt hàng, không thể xóa");
             return;
         }
 
@@ -130,23 +130,17 @@ public class ProductFragment extends Fragment {
         dialog.setTitle("Thông báo!");
         dialog.setMessage("Bạn có muốn xóa sản phẩm " + product.getName());
 
-        dialog.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                   boolean res =ProductBL.deleteProduct(product);
-                   if(res){
-                       removeProductFromList(product);
-                       productAdapter.notifyDataSetChanged();
+        dialog.setPositiveButton("Đồng ý", (dialog12, id) -> {
+               boolean res =ProductBL.deleteProduct(product);
+               if(res){
+                   removeProductFromList(product);
+                   productAdapter.notifyDataSetChanged();
 //                       updateRecyclerView();
-                       Toast.makeText(getContext(), "Xóa thành công", Toast.LENGTH_SHORT).show();
-                   }else{
-                       MySupport.openDialog(getActivity(), "Có lỗi xảy ra, vui lòng thử lại");
-                   }
-            }
-        }).setNegativeButton("Hủy ", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
+                   Toast.makeText(getContext(), "Xóa thành công", Toast.LENGTH_SHORT).show();
+               }else{
+                   Utils.openDialog(getActivity(), "Có lỗi xảy ra, vui lòng thử lại");
+               }
+        }).setNegativeButton("Hủy ", (dialog1, which) -> {
         });
         final AlertDialog alert = dialog.create();
         alert.show();
@@ -195,8 +189,7 @@ public class ProductFragment extends Fragment {
             categoryId = categories.get(categoryPosition).getId();
         }
         products = ProductBL.getListSortBy(brandId, categoryId);
-        productAdapter.notifyDataSetChanged();
-//        updateRecyclerView();
+        updateRecyclerView();
     }
 
     private void addSpinnerCategory(View view) {

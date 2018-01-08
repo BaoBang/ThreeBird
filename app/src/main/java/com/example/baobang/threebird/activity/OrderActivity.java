@@ -39,7 +39,8 @@ import com.example.baobang.threebird.model.bussinesslogic.ClientBL;
 import com.example.baobang.threebird.model.bussinesslogic.OrderBL;
 import com.example.baobang.threebird.model.bussinesslogic.ProductBL;
 import com.example.baobang.threebird.utils.Constants;
-import com.example.baobang.threebird.utils.MySupport;
+import com.example.baobang.threebird.utils.Utils;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -131,8 +132,8 @@ public class OrderActivity extends AppCompatActivity {
             setDataForInput();
             if(order.getClientId() != -1){
                 Client client = ClientBL.getClient(order.getClientId());
-                Bitmap bitmap = MySupport.StringToBitMap(client.getAvatar());
-                imgAvatar.setImageBitmap(MySupport.getRoundedRectBitmap(bitmap));
+                Bitmap bitmap = Utils.StringToBitMap(client.getAvatar());
+                imgAvatar.setImageBitmap(Utils.getRoundedRectBitmap(bitmap));
             }
         }
 
@@ -179,8 +180,8 @@ public class OrderActivity extends AppCompatActivity {
     private void setDataForInput() {
         Client client = ClientBL.getClient(order.getClientId());
         if(client != null && client.getAvatar().length() > 0){
-            Bitmap bitmap = MySupport.StringToBitMap(client.getAvatar());
-            imgAvatar.setImageBitmap(MySupport.getRoundedRectBitmap(bitmap));
+            Bitmap bitmap = Utils.StringToBitMap(client.getAvatar());
+            imgAvatar.setImageBitmap(Utils.getRoundedRectBitmap(bitmap));
         }
         txtName.setText(order.getClientName());
         txtOrderId.setText(String.valueOf(order.getId()));
@@ -274,47 +275,19 @@ public class OrderActivity extends AppCompatActivity {
     }
 
     private void addEvents() {
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
+        toolbar.setNavigationOnClickListener(view -> onBackPressed());
+
+        btnCreatedAt.setOnClickListener(view -> Utils.getDate(OrderActivity.this, txtCreatedAt));
+
+        btnAddProduct.setOnClickListener(view -> {
+
         });
 
-        btnCreatedAt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MySupport.getDate(OrderActivity.this, txtCreatedAt);
-            }
-        });
+        btnDeliveryDate.setOnClickListener(view -> Utils.getDate(OrderActivity.this, txtDeliveryDate));
 
-        btnAddProduct.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        btnAddClient.setOnClickListener(view -> showDialogClient());
 
-            }
-        });
-
-        btnDeliveryDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MySupport.getDate(OrderActivity.this, txtDeliveryDate);
-            }
-        });
-
-        btnAddClient.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDialogClient();
-            }
-        });
-
-        btnAddProduct.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDialogProduct();
-            }
-        });
+        btnAddProduct.setOnClickListener(view -> showDialogProduct());
 
         txtOrderId.addTextChangedListener(new TextWatcher() {
             @Override
@@ -429,8 +402,8 @@ public class OrderActivity extends AppCompatActivity {
         if(product.getImages().size() == 0){
             imageView.setImageResource(R.drawable.noimage);
         }else{
-            Bitmap bitmap = MySupport.StringToBitMap(product.getImages().first());
-            imageView.setImageBitmap(MySupport.getRoundedRectBitmap(bitmap));
+            Bitmap bitmap = Utils.StringToBitMap(product.getImages().first());
+            imageView.setImageBitmap(Utils.getRoundedRectBitmap(bitmap));
         }
         imageView.setLayoutParams(imageParams);
         imageView.getLayoutParams().height = Constants.IMAGE_HEIGHT * 2;
@@ -470,18 +443,15 @@ public class OrderActivity extends AppCompatActivity {
 
             relativeLayout.addView(imageView);
             relativeLayout.addView(imageButtonRemove);
-            imageButtonRemove.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    for(ProductOrder productOrder : productList){
-                        if(productOrder.getProductId() == product.getId()){
-                            productList.remove(productOrder);
-                            break;
-                        }
+            imageButtonRemove.setOnClickListener(view -> {
+                for(ProductOrder productOrder : productList){
+                    if(productOrder.getProductId() == product.getId()){
+                        productList.remove(productOrder);
+                        break;
                     }
-                    layoutProduct.removeView(layout);
-                    updateProudctAmount();
                 }
+                layoutProduct.removeView(layout);
+                updateProudctAmount();
             });
 
             layout.addView(relativeLayout);
@@ -523,8 +493,8 @@ public class OrderActivity extends AppCompatActivity {
 //            if(product.getImages().size() == 0){
 //                imageView.setImageResource(R.drawable.noimage);
 //            }else{
-//                Bitmap bitmap = MySupport.StringToBitMap(product.getImages().first());
-//                imageView.setImageBitmap(MySupport.getRoundedRectBitmap(bitmap));
+//                Bitmap bitmap = Utils.StringToBitMap(product.getImages().first());
+//                imageView.setImageBitmap(Utils.getRoundedRectBitmap(bitmap));
 //            }
 //            imageView.setLayoutParams(imageParams);
 //            imageView.getLayoutParams().height = Constants.IMAGE_HEIGHT * 2;
@@ -603,14 +573,11 @@ public class OrderActivity extends AppCompatActivity {
         RecyclerView rcClients =  convertView.findViewById(R.id.recyclerView);
         final ArrayList<Client> clients = ClientBL.getAllClient();
         final AlertDialog dialog = alertDialog.show();
-        ClientAdapter adapter = new ClientAdapter(clients, rcClients, new OnItemRecyclerViewClickListener() {
-            @Override
-            public void onItemClick(Object item) {
-                Client client = (Client) item;
-                dialog.dismiss();
-                getClientFromList(client);
-                clientSelectedId = client.getId();
-            }
+        ClientAdapter adapter = new ClientAdapter(clients, rcClients, item -> {
+            Client client = (Client) item;
+            dialog.dismiss();
+            getClientFromList(client);
+            clientSelectedId = client.getId();
         });
         rcClients.setLayoutManager(new VegaLayoutManager());
         rcClients.setAdapter(adapter);
@@ -627,8 +594,8 @@ public class OrderActivity extends AppCompatActivity {
     private void getClientFromList(Client client) {
         txtName.setText(client.getName());
         if(client.getAvatar()!= null){
-            Bitmap bitmap = MySupport.StringToBitMap(client.getAvatar());
-            imgAvatar.setImageBitmap(MySupport.getRoundedRectBitmap(bitmap));
+            Bitmap bitmap = Utils.StringToBitMap(client.getAvatar());
+            imgAvatar.setImageBitmap(Utils.getRoundedRectBitmap(bitmap));
         }
         else{
             imgAvatar.setImageResource(R.drawable.noimage);
@@ -668,32 +635,32 @@ public class OrderActivity extends AppCompatActivity {
            String deliveryDateStr = txtDeliveryDate.getText().toString();
            int payment = spPayment.getSelectedItemPosition();
 
-           if(MySupport.checkInput(name)){
+           if(Utils.checkInput(name)){
                txtName.setError("Vui lòng nhập vào tên khách hàng");
                txtName.requestFocus();
                return;
            }
-           if(MySupport.checkInput(orderId)){
+           if(Utils.checkInput(orderId)){
                txtOrderId.setError("Vui lòng nhập vào số hóa đơn");
                txtOrderId.requestFocus();
                return;
            }
-           if(MySupport.checkInput(createdAtStr)){
-               MySupport.openDialog(this, "Vui lòng chọn ngày lập hóa đơn");
+           if(Utils.checkInput(createdAtStr)){
+               Utils.openDialog(this, "Vui lòng chọn ngày lập hóa đơn");
                return;
            }
            Date date = new Date(createdAtStr);
            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", new Locale("vi", "VN"));
            if(date.before(simpleDateFormat.getCalendar().getTime())){
-               MySupport.openDialog(this, "Ngày đặt hàng không hợp lệ");
+               Utils.openDialog(this, "Ngày đặt hàng không hợp lệ");
                return;
            }
 
            if(status == 0){
-               MySupport.openDialog(this, "Vui lòng chọn trạng thái của hóa đơn");
+               Utils.openDialog(this, "Vui lòng chọn trạng thái của hóa đơn");
                return;
            }
-           if(MySupport.checkInput(phone)){
+           if(Utils.checkInput(phone)){
                txtPhone.setError("Vui lòng nhâp vào số điện thoại");
                txtPhone.requestFocus();
                return;
@@ -704,41 +671,41 @@ public class OrderActivity extends AppCompatActivity {
                return;
            }
            if(province == 0){
-               MySupport.openDialog(this, "Vui lòng chọn tỉnh/thành phố");
+               Utils.openDialog(this, "Vui lòng chọn tỉnh/thành phố");
                return;
            }
            if(district == 0){
-               MySupport.openDialog(this, "Vui lòng chọn quận/huyện");
+               Utils.openDialog(this, "Vui lòng chọn quận/huyện");
                return;
            }
            if(commune == 0){
-               MySupport.openDialog(this, "Vui lòng chọn phường/xã");
+               Utils.openDialog(this, "Vui lòng chọn phường/xã");
                return;
            }
-           if(MySupport.checkInput(address)){
+           if(Utils.checkInput(address)){
                txtAddress.setError("Vui lòng nhâp vào địa chỉ");
                txtAddress.requestFocus();
                return;
            }
 
            if(productList.size() == 0){
-               MySupport.openDialog(this, "Vui lòng chọn sản phẩm");
+               Utils.openDialog(this, "Vui lòng chọn sản phẩm");
                return;
            }
 
-           if(MySupport.checkInput(deliveryDateStr)){
-               MySupport.openDialog(this, "Vui lòng chọn ngày giao hàng");
+           if(Utils.checkInput(deliveryDateStr)){
+               Utils.openDialog(this, "Vui lòng chọn ngày giao hàng");
                return;
            }
 
            Date date2 = new Date(deliveryDateStr);
 
            if(date.after(date2)){
-               MySupport.openDialog(this, "Ngày giao hàng không hợp lệ");
+               Utils.openDialog(this, "Ngày giao hàng không hợp lệ");
                return;
            }
            if(payment == 0){
-               MySupport.openDialog(this, "Vui lòng chọn hình thức thanh toán");
+               Utils.openDialog(this, "Vui lòng chọn hình thức thanh toán");
                return;
            }
            RealmList<ProductOrder> products = new RealmList<>();
@@ -755,11 +722,15 @@ public class OrderActivity extends AppCompatActivity {
                    0);
            order.setClientId(clientSelectedId);
            boolean res;
-           Product product = checkInventory();
-           if(product != null){
-               MySupport.openDialog(this, "Sản phẩm " + product.getName() +" hiện còn " + product.getInvetory() + " sản phẩm");
-               return;
+
+           if(option == Constants.ADD_OPTION || option == Constants.EDIT_OPTION){
+               Product product = checkInventory();
+               if(product != null){
+                   Utils.openDialog(this, "Sản phẩm " + product.getName() +" hiện còn " + product.getInvetory() + " sản phẩm");
+                   return;
+               }
            }
+
            if(this.order == null){
                res =  OrderBL.createOrder(order);
            }else{
@@ -767,7 +738,10 @@ public class OrderActivity extends AppCompatActivity {
                res = OrderBL.updateOrder(order);
            }
            if(res){
-               orderCompletatitio();
+               if(status - 1 == Constants.COMPLETED){
+                   orderCompletatitio();
+
+               }
                Intent returnIntent = new Intent();
                Bundle bundle = new Bundle();
                bundle.putInt(Constants.ORDER,order.getId());
@@ -775,12 +749,12 @@ public class OrderActivity extends AppCompatActivity {
                setResult(Activity.RESULT_OK,returnIntent);
                finish();
            }else{
-               MySupport.openDialog(this, "Đã có lỗi xảy ra, vui lòng thử lại");
+               Utils.openDialog(this, "Đã có lỗi xảy ra, vui lòng thử lại");
            }
 
 
        }catch (Exception e){
-           MySupport.openDialog(this, "Lỗi: " + e.getMessage());
+           Utils.openDialog(this, "Lỗi: " + e.getMessage());
        }
     }
 

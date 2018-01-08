@@ -26,7 +26,7 @@ import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.bussinesslogic.ClientBL;
 import com.example.baobang.threebird.model.bussinesslogic.OrderBL;
 import com.example.baobang.threebird.utils.Constants;
-import com.example.baobang.threebird.utils.MySupport;
+import com.example.baobang.threebird.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -67,12 +67,7 @@ public class ClientFragment extends Fragment {
 //        rcClients.setHasFixedSize(true);
         clients = ClientBL.getClientOn30Days();
         //
-        clientAdapter = new ClientAdapter(clients, rcClients, new OnItemRecyclerViewClickListener() {
-            @Override
-            public void onItemClick(Object item) {
-                openOptionDialog((Client)item);
-            }
-        });
+        clientAdapter = new ClientAdapter(clients, rcClients, item -> openOptionDialog((Client)item));
         rcClients.setLayoutManager(new VegaLayoutManager());
         rcClients.setAdapter(clientAdapter);
 
@@ -131,20 +126,17 @@ public class ClientFragment extends Fragment {
         final CharSequence[] items = { "Thêm", "Sửa", "Xem chi tiết", "Xóa"};
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Lựa chọn");
-        builder.setItems(items, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
+        builder.setItems(items, (dialog, item) -> {
 
-                if (items[item].equals("Thêm")) {
-                    goToUserDetailActivity(null, Constants.ADD_OPTION);
-                } else if (items[item].equals("Sửa")) {
-                    goToUserDetailActivity(client,Constants.EDIT_OPTION);
-                }else if(items[item].equals("Xem chi tiết")){
-                    goToUserDetailActivity(client, Constants.DETAIL_OPTION);
-                }
-                else{
-                    deleteClient(client);
-                }
+            if (items[item].equals("Thêm")) {
+                goToUserDetailActivity(null, Constants.ADD_OPTION);
+            } else if (items[item].equals("Sửa")) {
+                goToUserDetailActivity(client,Constants.EDIT_OPTION);
+            }else if(items[item].equals("Xem chi tiết")){
+                goToUserDetailActivity(client, Constants.DETAIL_OPTION);
+            }
+            else{
+                deleteClient(client);
             }
         });
         builder.show();
@@ -152,7 +144,7 @@ public class ClientFragment extends Fragment {
 
     private void deleteClient(final Client client) {
         if(OrderBL.checkClientHasOreder(client.getId())){
-            MySupport.openDialog(getActivity(), "Khách hàng đã lập hóa đơn không thể xóa.");
+            Utils.openDialog(getActivity(), "Khách hàng đã lập hóa đơn không thể xóa.");
             return;
         }
         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
@@ -160,24 +152,18 @@ public class ClientFragment extends Fragment {
         dialog.setTitle("Thông báo!");
         dialog.setMessage("Bạn có muốn xóa khách hàng " + client.getName());
 
-        dialog.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                    boolean res =ClientBL.deleteClient(client);
-                    if(res){
-                        clients.remove(client);
-                        clientAdapter.notifyDataSetChanged();
-                        Toast.makeText(getContext(), "Xóa thành công", Toast.LENGTH_SHORT).show();
-                    }else{
-                        MySupport.openDialog(getActivity(), "Có lỗi xảy ra, vui lòng thử lại");
-                    }
-            }
-        }).setNegativeButton("Hủy ", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+        dialog.setPositiveButton("Đồng ý", (dialog1, id) -> {
+                boolean res =ClientBL.deleteClient(client);
+                if(res){
+                    clients.remove(client);
+                    clientAdapter.notifyDataSetChanged();
+                    Toast.makeText(getContext(), "Xóa thành công", Toast.LENGTH_SHORT).show();
+                }else{
+                    Utils.openDialog(getActivity(), "Có lỗi xảy ra, vui lòng thử lại");
+                }
+        }).setNegativeButton("Hủy ", (dialog12, which) -> {
 
-                    }
-                });
+        });
         final AlertDialog alert = dialog.create();
         alert.show();
 

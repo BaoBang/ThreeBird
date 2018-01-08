@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.baobang.threebird.R;
@@ -30,12 +30,13 @@ import com.example.baobang.threebird.listener.OnItemRecyclerViewClickListener;
 import com.example.baobang.threebird.model.Order;
 import com.example.baobang.threebird.model.bussinesslogic.OrderBL;
 import com.example.baobang.threebird.utils.Constants;
-import com.example.baobang.threebird.utils.MySupport;
+import com.example.baobang.threebird.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class OrderFragment extends Fragment {
+    private TextView txtAmountAllOrder, txtAmountNewOrder, txtAmountCancelOrder, txtAmountCompletedOrder;
 
     private RecyclerView rcOrders;
     private List<Order> orders;
@@ -62,67 +63,60 @@ public class OrderFragment extends Fragment {
         }
         setHasOptionsMenu(true);
         // Inflate the layout for this fragment
+        txtAmountAllOrder = view.findViewById(R.id.txtAmountAllOrder);
+        txtAmountNewOrder = view.findViewById(R.id.txtAmountNewOrder);
+        txtAmountCancelOrder = view.findViewById(R.id.txtAmountCancelOrder);
+        txtAmountCompletedOrder = view.findViewById(R.id.txtAmountCompletedOrder);
+
+        setupOrderInDay();
 
         rcOrders = view.findViewById(R.id.rcOrders);
-        orders = OrderBL.getAllOrder();
-        onItemRecyclerViewClickListener = new OnItemRecyclerViewClickListener() {
-            @Override
-            public void onItemClick(Object item) {
-                Order order = (Order) item;
-                openOptionDialog(order.getId());
-            }
+        orders = OrderBL.getAllOrderByStatusInDay();
+        onItemRecyclerViewClickListener = item -> {
+            Order order = (Order) item;
+            openOptionDialog(order.getId());
         };
         orderAdapter = new OrderAdapter(getActivity(), orders, rcOrders, onItemRecyclerViewClickListener);
         rcOrders.setLayoutManager(new VegaLayoutManager());
         rcOrders.setAdapter(orderAdapter);
-//        lvOrders.setOnItemClickListener(new AdapterView.OnItemRecyclerViewClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                openOptionDialog(orders.get(i).getId());
-//            }
-//        });
 
         layoutOrder = view.findViewById(R.id.layoutOrder);
         layoutNewOrder = view.findViewById(R.id.layoutNewOrder);
         layoutCancelOrder = view.findViewById(R.id.layoutCancelOrder);
         layoutCompletedOrder = view.findViewById(R.id.layoutCompletedOrder);
 
-        layoutCancelOrder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setBackGround(layoutCancelOrder, 2);
-                orders = getOrderListByStatus(Constants.CANCEL);
-                updateListView();
-            }
+        layoutCancelOrder.setOnClickListener(view1 -> {
+            setBackGround(layoutCancelOrder, 2);
+            orders = getOrderListByStatus(Constants.CANCEL);
+            updateListView();
         });
 
-        layoutCompletedOrder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setBackGround(layoutCompletedOrder, 3);
-                orders = getOrderListByStatus(Constants.COMPLETED);
-                updateListView();
-            }
+        layoutCompletedOrder.setOnClickListener(view12 -> {
+            setBackGround(layoutCompletedOrder, 3);
+            orders = getOrderListByStatus(Constants.COMPLETED);
+            updateListView();
         });
 
-        layoutOrder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setBackGround(layoutOrder, 0);
-                orders = getOrderListByStatus(-1);
-                updateListView();
-            }
+        layoutOrder.setOnClickListener(view13 -> {
+            setBackGround(layoutOrder, 0);
+            orders = getOrderListByStatus(-1);
+            updateListView();
         });
 
-        layoutNewOrder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setBackGround(layoutNewOrder, 1);
-                orders = getOrderListByStatus(Constants.DELIVERY);
-                updateListView();
-            }
+        layoutNewOrder.setOnClickListener(view14 -> {
+            setBackGround(layoutNewOrder, 1);
+            orders = getOrderListByStatus(Constants.DELIVERY);
+            updateListView();
         });
         return view;
+    }
+
+    private void setupOrderInDay() {
+
+        txtAmountAllOrder.setText(String.valueOf(getOrderListByStatus(-1).size()));
+        txtAmountNewOrder.setText(String.valueOf(getOrderListByStatus(Constants.DELIVERY).size()));
+        txtAmountCancelOrder.setText(String.valueOf(getOrderListByStatus(Constants.CANCEL).size()));
+        txtAmountCompletedOrder.setText(String.valueOf(getOrderListByStatus(Constants.COMPLETED).size()));
     }
 
     @Override
@@ -140,8 +134,8 @@ public class OrderFragment extends Fragment {
             }else{
                 orders.set(indexChange, order);
             }
-//            orderAdapter.setTempObjects(orders);
             orderAdapter.notifyDataSetChanged();
+            setupOrderInDay();
         }
     }
 
@@ -184,19 +178,16 @@ public class OrderFragment extends Fragment {
         final CharSequence[] items = { "Thêm", "Sửa", "Xem chi tiết", "Xóa"};
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Lựa chọn");
-        builder.setItems(items, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
+        builder.setItems(items, (dialog, item) -> {
 
-                if (items[item].equals("Thêm")) {
-                    goToCreateOrderActivity(-1, Constants.ADD_OPTION);
-                } else if (items[item].equals("Sửa")) {
-                    goToCreateOrderActivity(orderId,Constants.EDIT_OPTION);
-                }else if(items[item].equals("Xem chi tiết")){
-                    goToCreateOrderActivity(orderId, Constants.DETAIL_OPTION);
-                }else{
-                    deleteOrder(orderId);
-                }
+            if (items[item].equals("Thêm")) {
+                goToCreateOrderActivity(-1, Constants.ADD_OPTION);
+            } else if (items[item].equals("Sửa")) {
+                goToCreateOrderActivity(orderId,Constants.EDIT_OPTION);
+            }else if(items[item].equals("Xem chi tiết")){
+                goToCreateOrderActivity(orderId, Constants.DETAIL_OPTION);
+            }else{
+                deleteOrder(orderId);
             }
         });
         builder.show();
@@ -211,10 +202,10 @@ public class OrderFragment extends Fragment {
                 updateListView();
                 Toast.makeText(getContext(), "Xóa thành công", Toast.LENGTH_SHORT).show();
             }else{
-                MySupport.openDialog(getActivity(), "Có lỗi xảy ra, vui lòng thử lại");
+                Utils.openDialog(getActivity(), "Có lỗi xảy ra, vui lòng thử lại");
             }
         }else{
-            MySupport.openDialog(getActivity(), "Có lỗi xảy ra, vui lòng thử lại");
+            Utils.openDialog(getActivity(), "Có lỗi xảy ra, vui lòng thử lại");
         }
     }
 
@@ -279,18 +270,17 @@ public class OrderFragment extends Fragment {
         ArrayList<Order> list;
         switch (status){
             case 0:
-                list = OrderBL.getOrderByStatus(Constants.COMPLETED);
+                list = OrderBL.getOrderByStatusInDay(Constants.COMPLETED);
                 break;
             case 1:
-                list = OrderBL.getOrderByStatus(Constants.CANCEL);
+                list = OrderBL.getOrderByStatusInDay(Constants.CANCEL);
                 break;
             case 2:
-                list = OrderBL.getOrderByStatus(Constants.DELIVERY);
+                list = OrderBL.getOrderByStatusInDay(Constants.DELIVERY);
                 break;
             default:
-                list = OrderBL.getAllOrder();
+                list = OrderBL.getAllOrderByStatusInDay();
         }
-        Log.e("Size", list.size() +"");
         return list;
     }
 }

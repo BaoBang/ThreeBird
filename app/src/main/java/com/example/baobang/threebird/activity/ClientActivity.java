@@ -12,9 +12,7 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -26,7 +24,7 @@ import com.example.baobang.threebird.model.ClientGroup;
 import com.example.baobang.threebird.model.bussinesslogic.ClientBL;
 import com.example.baobang.threebird.model.bussinesslogic.ClientGroupBL;
 import com.example.baobang.threebird.utils.Constants;
-import com.example.baobang.threebird.utils.MySupport;
+import com.example.baobang.threebird.utils.Utils;
 import com.example.baobang.threebird.utils.SlideView;
 import com.kyleduo.switchbutton.SwitchButton;
 
@@ -67,42 +65,23 @@ public class ClientActivity extends AppCompatActivity {
     }
 
     private void addEvents() {
+//
+        swbUserInfo.setOnCheckedChangeListener(
+                (compoundButton,  isChecked) ->{
+                    if(isChecked){SlideView.expand(groupUserInfo);}
+                         else{SlideView.collapse(groupUserInfo);}});
 
-        swbUserInfo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if(isChecked){
-                    SlideView.expand(groupUserInfo);
-                }else{
-                    SlideView.collapse(groupUserInfo);
-                }
+        swbAddressInfo.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            if(isChecked){
+                SlideView.expand(groupAddressInfo);
+            }else{
+                SlideView.collapse(groupAddressInfo);
             }
         });
 
-        swbAddressInfo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if(isChecked){
-                    SlideView.expand(groupAddressInfo);
-                }else{
-                    SlideView.collapse(groupAddressInfo);
-                }
-            }
-        });
+        toolbar.setNavigationOnClickListener(view -> onBackPressed());
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
-
-        imgAvatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startCamera();
-            }
-        });
+        imgAvatar.setOnClickListener(view -> startCamera());
 
         txtPhone.addTextChangedListener(new TextWatcher() {
             @Override
@@ -225,7 +204,7 @@ public class ClientActivity extends AppCompatActivity {
 
     private void setDataForInput() {
         if(client.getAvatar() != null && client.getAvatar().length() > 0){
-            avartar = MySupport.StringToBitMap(client.getAvatar());
+            avartar = Utils.StringToBitMap(client.getAvatar());
             imgAvatar.setImageBitmap(avartar);
         }else{
             imgAvatar.setImageResource(R.drawable.noimage);
@@ -319,17 +298,17 @@ public class ClientActivity extends AppCompatActivity {
         String commune = spCommune.getSelectedItem().toString();
         String address = txtAddress.getText().toString();
 
-        if(MySupport.checkInput(name)){
+        if(Utils.checkInput(name)){
             txtName.setError("Vui lòng nhập vào họ tên");
             txtName.requestFocus();
             return;
         }
         if(group ==0){
-            MySupport.openDialog(this, "Vui lòng chọn nhóm thành viên");
+            Utils.openDialog(this, "Vui lòng chọn nhóm thành viên");
             spGroupClient.requestFocus();
             return;
         }
-        if(MySupport.checkInput(phone)){
+        if(Utils.checkInput(phone)){
             txtPhone.setError("Vui lòng nhập vào số điện thoại");
             txtPhone.requestFocus();
             return;
@@ -339,16 +318,16 @@ public class ClientActivity extends AppCompatActivity {
             txtPhone.requestFocus();
             return;
         }
-//        if(MySupport.checkInput(fax)){
-//            MySupport.openDialog(this, "Vui lòng nhập vào số fax");
+//        if(Utils.checkInput(fax)){
+//            Utils.openDialog(this, "Vui lòng nhập vào số fax");
 //            return;
 //        }
-//        if(MySupport.checkInput(website)){
-//            MySupport.openDialog(this, "Vui lòng nhập vào website");
+//        if(Utils.checkInput(website)){
+//            Utils.openDialog(this, "Vui lòng nhập vào website");
 //            return;
 //        }
-//        if(MySupport.checkInput(email)){
-//            MySupport.openDialog(this, "Vui lòng nhập vào email");
+//        if(Utils.checkInput(email)){
+//            Utils.openDialog(this, "Vui lòng nhập vào email");
 //            return;
 //        }
         if(email.length() > 0){
@@ -361,18 +340,18 @@ public class ClientActivity extends AppCompatActivity {
         }
 
         if(spProvince.getSelectedItemPosition() ==0){
-            MySupport.openDialog(this, "Vui lòng chọn tỉnh/thành phố");
+            Utils.openDialog(this, "Vui lòng chọn tỉnh/thành phố");
             return;
         }
         if(spDistrict.getSelectedItemPosition() ==0){
-            MySupport.openDialog(this, "Vui lòng chọn quận/huyện");
+            Utils.openDialog(this, "Vui lòng chọn quận/huyện");
             return;
         }
         if(spCommune.getSelectedItemPosition() ==0){
-            MySupport.openDialog(this, "Vui lòng chọn phường/xã");
+            Utils.openDialog(this, "Vui lòng chọn phường/xã");
             return;
         }
-        if(MySupport.checkInput(address)){
+        if(Utils.checkInput(address)){
             txtAddress.setError("Vui lòng nhập vào địa chỉ");
             txtAddress.requestFocus();
             return;
@@ -385,7 +364,7 @@ public class ClientActivity extends AppCompatActivity {
                 name,groups.get(group).getId(), phone,fax, website, email,
                 new Address(province, district, commune,  address));
         if(avartar != null){
-            newClient.setAvatar(MySupport.BitMapToString(avartar, Constants.AVATAR_HEIGHT));
+            newClient.setAvatar(Utils.BitMapToString(avartar, Constants.AVATAR_HEIGHT));
         }else{
             newClient.setAvatar(null);
         }
@@ -404,7 +383,7 @@ public class ClientActivity extends AppCompatActivity {
             setResult(Activity.RESULT_OK,returnIntent);
             finish();
         }else{
-            MySupport.openDialog(this, "Đã có lỗi xảy ra, vui lòng thử lại");
+            Utils.openDialog(this, "Đã có lỗi xảy ra, vui lòng thử lại");
         }
 
 
@@ -483,4 +462,5 @@ public class ClientActivity extends AppCompatActivity {
         list.add("Phường 5");
         return list;
     }
+
 }

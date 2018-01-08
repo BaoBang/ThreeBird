@@ -16,7 +16,7 @@ import com.example.baobang.threebird.annimator.RecyclerViewAnimator;
 import com.example.baobang.threebird.annimator.VegaLayoutManager;
 import com.example.baobang.threebird.listener.OnItemRecyclerViewClickListener;
 import com.example.baobang.threebird.model.Product;
-import com.example.baobang.threebird.utils.MySupport;
+import com.example.baobang.threebird.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,19 +50,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductH
     public void onBindViewHolder(ProductAdapter.ProductHolder holder, final int position) {
         Product product = this.products.get(position);
         if(product.getImages().size() > 0){
-            holder.imgProduct.setImageBitmap(MySupport.getRoundedRectBitmap(MySupport.StringToBitMap(product.getImages().first())));
+            holder.imgProduct.setImageBitmap(Utils.getRoundedRectBitmap(Utils.StringToBitMap(product.getImages().first())));
         }
         holder.txtProductName.setText(product.getName());
         String text = String.valueOf(product.getPrice()) + " VNĐ";
         holder.txtPrice.setText(text);
         text = "Số lượng: " + String.valueOf(product.getInvetory());
         holder.txtAmount.setText(text);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onItemRecyclerViewClickListener.onItemClick(products.get(position));
-            }
-        });
+        holder.itemView.setOnClickListener(view -> onItemRecyclerViewClickListener.onItemClick(products.get(position)));
 
         mAnimator.onBindViewHolder(holder.layoutItem, position);
     }

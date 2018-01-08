@@ -3,10 +3,7 @@ package com.example.baobang.threebird.utils;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -17,30 +14,21 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.media.Image;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
-import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.View;
-import android.widget.DatePicker;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
-import com.example.baobang.threebird.activity.LoginActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
-import static android.support.v4.graphics.TypefaceCompatUtil.getTempFile;
-
-
-public class MySupport {
+public class Utils {
     public static boolean checkInput(String input){
         return (input == null || input.equals(""));
     }
@@ -108,14 +96,11 @@ public class MySupport {
         final CharSequence[] items = { "Camera", "Thư viện"};
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle("Thêm ảnh");
-        builder.setItems(items, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
-                if (items[item].equals("Camera")) {
-                        cameraIntent(activity);
-                } else if (items[item].equals("Thư viện")) {
-                        galleryIntent(activity);
-                }
+        builder.setItems(items, (dialog, item) -> {
+            if (items[item].equals("Camera")) {
+                    cameraIntent(activity);
+            } else if (items[item].equals("Thư viện")) {
+                    galleryIntent(activity);
             }
         });
         builder.show();
@@ -164,17 +149,21 @@ public class MySupport {
     public static void getDate(Activity activity, final TextView txt){
         final Calendar calendar = Calendar.getInstance();
         DatePickerDialog datePickerDialog = new DatePickerDialog(activity,
-                new DatePickerDialog.OnDateSetListener() {
-
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
-                        txt.setText(new StringBuilder(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year));
-                    }
-                },
+                (datePicker, year, monthOfYear, dayOfMonth) -> txt.setText(new StringBuilder(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year)),
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH));
         datePickerDialog.show();
     }
+
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        View currentFocus = activity.getCurrentFocus();
+        if (currentFocus != null) {
+            inputMethodManager.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
+        }
+    }
+
 
 }

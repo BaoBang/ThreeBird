@@ -80,31 +80,28 @@ public class RecyclerViewAnimator {
         // Move item far outside the RecyclerView
         item.setTranslationY(mHeight);
 
-        Runnable startAnimation = new Runnable() {
-            @Override
-            public void run() {
-                SpringConfig config = new SpringConfig(tension, friction);
-                Spring spring = mSpringSystem.createSpring();
-                spring.setSpringConfig(config);
-                spring.addListener(new SimpleSpringListener() {
-                    @Override
-                    public void onSpringUpdate(Spring spring) {
-                        /*
-                         * Decrease translationY until 0.
-                         */
-                        float val = (float) (mHeight - spring.getCurrentValue());
-                        item.setTranslationY(val);
-                    }
+        Runnable startAnimation = () -> {
+            SpringConfig config = new SpringConfig(tension, friction);
+            Spring spring = mSpringSystem.createSpring();
+            spring.setSpringConfig(config);
+            spring.addListener(new SimpleSpringListener() {
+                @Override
+                public void onSpringUpdate(Spring spring) {
+                    /*
+                     * Decrease translationY until 0.
+                     */
+                    float val = (float) (mHeight - spring.getCurrentValue());
+                    item.setTranslationY(val);
+                }
 
-                    @Override
-                    public void onSpringEndStateChange(Spring spring) {
-                        mFirstViewInit = false;
-                    }
-                });
+                @Override
+                public void onSpringEndStateChange(Spring spring) {
+                    mFirstViewInit = false;
+                }
+            });
 
-                // Set the spring in motion; moving from 0 to height
-                spring.setEndValue(mHeight);
-            }
+            // Set the spring in motion; moving from 0 to height
+            spring.setEndValue(mHeight);
         };
 
         mRecyclerView.postDelayed(startAnimation, delay);

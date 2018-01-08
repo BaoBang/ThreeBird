@@ -33,7 +33,7 @@ import com.example.baobang.threebird.model.bussinesslogic.BrandBL;
 import com.example.baobang.threebird.model.bussinesslogic.CategoryBL;
 import com.example.baobang.threebird.model.bussinesslogic.ProductBL;
 import com.example.baobang.threebird.utils.Constants;
-import com.example.baobang.threebird.utils.MySupport;
+import com.example.baobang.threebird.utils.Utils;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -190,7 +190,7 @@ public class ProductActivity extends AppCompatActivity {
             }
         }
         for(String bitmapStr : product.getImages()){
-            Bitmap bitmap = MySupport.StringToBitMap(bitmapStr);
+            Bitmap bitmap = Utils.StringToBitMap(bitmapStr);
             bitmaps.put( key, bitmap);
             addImageView(layoutImage, key++, bitmap);
         }
@@ -207,14 +207,14 @@ public class ProductActivity extends AppCompatActivity {
         btnPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MySupport.galleryIntent(ProductActivity.this);
+                Utils.galleryIntent(ProductActivity.this);
             }
         });
 
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MySupport.cameraIntent(ProductActivity.this);
+                Utils.cameraIntent(ProductActivity.this);
             }
         });
 
@@ -308,7 +308,7 @@ public class ProductActivity extends AppCompatActivity {
                 Bundle bundle = data.getExtras();
                 if(bundle != null){
                     Bitmap bitmap = (Bitmap) bundle.get("data");
-                    bitmap = MySupport.getResizedBitmap(bitmap, Constants.IMAGE_WIDTH, Constants.IMAGE_HEIGHT);
+                    bitmap = Utils.getResizedBitmap(bitmap, Constants.IMAGE_WIDTH, Constants.IMAGE_HEIGHT);
                     bitmaps.put(key, bitmap);
                     addImageView(layoutImage, key++, bitmap);
                 }
@@ -317,8 +317,8 @@ public class ProductActivity extends AppCompatActivity {
                 Uri selectedImageUri = data.getData();
                 Bitmap bitmap;
                 try {
-                    bitmap = MySupport.getBitmapFromUri(this,selectedImageUri);
-                    bitmap = MySupport.getResizedBitmap(bitmap, Constants.IMAGE_WIDTH, Constants.IMAGE_HEIGHT);
+                    bitmap = Utils.getBitmapFromUri(this,selectedImageUri);
+                    bitmap = Utils.getResizedBitmap(bitmap, Constants.IMAGE_WIDTH, Constants.IMAGE_HEIGHT);
                 } catch (IOException e) {
                     bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.noimage);
                 }
@@ -376,12 +376,9 @@ public class ProductActivity extends AppCompatActivity {
 
         ImageButton imageButton = createImageRemoveButton(imageView);
         if(option == Constants.DETAIL_OPTION) imageButton.setEnabled(false);
-        imageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                layoutImage.removeView(relativeLayout);
-                bitmaps.remove(key);
-            }
+        imageButton.setOnClickListener(view -> {
+            layoutImage.removeView(relativeLayout);
+            bitmaps.remove(key);
         });
 
         relativeLayout.addView(imageView);
@@ -420,37 +417,37 @@ public class ProductActivity extends AppCompatActivity {
         String priceStr = txtProductPrice.getText().toString();
         String detail = txtDetail.getText().toString();
 
-        if(MySupport.checkInput(name)){
+        if(Utils.checkInput(name)){
             txtProductName.setError("Vui lòng nhập vào tên sản phẩm");
             txtProductName.requestFocus();
             return;
         }
         if(spCategory.getSelectedItemPosition() ==0){
-            MySupport.openDialog(this, "Vui lòng chọn loại sản phẩm");
+            Utils.openDialog(this, "Vui lòng chọn loại sản phẩm");
             return;
         }
         if(spBrand.getSelectedItemPosition() ==0){
-            MySupport.openDialog(this, "Vui lòng chọn hãng sản phẩm");
+            Utils.openDialog(this, "Vui lòng chọn hãng sản phẩm");
             return;
         }
 
-        if(MySupport.checkInput(productId)){
+        if(Utils.checkInput(productId)){
             txtProductId.setError("Vui lòng nhập vào mã sản phẩm");
             txtProductId.requestFocus();
             return;
         }
 
-        if(MySupport.checkInput(inventoryStr)){
+        if(Utils.checkInput(inventoryStr)){
             txtProductInventory.setError("Vui lòng nhập vào số lượng tồn kho");
             txtProductInventory.requestFocus();
             return;
         }
-        if(MySupport.checkInput(priceInventoryStr)){
+        if(Utils.checkInput(priceInventoryStr)){
             txtProductPriceInventory.setError("Vui lòng nhập vào giá nhập kho");
             txtProductPriceInventory.requestFocus();
             return;
         }
-        if(MySupport.checkInput(priceStr)){
+        if(Utils.checkInput(priceStr)){
             txtProductPrice.setError("Vui lòng nhập vào đơn giá sản phẩm");
             txtProductPrice.requestFocus();
             return;
@@ -498,7 +495,7 @@ public class ProductActivity extends AppCompatActivity {
         RealmList<String> bitmapStrs = new RealmList<>();
         for(Integer key : bitmaps.keySet()){
             Bitmap bitmap = bitmaps.get(key);
-            bitmapStrs.add(MySupport.BitMapToString(bitmap, 50));
+            bitmapStrs.add(Utils.BitMapToString(bitmap, 50));
         }
         product.setImages(bitmapStrs);
         int result;
@@ -516,7 +513,7 @@ public class ProductActivity extends AppCompatActivity {
             setResult(Activity.RESULT_OK,returnIntent);
             finish();
         }else{
-            MySupport.openDialog(this, "Đã có lỗi xảy ra, vui lòng thử lại");
+            Utils.openDialog(this, "Đã có lỗi xảy ra, vui lòng thử lại");
         }
     }
 

@@ -69,12 +69,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
             holder.txtStatus.setTextColor(this.context.getResources().getColor(R.color.blue));
         }
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onItemRecyclerViewClickListener.onItemClick(orders.get(holder.getPostion()));
-            }
-        });
+        holder.itemView.setOnClickListener(view -> onItemRecyclerViewClickListener.onItemClick(orders.get(holder.getPostion())));
 
         mAnimator.onBindViewHolder(holder.layoutItem, position);
     }
