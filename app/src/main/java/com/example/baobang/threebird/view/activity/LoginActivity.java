@@ -1,4 +1,4 @@
-package com.example.baobang.threebird.activity;
+package com.example.baobang.threebird.view.activity;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;

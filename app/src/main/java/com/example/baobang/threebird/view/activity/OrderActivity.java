@@ -1,4 +1,4 @@
-package com.example.baobang.threebird.activity;
+package com.example.baobang.threebird.view.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;

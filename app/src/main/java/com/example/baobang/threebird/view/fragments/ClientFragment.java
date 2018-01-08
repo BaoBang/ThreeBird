@@ -1,4 +1,4 @@
-package com.example.baobang.threebird.fragments;
+package com.example.baobang.threebird.view.fragments;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -18,15 +18,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import com.example.baobang.threebird.R;
-import com.example.baobang.threebird.activity.ClientActivity;
 import com.example.baobang.threebird.adapter.ClientAdapter;
 import com.example.baobang.threebird.annimator.VegaLayoutManager;
-import com.example.baobang.threebird.listener.OnItemRecyclerViewClickListener;
 import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.bussinesslogic.ClientBL;
 import com.example.baobang.threebird.model.bussinesslogic.OrderBL;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
+import com.example.baobang.threebird.view.activity.ClientActivity;
 
 import java.util.ArrayList;
 

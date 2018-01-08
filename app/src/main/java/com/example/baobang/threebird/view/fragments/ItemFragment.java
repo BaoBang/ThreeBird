@@ -1,4 +1,4 @@
-package com.example.baobang.threebird.fragments;
+package com.example.baobang.threebird.view.fragments;
 
 
 import android.graphics.Color;
