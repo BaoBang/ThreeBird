@@ -22,10 +22,11 @@ import com.example.baobang.threebird.model.Address;
 import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.ClientGroup;
 import com.example.baobang.threebird.model.helper.ClientGroupHelper;
-import com.example.baobang.threebird.model.helper.ClientHelper;
+import com.example.baobang.threebird.presenter.ClientPresenterImp;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
 import com.example.baobang.threebird.utils.SlideView;
+import com.example.baobang.threebird.view.ClientView;
 import com.kyleduo.switchbutton.SwitchButton;
 
 import java.util.ArrayList;
@@ -33,21 +34,23 @@ import java.util.ArrayList;
 import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
 import studio.carbonylgroup.textfieldboxes.TextFieldBoxes;
 
-public class ClientActivity extends AppCompatActivity {
+public class ClientActivity extends AppCompatActivity implements ClientView{
+
+    private ClientPresenterImp clientPresenterImp;
 
     private Toolbar toolbar;
     private LinearLayout groupUserInfo, groupAddressInfo;
     private SwitchButton swbUserInfo, swbAddressInfo;
+
     private ImageView imgAvatar;
+    private ExtendedEditText txtName, txtPhone, txtFax,
+            txtWebsite, txtEmail, txtAddress;
 
-    ExtendedEditText txtName, txtPhone, txtFax, txtWebsite, txtEmail, txtAddress;
+    private Spinner spGroupClient, spProvince, spDistrict, spCommune;
+    private ArrayList<String> provinces, districts, communes;
+    private ArrayList<ClientGroup> groups;
 
-    Spinner spGroupClient, spProvince, spDistrict, spCommune;
-    ArrayList<String> provinces, districts, communes;
-    ArrayList<ClientGroup> groups;
-    ArrayAdapter<String> provinceAdapter, districtAdapter, communeAdapter;
-    ArrayAdapter<ClientGroup> groupAdapter;
-    private Bitmap avartar = null;
+    private Bitmap avatar = null;
     private Client client = null;
     private int option;
     @Override
@@ -57,14 +60,70 @@ public class ClientActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         client = (Client) (bundle != null ? bundle.getSerializable(Constants.CLIENT) : null);
         option = bundle == null ? 0 : bundle.getInt(Constants.OPTION);
+        clientPresenterImp = new ClientPresenterImp(this);
 //        ClientGroupHelper.createClientGroup(new ClientGroup(0, "Admin"));
 //        ClientGroupHelper.createClientGroup(new ClientGroup(0, "Employee"));
 //        ClientGroupHelper.createClientGroup(new ClientGroup(0, "Membber"));
         addControls();
         addEvents();
     }
+    private void addClient() {
+        Client newClient = getClientFromInput();
+        if(newClient != null){
+            boolean res;
+            if(this.client == null){
+                res = clientPresenterImp.addClient(newClient);
+            }else{
+                res = clientPresenterImp.updateClient(newClient);
+            }
+            if(res){
+                Intent returnIntent = new Intent();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(Constants.CLIENT,newClient);
+                returnIntent.putExtras(bundle);
+                setResult(Activity.RESULT_OK,returnIntent);
+                finish();
+            }else{
+                Utils.openDialog(this, "Đã có lỗi xảy ra, vui lòng thử lại");
+            }
 
-    private void addEvents() {
+        }
+    }
+    @Override
+    public void addControls() {
+        // start setting toolbar
+        toolbar = findViewById(R.id.toolBarUserDetail);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null){
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setDisplayShowHomeEnabled(true);
+        }
+        // end setting toolbar
+        groupAddressInfo = findViewById(R.id.groupAddressInfo);
+        groupUserInfo = findViewById(R.id.groupUserInfo);
+        swbAddressInfo = findViewById(R.id.swbAddressInfo);
+        swbUserInfo = findViewById(R.id.swbUserInfo);
+        imgAvatar = findViewById(R.id.imgAvatar);
+        // input
+        txtName = findViewById(R.id.txtName);
+        txtPhone = findViewById(R.id.txtPhone);
+        txtFax = findViewById(R.id.txtFax);
+        txtWebsite = findViewById(R.id.txtWebsite);
+        txtEmail = findViewById(R.id.txtEmail);
+        txtAddress = findViewById(R.id.txtAddress);
+        // spinner
+        clientPresenterImp.loadSpinnerData();
+
+        if(client != null){
+            setDataForInput();
+        }
+        if(option == Constants.DETAIL_OPTION){
+            setDisableInput();
+        }
+    }
+    @Override
+    public void addEvents() {
 //
         swbUserInfo.setOnCheckedChangeListener(
                 (compoundButton,  isChecked) ->{
@@ -97,8 +156,7 @@ public class ClientActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 if(!editable.toString().matches(Constants.PHONE_REGULAR)){
-                    txtPhone.setError("Số điện thoại bắt đầu với +84/0 và tiếp theo từ 9-10 kí tự số");
-                    txtPhone.requestFocus();
+                    setError(txtPhone, "Số điện thoại bắt đầu với +84/0 và tiếp theo từ 9-10 kí tự số");
                 }
             }
         });
@@ -117,95 +175,16 @@ public class ClientActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 if(!editable.toString().matches(Constants.EMAIL_REGULAR)){
-                    txtEmail.setError("Email định dạng không đúng");
+                    setError(txtEmail, "Email định dạng không đúng");
                 }
             }
         });
     }
-
-    private void addControls() {
-        // start setting toolbar
-        toolbar = findViewById(R.id.toolBarUserDetail);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null){
-            actionBar.setDisplayShowTitleEnabled(false);
-            actionBar.setDisplayShowHomeEnabled(true);
-        }
-        // end setting toolbar
-        groupAddressInfo = findViewById(R.id.groupAddressInfo);
-        groupUserInfo = findViewById(R.id.groupUserInfo);
-        swbAddressInfo = findViewById(R.id.swbAddressInfo);
-        swbUserInfo = findViewById(R.id.swbUserInfo);
-        imgAvatar = findViewById(R.id.imgAvatar);
-        // input
-        txtName = findViewById(R.id.txtName);
-        txtPhone = findViewById(R.id.txtPhone);
-        txtFax = findViewById(R.id.txtFax);
-        txtWebsite = findViewById(R.id.txtWebsite);
-        txtEmail = findViewById(R.id.txtEmail);
-        txtAddress = findViewById(R.id.txtAddress);
-        // spinner
-        addSpinnerClientGroup();
-        addSpinnerProvince();
-        addSpinnerDistrict();
-        addSpinnerCommune();
-
-        if(client != null){
-            setDataForInput();
-        }
-        if(option == Constants.DETAIL_OPTION){
-            setDisableInput();
-        }
-    }
-
-    private void addSpinnerCommune() {
-
-        spCommune = findViewById(R.id.spCommune);
-        communes = getCommunes();
-
-        communeAdapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_dropdown_item,
-                communes);
-        spCommune.setAdapter(communeAdapter);
-    }
-
-    private void addSpinnerDistrict() {
-        spDistrict = findViewById(R.id.spDistrict);
-        districts = getDistricts();
-        districtAdapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_dropdown_item,
-                districts );
-        spDistrict.setAdapter(districtAdapter);
-    }
-
-    private void addSpinnerProvince() {
-        spProvince = findViewById(R.id.spProvince);
-        provinces = getProvinces();
-        provinceAdapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_dropdown_item,
-                provinces);
-        spProvince.setAdapter(provinceAdapter);
-
-    }
-
-    private void addSpinnerClientGroup() {
-        spGroupClient = findViewById(R.id.spGroupClient);
-        groups = getGroups();
-        groupAdapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_dropdown_item,
-                groups);
-        spGroupClient.setAdapter(groupAdapter);
-    }
-
-    private void setDataForInput() {
+    @Override
+    public void setDataForInput() {
         if(client.getAvatar() != null && client.getAvatar().length() > 0){
-            avartar = Utils.StringToBitMap(client.getAvatar());
-            imgAvatar.setImageBitmap(avartar);
+            avatar = Utils.StringToBitMap(client.getAvatar());
+            imgAvatar.setImageBitmap(avatar);
         }else{
             imgAvatar.setImageResource(R.drawable.noimage);
         }
@@ -245,8 +224,8 @@ public class ClientActivity extends AppCompatActivity {
             }
         }
     }
-
-    private void setDisableInput() {
+    @Override
+    public void setDisableInput() {
         imgAvatar.setEnabled(false);
         // input
         TextFieldBoxes tfbName = findViewById(R.id.tfbName);
@@ -280,13 +259,13 @@ public class ClientActivity extends AppCompatActivity {
         spProvince.setEnabled(false);
         spDistrict.setEnabled(false);
     }
-
-    private void startCamera() {
+    @Override
+    public void startCamera() {
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraIntent, Constants.CAMERA_PIC_REQUEST);
     }
-
-    private void addClient() {
+    @Override
+    public Client getClientFromInput() {
         String name = txtName.getText().toString();
         int group = spGroupClient.getSelectedItemPosition();
         String phone = txtPhone.getText().toString();
@@ -299,24 +278,20 @@ public class ClientActivity extends AppCompatActivity {
         String address = txtAddress.getText().toString();
 
         if(Utils.checkInput(name)){
-            txtName.setError("Vui lòng nhập vào họ tên");
-            txtName.requestFocus();
-            return;
+            setError(txtName, "Vui lòng nhập vào họ tên");
+            return null;
         }
         if(group ==0){
             Utils.openDialog(this, "Vui lòng chọn nhóm thành viên");
-            spGroupClient.requestFocus();
-            return;
+            return null;
         }
         if(Utils.checkInput(phone)){
-            txtPhone.setError("Vui lòng nhập vào số điện thoại");
-            txtPhone.requestFocus();
-            return;
+            setError(txtPhone, "Vui lòng nhập vào số điện thoại");
+            return null;
         }
         if(!phone.matches(Constants.PHONE_REGULAR)){
-            txtPhone.setError("Số điện thoại bắt đầu với +84/0 và tiếp theo từ 9-10 kí tự số");
-            txtPhone.requestFocus();
-            return;
+            setError(txtPhone, "Số điện thoại bắt đầu với +84/0 và tiếp theo từ 9-10 kí tự số");
+            return null;
         }
 //        if(Utils.checkInput(fax)){
 //            Utils.openDialog(this, "Vui lòng nhập vào số fax");
@@ -332,29 +307,28 @@ public class ClientActivity extends AppCompatActivity {
 //        }
         if(email.length() > 0){
             if(!email.matches(Constants.EMAIL_REGULAR)){
-                txtEmail.setError("Email định dạng không đúng");
-                txtEmail.requestFocus();
-                return;
+                setError(txtEmail, "Email định dạng không đúng");
+                return null;
             }
 
         }
 
         if(spProvince.getSelectedItemPosition() ==0){
             Utils.openDialog(this, "Vui lòng chọn tỉnh/thành phố");
-            return;
+            return null;
         }
         if(spDistrict.getSelectedItemPosition() ==0){
             Utils.openDialog(this, "Vui lòng chọn quận/huyện");
-            return;
+            return null;
         }
         if(spCommune.getSelectedItemPosition() ==0){
             Utils.openDialog(this, "Vui lòng chọn phường/xã");
-            return;
+            return null;
         }
         if(Utils.checkInput(address)){
             txtAddress.setError("Vui lòng nhập vào địa chỉ");
             txtAddress.requestFocus();
-            return;
+            return null;
         }
         int clientId = -1;
         if(this.client != null){
@@ -363,53 +337,37 @@ public class ClientActivity extends AppCompatActivity {
         Client newClient = new Client(clientId,
                 name,groups.get(group).getId(), phone,fax, website, email,
                 new Address(province, district, commune,  address));
-        if(avartar != null){
-            newClient.setAvatar(Utils.BitMapToString(avartar, Constants.AVATAR_HEIGHT));
+        if(avatar != null){
+            newClient.setAvatar(Utils.BitMapToString(avatar, Constants.AVATAR_HEIGHT));
         }else{
             newClient.setAvatar(null);
         }
-        boolean res;
-        if(this.client == null){
-            res = ClientHelper.createClient(newClient);
-        }else{
-            res = ClientHelper.updateClient(newClient);
-        }
-        if(res){
-            Intent returnIntent = new Intent();
-            Bundle bundle = new Bundle();
-            bundle.putSerializable(Constants.CLIENT,newClient);
-            //returnIntent.putExtras(bundle);
-            returnIntent.putExtras(bundle);
-            setResult(Activity.RESULT_OK,returnIntent);
-            finish();
-        }else{
-            Utils.openDialog(this, "Đã có lỗi xảy ra, vui lòng thử lại");
-        }
-
-
+        return newClient;
     }
-
+    @Override
+    public void setError(ExtendedEditText extendedEditText, String message) {
+        extendedEditText.setError(message);
+        extendedEditText.requestFocus();
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == Activity.RESULT_OK){
             if (requestCode == Constants.CAMERA_PIC_REQUEST) {
                 Bundle bundle =  data.getExtras();
                 if(bundle != null){
-                    avartar = (Bitmap) bundle.get("data");
+                    avatar = (Bitmap) bundle.get("data");
                 }
-                imgAvatar.setImageBitmap(avartar);
+                imgAvatar.setImageBitmap(avatar);
             }
         }
 
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.action_bar_menu2, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.actionBar_add){
@@ -423,44 +381,45 @@ public class ClientActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+    @Override
+    public void showSpinnerDistrict(ArrayList<String> districts) {
+            spDistrict = findViewById(R.id.spDistrict);
+            this.districts = districts;
+            ArrayAdapter<String> districtAdapter = new ArrayAdapter<>(
+                    this,
+                    android.R.layout.simple_spinner_dropdown_item,
+                    districts );
+            spDistrict.setAdapter(districtAdapter);
+    }
+    @Override
+    public void showSpinnerProvince(ArrayList<String> provinces) {
+            spProvince = findViewById(R.id.spProvince);
+            this.provinces = provinces;
+            ArrayAdapter<String> provinceAdapter = new ArrayAdapter<>(
+                    this,
+                    android.R.layout.simple_spinner_dropdown_item,
+                    provinces);
+            spProvince.setAdapter(provinceAdapter);
+    }
+    @Override
+    public void showSpinnerCommune(ArrayList<String> communes) {
+            spCommune = findViewById(R.id.spCommune);
+            this.communes = communes;
 
-    private ArrayList<ClientGroup> getGroups(){
-        ArrayList<ClientGroup> list = new ArrayList<>();
-        list.add(new ClientGroup(-1, "Nhóm khách hàng..."));
-        ArrayList<ClientGroup> temp = ClientGroupHelper.getAllClientGroup();
-        list.addAll(temp);
-        return list;
+            ArrayAdapter<String> communeAdapter = new ArrayAdapter<>(
+                    this,
+                    android.R.layout.simple_spinner_dropdown_item,
+                    communes);
+            spCommune.setAdapter(communeAdapter);
     }
-    private ArrayList<String> getProvinces(){
-        ArrayList<String> list = new ArrayList<>();
-        list.add("Tỉnh/Thành Phố...");
-        list.add("An Giang");
-        list.add("Bình Phước");
-        list.add("Ninh Bình");
-        list.add("Hồ Chí Minh");
-        list.add("Hà Nội");
-        list.add("Đà Nẵng");
-        return list;
+    @Override
+    public void showSpinnerClientGroup(ArrayList<ClientGroup> clientGroups) {
+            spGroupClient = findViewById(R.id.spGroupClient);
+            this.groups = clientGroups;
+            ArrayAdapter<ClientGroup> groupAdapter = new ArrayAdapter<>(
+                    this,
+                    android.R.layout.simple_spinner_dropdown_item,
+                    groups);
+            spGroupClient.setAdapter(groupAdapter);
     }
-    private ArrayList<String> getDistricts(){
-        ArrayList<String> list = new ArrayList<>();
-        list.add("Quận/Huyện...");
-        list.add("Ba Đình");
-        list.add("Quận 1");
-        list.add("Quận 9");
-        list.add("Cầu Giấy");
-        list.add("Quận Thủ Đức");
-        list.add("Quận 3");
-        return list;
-    }
-    private ArrayList<String> getCommunes(){
-        ArrayList<String> list = new ArrayList<>();
-        list.add("Phường/Xã...");
-        list.add("Xã 1");
-        list.add("Phường 3");
-        list.add("Phường Tăng Nhơn Phú A");
-        list.add("Phường 5");
-        return list;
-    }
-
 }

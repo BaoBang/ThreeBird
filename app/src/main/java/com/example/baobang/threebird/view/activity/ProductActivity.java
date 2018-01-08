@@ -328,21 +328,6 @@ public class ProductActivity extends AppCompatActivity {
         }
     }
 
-//  <RelativeLayout
-//    android:layout_width="wrap_content"
-//    android:layout_height="wrap_content"
-//    android:layout_gravity="center_vertical">
-//                    <ImageView
-//    android:id="@+id/test"
-//    android:layout_width="55dp"
-//    android:layout_height="55dp"
-//    android:src="@drawable/database"/>
-//                    <ImageButton
-//    android:layout_width="16dp"
-//    android:layout_height="16dp"
-//    android:src="@drawable/ic_close_red"
-//    android:layout_alignEnd="@id/test"/>
-//                </RelativeLayout>
 
     private RelativeLayout createRelativeLayout(){
         RelativeLayout relativeLayout = new RelativeLayout(this);
