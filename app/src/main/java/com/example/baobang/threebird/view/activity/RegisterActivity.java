@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.model.User;
-import com.example.baobang.threebird.model.bussinesslogic.UserBL;
+import com.example.baobang.threebird.model.helper.UserHelper;
 import com.example.baobang.threebird.utils.Utils;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -69,7 +69,7 @@ public class RegisterActivity extends AppCompatActivity {
                     "Mật khẩu và xác nhận mật khẩu không trùng nhau");
             return;
         }
-        if(UserBL.checkUser( userName)){
+        if(UserHelper.checkUser( userName)){
             Utils.openDialog(this,
                     "Tài khoản đã tồn tại");
             return;
@@ -77,7 +77,7 @@ public class RegisterActivity extends AppCompatActivity {
         User user = new User();
         user.setUserName(userName);
         user.setPassWord(passWord);
-        if(!UserBL.createUser(user)){
+        if(!UserHelper.createUser(user)){
             Utils.openDialog(this,
                     "Không thể tạo tài khoản");
         }else{

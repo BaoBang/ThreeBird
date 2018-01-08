@@ -29,9 +29,9 @@ import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.model.Brand;
 import com.example.baobang.threebird.model.Category;
 import com.example.baobang.threebird.model.Product;
-import com.example.baobang.threebird.model.bussinesslogic.BrandBL;
-import com.example.baobang.threebird.model.bussinesslogic.CategoryBL;
-import com.example.baobang.threebird.model.bussinesslogic.ProductBL;
+import com.example.baobang.threebird.model.helper.BrandHelper;
+import com.example.baobang.threebird.model.helper.CategoryHelper;
+import com.example.baobang.threebird.model.helper.ProductHelper;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
 
@@ -76,7 +76,7 @@ public class ProductActivity extends AppCompatActivity {
         int productId = bundle != null ? bundle.getInt(Constants.PRODUCT) : -1;
         if(productId == -1)
             return null;
-        return ProductBL.getProduct(productId);
+        return ProductHelper.getProduct(productId);
 
     }
 
@@ -500,9 +500,9 @@ public class ProductActivity extends AppCompatActivity {
         product.setImages(bitmapStrs);
         int result;
         if(this.product == null){
-            result =  ProductBL.createProudct(product);
+            result =  ProductHelper.createProudct(product);
         }else{
-            result = ProductBL.updateProduct(product);
+            result = ProductHelper.updateProduct(product);
         }
         Log.e("Ida", result + "");
         if(result != -1){
@@ -518,11 +518,11 @@ public class ProductActivity extends AppCompatActivity {
     }
 
     private List<Brand> getBrands(){
-        return BrandBL.getAllBrand();
+        return BrandHelper.getAllBrand();
     }
 
     private List<Category> getCategories(){
-        return CategoryBL.getAllCategory();
+        return CategoryHelper.getAllCategory();
     }
 }
 

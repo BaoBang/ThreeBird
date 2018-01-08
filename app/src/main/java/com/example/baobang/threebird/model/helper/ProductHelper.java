@@ -1,4 +1,4 @@
-package com.example.baobang.threebird.model.bussinesslogic;
+package com.example.baobang.threebird.model.helper;
 
 import android.util.Log;
 import com.example.baobang.threebird.model.Product;
@@ -9,7 +9,7 @@ import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 
-public class ProductBL {
+public class ProductHelper {
     public static int createProudct(Product product){
         try (Realm realm = Realm.getDefaultInstance()) {
             int nextID = 0;

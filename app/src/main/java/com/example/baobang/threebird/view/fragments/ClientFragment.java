@@ -1,7 +1,6 @@
 package com.example.baobang.threebird.view.fragments;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,8 +20,8 @@ import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.adapter.ClientAdapter;
 import com.example.baobang.threebird.annimator.VegaLayoutManager;
 import com.example.baobang.threebird.model.Client;
-import com.example.baobang.threebird.model.bussinesslogic.ClientBL;
-import com.example.baobang.threebird.model.bussinesslogic.OrderBL;
+import com.example.baobang.threebird.model.helper.ClientHelper;
+import com.example.baobang.threebird.model.helper.OrderHelper;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
 import com.example.baobang.threebird.view.activity.ClientActivity;
@@ -64,7 +63,7 @@ public class ClientFragment extends Fragment {
 
         rcClients = view.findViewById(R.id.rcClients);
 //        rcClients.setHasFixedSize(true);
-        clients = ClientBL.getClientOn30Days();
+        clients = ClientHelper.getClientOn30Days();
         //
         clientAdapter = new ClientAdapter(clients, rcClients, item -> openOptionDialog((Client)item));
         rcClients.setLayoutManager(new VegaLayoutManager());
@@ -142,7 +141,7 @@ public class ClientFragment extends Fragment {
     }
 
     private void deleteClient(final Client client) {
-        if(OrderBL.checkClientHasOreder(client.getId())){
+        if(OrderHelper.checkClientHasOreder(client.getId())){
             Utils.openDialog(getActivity(), "Khách hàng đã lập hóa đơn không thể xóa.");
             return;
         }
@@ -152,7 +151,7 @@ public class ClientFragment extends Fragment {
         dialog.setMessage("Bạn có muốn xóa khách hàng " + client.getName());
 
         dialog.setPositiveButton("Đồng ý", (dialog1, id) -> {
-                boolean res =ClientBL.deleteClient(client);
+                boolean res = ClientHelper.deleteClient(client);
                 if(res){
                     clients.remove(client);
                     clientAdapter.notifyDataSetChanged();

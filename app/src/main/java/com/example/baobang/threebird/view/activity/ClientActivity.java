@@ -21,8 +21,8 @@ import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.model.Address;
 import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.ClientGroup;
-import com.example.baobang.threebird.model.bussinesslogic.ClientBL;
-import com.example.baobang.threebird.model.bussinesslogic.ClientGroupBL;
+import com.example.baobang.threebird.model.helper.ClientGroupHelper;
+import com.example.baobang.threebird.model.helper.ClientHelper;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
 import com.example.baobang.threebird.utils.SlideView;
@@ -57,9 +57,9 @@ public class ClientActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         client = (Client) (bundle != null ? bundle.getSerializable(Constants.CLIENT) : null);
         option = bundle == null ? 0 : bundle.getInt(Constants.OPTION);
-//        ClientGroupBL.createClientGroup(new ClientGroup(0, "Admin"));
-//        ClientGroupBL.createClientGroup(new ClientGroup(0, "Employee"));
-//        ClientGroupBL.createClientGroup(new ClientGroup(0, "Membber"));
+//        ClientGroupHelper.createClientGroup(new ClientGroup(0, "Admin"));
+//        ClientGroupHelper.createClientGroup(new ClientGroup(0, "Employee"));
+//        ClientGroupHelper.createClientGroup(new ClientGroup(0, "Membber"));
         addControls();
         addEvents();
     }
@@ -216,7 +216,7 @@ public class ClientActivity extends AppCompatActivity {
         txtEmail.setText(client.getEmail());
         txtAddress.setText(client.getAddress().getAddress());
         //
-        ClientGroup clientGroup =  ClientGroupBL.getClientById(client.getGroup());
+        ClientGroup clientGroup =  ClientGroupHelper.getClientById(client.getGroup());
         for(int i = 0; i < groups.size(); i ++){
             if(groups.get(i).getId() == clientGroup.getId()){
                 spGroupClient.setSelection(i);
@@ -370,9 +370,9 @@ public class ClientActivity extends AppCompatActivity {
         }
         boolean res;
         if(this.client == null){
-            res = ClientBL.createClient(newClient);
+            res = ClientHelper.createClient(newClient);
         }else{
-            res = ClientBL.updateClient(newClient);
+            res = ClientHelper.updateClient(newClient);
         }
         if(res){
             Intent returnIntent = new Intent();
@@ -427,7 +427,7 @@ public class ClientActivity extends AppCompatActivity {
     private ArrayList<ClientGroup> getGroups(){
         ArrayList<ClientGroup> list = new ArrayList<>();
         list.add(new ClientGroup(-1, "Nhóm khách hàng..."));
-        ArrayList<ClientGroup> temp = ClientGroupBL.getAllClientGroup();
+        ArrayList<ClientGroup> temp = ClientGroupHelper.getAllClientGroup();
         list.addAll(temp);
         return list;
     }

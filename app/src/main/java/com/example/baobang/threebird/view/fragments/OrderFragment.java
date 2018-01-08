@@ -3,7 +3,6 @@ package com.example.baobang.threebird.view.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -27,7 +26,7 @@ import com.example.baobang.threebird.adapter.OrderAdapter;
 import com.example.baobang.threebird.annimator.VegaLayoutManager;
 import com.example.baobang.threebird.listener.OnItemRecyclerViewClickListener;
 import com.example.baobang.threebird.model.Order;
-import com.example.baobang.threebird.model.bussinesslogic.OrderBL;
+import com.example.baobang.threebird.model.helper.OrderHelper;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
 import com.example.baobang.threebird.view.activity.OrderActivity;
@@ -71,7 +70,7 @@ public class OrderFragment extends Fragment {
         setupOrderInDay();
 
         rcOrders = view.findViewById(R.id.rcOrders);
-        orders = OrderBL.getAllOrderByStatusInDay();
+        orders = OrderHelper.getAllOrderByStatusInDay();
         onItemRecyclerViewClickListener = item -> {
             Order order = (Order) item;
             openOptionDialog(order.getId());
@@ -127,7 +126,7 @@ public class OrderFragment extends Fragment {
             if(bundle != null){
                 orderId = bundle.getInt(Constants.ORDER);
             }
-            Order order = OrderBL.getOrder(orderId);
+            Order order = OrderHelper.getOrder(orderId);
             int indexChange = checkOrders(orderId);
             if( indexChange == -1){
                 orders.add(order);
@@ -194,9 +193,9 @@ public class OrderFragment extends Fragment {
     }
 
     private void deleteOrder(int orderId) {
-        Order order = OrderBL.getOrder(orderId);
+        Order order = OrderHelper.getOrder(orderId);
         if(order != null){
-            boolean res =OrderBL.deleteOrder(order);
+            boolean res = OrderHelper.deleteOrder(order);
             if(res){
                 remove(order);
                 updateListView();
@@ -270,16 +269,16 @@ public class OrderFragment extends Fragment {
         ArrayList<Order> list;
         switch (status){
             case 0:
-                list = OrderBL.getOrderByStatusInDay(Constants.COMPLETED);
+                list = OrderHelper.getOrderByStatusInDay(Constants.COMPLETED);
                 break;
             case 1:
-                list = OrderBL.getOrderByStatusInDay(Constants.CANCEL);
+                list = OrderHelper.getOrderByStatusInDay(Constants.CANCEL);
                 break;
             case 2:
-                list = OrderBL.getOrderByStatusInDay(Constants.DELIVERY);
+                list = OrderHelper.getOrderByStatusInDay(Constants.DELIVERY);
                 break;
             default:
-                list = OrderBL.getAllOrderByStatusInDay();
+                list = OrderHelper.getAllOrderByStatusInDay();
         }
         return list;
     }

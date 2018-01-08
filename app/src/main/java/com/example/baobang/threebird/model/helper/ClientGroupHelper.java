@@ -1,4 +1,4 @@
-package com.example.baobang.threebird.model.bussinesslogic;
+package com.example.baobang.threebird.model.helper;
 
 import android.util.Log;
 
@@ -10,7 +10,7 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-public class ClientGroupBL {
+public class ClientGroupHelper {
 
     public static boolean createClientGroup(ClientGroup clientGroup){
         try (Realm realm = Realm.getDefaultInstance()) {

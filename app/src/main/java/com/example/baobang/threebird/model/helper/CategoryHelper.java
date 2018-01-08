@@ -1,4 +1,4 @@
-package com.example.baobang.threebird.model.bussinesslogic;
+package com.example.baobang.threebird.model.helper;
 
 import android.util.Log;
 import com.example.baobang.threebird.model.Category;
@@ -7,7 +7,7 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-public class CategoryBL {
+public class CategoryHelper {
     public static boolean createCategory(Category category){
         try (Realm realm = Realm.getDefaultInstance()) {
             int nextID = 0;

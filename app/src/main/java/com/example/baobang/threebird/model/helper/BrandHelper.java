@@ -1,4 +1,4 @@
-package com.example.baobang.threebird.model.bussinesslogic;
+package com.example.baobang.threebird.model.helper;
 
 import android.util.Log;
 
@@ -8,7 +8,7 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-public class BrandBL {
+public class BrandHelper {
     public static boolean createBrand(Brand brand){
         try (Realm realm = Realm.getDefaultInstance()) {
             int nextID = 0;

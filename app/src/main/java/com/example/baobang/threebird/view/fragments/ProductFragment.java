@@ -30,10 +30,10 @@ import com.example.baobang.threebird.listener.OnItemRecyclerViewClickListener;
 import com.example.baobang.threebird.model.Brand;
 import com.example.baobang.threebird.model.Category;
 import com.example.baobang.threebird.model.Product;
-import com.example.baobang.threebird.model.bussinesslogic.BrandBL;
-import com.example.baobang.threebird.model.bussinesslogic.CategoryBL;
-import com.example.baobang.threebird.model.bussinesslogic.OrderBL;
-import com.example.baobang.threebird.model.bussinesslogic.ProductBL;
+import com.example.baobang.threebird.model.helper.BrandHelper;
+import com.example.baobang.threebird.model.helper.CategoryHelper;
+import com.example.baobang.threebird.model.helper.OrderHelper;
+import com.example.baobang.threebird.model.helper.ProductHelper;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
 import com.example.baobang.threebird.view.activity.ProductActivity;
@@ -73,7 +73,7 @@ public class ProductFragment extends Fragment {
 
 
         rcProducts = view.findViewById(R.id.rcProduct);
-        products = ProductBL.getAllProduct();
+        products = ProductHelper.getAllProduct();
         onItemRecyclerViewClickListener =new OnItemRecyclerViewClickListener() {
             @Override
             public void onItemClick(Object item) {
@@ -113,14 +113,14 @@ public class ProductFragment extends Fragment {
     }
 
     private void deleteProduct(final int productId) {
-        final Product product = ProductBL.getProduct(productId);
+        final Product product = ProductHelper.getProduct(productId);
 
         if(product != null && product.getInvetory() > 0){
             Utils.openDialog(getActivity(), "Sản phẩm " + product.getName() +" hiện còn " + product.getInvetory() + " sản phẩm, không thể xóa");
             return;
         }
 
-        if(OrderBL.checkProductOrdered(product.getId())){
+        if(OrderHelper.checkProductOrdered(product.getId())){
             Utils.openDialog(getActivity(), "Sản phẩm đã được đặt hàng, không thể xóa");
             return;
         }
@@ -131,7 +131,7 @@ public class ProductFragment extends Fragment {
         dialog.setMessage("Bạn có muốn xóa sản phẩm " + product.getName());
 
         dialog.setPositiveButton("Đồng ý", (dialog12, id) -> {
-               boolean res =ProductBL.deleteProduct(product);
+               boolean res = ProductHelper.deleteProduct(product);
                if(res){
                    removeProductFromList(product);
                    productAdapter.notifyDataSetChanged();
@@ -188,7 +188,7 @@ public class ProductFragment extends Fragment {
         if(categoryPosition != 0){
             categoryId = categories.get(categoryPosition).getId();
         }
-        products = ProductBL.getListSortBy(brandId, categoryId);
+        products = ProductHelper.getListSortBy(brandId, categoryId);
         updateRecyclerView();
     }
 
@@ -244,7 +244,7 @@ public class ProductFragment extends Fragment {
             Bundle bundle = data.getExtras();
             int productId = bundle == null ? -1 : bundle.getInt(Constants.PRODUCT);
             Log.e("Id", productId + "");
-            Product product = ProductBL.getProduct(productId);
+            Product product = ProductHelper.getProduct(productId);
             int indexChange = checkProducts(product);
             if( indexChange == -1){
                 products.add(product);
@@ -316,20 +316,20 @@ public class ProductFragment extends Fragment {
     }
 
     private List<Brand> getBrands(){
-//        BrandBL.createBrand(new Brand(0, "Chọn hãng..."));
-//        BrandBL.createBrand(new Brand(0, "Apple"));
-//        BrandBL.createBrand(new Brand(0, "SamSung"));
-//        BrandBL.createBrand(new Brand(0, "Oppo"));
-        return BrandBL.getAllBrand();
+//        BrandHelper.createBrand(new Brand(0, "Chọn hãng..."));
+//        BrandHelper.createBrand(new Brand(0, "Apple"));
+//        BrandHelper.createBrand(new Brand(0, "SamSung"));
+//        BrandHelper.createBrand(new Brand(0, "Oppo"));
+        return BrandHelper.getAllBrand();
     }
 
     private List<Category> getCategories(){
 
-//        CategoryBL.createCategory(new Category(0, "Chọn loại sản phẩm"));
-//        CategoryBL.createCategory(new Category(1, "Phone"));
-//        CategoryBL.createCategory(new Category(2, "Laptop"));
-//        CategoryBL.createCategory(new Category(3, "Tablet"));
-        return CategoryBL.getAllCategory();
+//        CategoryHelper.createCategory(new Category(0, "Chọn loại sản phẩm"));
+//        CategoryHelper.createCategory(new Category(1, "Phone"));
+//        CategoryHelper.createCategory(new Category(2, "Laptop"));
+//        CategoryHelper.createCategory(new Category(3, "Tablet"));
+        return CategoryHelper.getAllCategory();
     }
 
     public List<String> getSortBies() {

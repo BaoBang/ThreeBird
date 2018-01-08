@@ -8,7 +8,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.model.User;
-import com.example.baobang.threebird.model.bussinesslogic.UserBL;
+import com.example.baobang.threebird.model.helper.UserHelper;
 import com.example.baobang.threebird.utils.Utils;
 
 import io.realm.Realm;
@@ -93,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
         User user = new User();
         user.setUserName(userName);
         user.setPassWord(password);
-        return UserBL.checkUser( user);
+        return UserHelper.checkUser( user);
     }
 
 }

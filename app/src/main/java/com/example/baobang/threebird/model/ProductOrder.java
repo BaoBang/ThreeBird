@@ -1,12 +1,10 @@
 package com.example.baobang.threebird.model;
 
-import com.example.baobang.threebird.model.bussinesslogic.ProductBL;
+import com.example.baobang.threebird.model.helper.ProductHelper;
 
 import java.io.Serializable;
 
-import io.realm.RealmModel;
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 
 
 public  class ProductOrder extends RealmObject implements Serializable{
@@ -39,7 +37,7 @@ public  class ProductOrder extends RealmObject implements Serializable{
     }
 
     public long getTotalPrice(){
-        Product product = ProductBL.getProduct(productId);
+        Product product = ProductHelper.getProduct(productId);
         int total = 0;
         if(product != null){
             total = product.getPrice() * amount;

@@ -1,11 +1,11 @@
-package com.example.baobang.threebird.model.bussinesslogic;
+package com.example.baobang.threebird.model.helper;
 
 import android.util.Log;
 import com.example.baobang.threebird.model.User;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-public class UserBL {
+public class UserHelper {
 
     public static boolean createUser(User user){
         try (Realm realm = Realm.getDefaultInstance()) {

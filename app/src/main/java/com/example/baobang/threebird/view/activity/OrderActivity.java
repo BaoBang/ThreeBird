@@ -35,9 +35,9 @@ import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.Order;
 import com.example.baobang.threebird.model.Product;
 import com.example.baobang.threebird.model.ProductOrder;
-import com.example.baobang.threebird.model.bussinesslogic.ClientBL;
-import com.example.baobang.threebird.model.bussinesslogic.OrderBL;
-import com.example.baobang.threebird.model.bussinesslogic.ProductBL;
+import com.example.baobang.threebird.model.helper.ClientHelper;
+import com.example.baobang.threebird.model.helper.OrderHelper;
+import com.example.baobang.threebird.model.helper.ProductHelper;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
 
@@ -131,7 +131,7 @@ public class OrderActivity extends AppCompatActivity {
         if(order != null){
             setDataForInput();
             if(order.getClientId() != -1){
-                Client client = ClientBL.getClient(order.getClientId());
+                Client client = ClientHelper.getClient(order.getClientId());
                 Bitmap bitmap = Utils.StringToBitMap(client.getAvatar());
                 imgAvatar.setImageBitmap(Utils.getRoundedRectBitmap(bitmap));
             }
@@ -178,7 +178,7 @@ public class OrderActivity extends AppCompatActivity {
     }
 
     private void setDataForInput() {
-        Client client = ClientBL.getClient(order.getClientId());
+        Client client = ClientHelper.getClient(order.getClientId());
         if(client != null && client.getAvatar().length() > 0){
             Bitmap bitmap = Utils.StringToBitMap(client.getAvatar());
             imgAvatar.setImageBitmap(Utils.getRoundedRectBitmap(bitmap));
@@ -214,7 +214,7 @@ public class OrderActivity extends AppCompatActivity {
         txtAmount.setText(String.valueOf(order.getAmount()));
 
         for(ProductOrder productOrder : productList){
-            Product product = ProductBL.getProduct(productOrder.getProductId());
+            Product product = ProductHelper.getProduct(productOrder.getProductId());
             addProductToLayout(product);
         }
 
@@ -337,7 +337,7 @@ public class OrderActivity extends AppCompatActivity {
         alertDialog.setView(convertView);
         alertDialog.setTitle("Danh sách sản phẩm");
         RecyclerView rcProudcts =  convertView.findViewById(R.id.recyclerView);
-        final ArrayList<Product> products = ProductBL.getAllProduct();
+        final ArrayList<Product> products = ProductHelper.getAllProduct();
         final AlertDialog dialog = alertDialog.show();
         ProductAdapter adapter = new ProductAdapter(products, rcProudcts, new OnItemRecyclerViewClickListener() {
             @Override
@@ -571,7 +571,7 @@ public class OrderActivity extends AppCompatActivity {
         alertDialog.setView(convertView);
         alertDialog.setTitle("Danh sách khách hàng");
         RecyclerView rcClients =  convertView.findViewById(R.id.recyclerView);
-        final ArrayList<Client> clients = ClientBL.getAllClient();
+        final ArrayList<Client> clients = ClientHelper.getAllClient();
         final AlertDialog dialog = alertDialog.show();
         ClientAdapter adapter = new ClientAdapter(clients, rcClients, item -> {
             Client client = (Client) item;
@@ -732,10 +732,10 @@ public class OrderActivity extends AppCompatActivity {
            }
 
            if(this.order == null){
-               res =  OrderBL.createOrder(order);
+               res =  OrderHelper.createOrder(order);
            }else{
                order.setId(this.order.getId());
-               res = OrderBL.updateOrder(order);
+               res = OrderHelper.updateOrder(order);
            }
            if(res){
                if(status - 1 == Constants.COMPLETED){
@@ -760,7 +760,7 @@ public class OrderActivity extends AppCompatActivity {
 
     private Product checkInventory(){
         for(ProductOrder productOrder : productList){
-            Product product = ProductBL.getProduct(productOrder.getProductId());
+            Product product = ProductHelper.getProduct(productOrder.getProductId());
             if(product.getInvetory()  < productOrder.getAmount()){
                 return product;
             }
@@ -770,9 +770,9 @@ public class OrderActivity extends AppCompatActivity {
 
     private void orderCompletatitio() {
         for(ProductOrder productOrder : productList){
-            Product product = ProductBL.getProduct(productOrder.getProductId());
+            Product product = ProductHelper.getProduct(productOrder.getProductId());
             product.setInvetory(product.getInvetory() - productOrder.getAmount());
-            ProductBL.updateProduct(product);
+            ProductHelper.updateProduct(product);
         }
     }
 
@@ -826,13 +826,13 @@ public class OrderActivity extends AppCompatActivity {
     }
 
 //    private ArrayList<Client> getClients(){
-//        return ClientBL.getAllClient();
+//        return ClientHelper.getAllClient();
 //    }
     public Order getOrder(Bundle bundle) {
         int orderId = bundle != null ? bundle.getInt(Constants.ORDER) : -1;
         if(orderId == -1)
            return null;
-        return OrderBL.getOrder(orderId);
+        return OrderHelper.getOrder(orderId);
     }
 }
 

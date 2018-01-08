@@ -1,4 +1,4 @@
-package com.example.baobang.threebird.model.bussinesslogic;
+package com.example.baobang.threebird.model.helper;
 
 import android.util.Log;
 import com.example.baobang.threebird.model.Order;
@@ -14,7 +14,7 @@ import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 
-public class OrderBL {
+public class OrderHelper {
     public static boolean createOrder(Order order){
         try (Realm realm = Realm.getDefaultInstance()) {
             int nextID = 0;
