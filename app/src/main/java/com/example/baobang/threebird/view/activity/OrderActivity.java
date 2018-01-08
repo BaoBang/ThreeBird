@@ -38,8 +38,11 @@ import com.example.baobang.threebird.model.ProductOrder;
 import com.example.baobang.threebird.model.helper.ClientHelper;
 import com.example.baobang.threebird.model.helper.OrderHelper;
 import com.example.baobang.threebird.model.helper.ProductHelper;
+import com.example.baobang.threebird.presenter.OrderPresenter;
+import com.example.baobang.threebird.presenter.OrderPresenterImp;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
+import com.example.baobang.threebird.view.OrderView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -51,8 +54,9 @@ import io.realm.RealmList;
 import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
 import studio.carbonylgroup.textfieldboxes.TextFieldBoxes;
 
-public class OrderActivity extends AppCompatActivity {
+public class OrderActivity extends AppCompatActivity implements OrderView{
 
+    private OrderPresenterImp orderPresenterImp;
 
     private Toolbar toolbar;
     private ImageView imgAvatar;
@@ -76,17 +80,21 @@ public class OrderActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activy_order);
+
+        orderPresenterImp = new OrderPresenterImp(this);
+
         Bundle bundle = getIntent().getExtras();
-        order = getOrder(bundle);
-        option = bundle == null ? 0 : bundle.getInt(Constants.OPTION);
+        order = orderPresenterImp.getOrderFromBundle(bundle);
+        option = orderPresenterImp.getOptionFromBundle(bundle);
         if(order != null){
-            productList.addAll(order.getProducts());
+            productList = orderPresenterImp.getProductListFromOrder(order);
         }
-        addControls();
-        addEvents();
+
+        orderPresenterImp.init();
     }
 
-    private void addControls() {
+    @Override
+    public void addControls() {
         toolbar = findViewById(R.id.toolBarCreateOrder);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -113,7 +121,7 @@ public class OrderActivity extends AppCompatActivity {
         txtDeliveryDate.setEnabled(false);
 
         txtAmount = findViewById(R.id.txtAmount);
-        txtAmount.setText(String.valueOf(getAmountAllProduct()));
+        txtAmount.setText(String.valueOf(orderPresenterImp.getAmountAllProduct(productList)));
 
         btnCreatedAt = findViewById(R.id.btnCreatedAt);
         btnAddProduct = findViewById(R.id.btnAddProduct);
@@ -121,12 +129,6 @@ public class OrderActivity extends AppCompatActivity {
         btnAddClient = findViewById(R.id.btnAddClient);
 
         layoutProduct = findViewById(R.id.layoutProduct);
-
-        addSpinnerStatus();
-        addSpinnerProvince();
-        addSpinnerDistrict();
-        addSpinnerCommune();
-        addSpinnerPayment();
 
         if(order != null){
             setDataForInput();
@@ -142,7 +144,8 @@ public class OrderActivity extends AppCompatActivity {
         }
     }
 
-    private void setDisableInput() {
+    @Override
+    public void setDisableInput() {
         TextFieldBoxes tfbName = findViewById(R.id.tfbName);
         tfbName.setEnabled(false);
         txtName.setEnabled(false);
@@ -177,7 +180,8 @@ public class OrderActivity extends AppCompatActivity {
         layoutProduct.setEnabled(false);
     }
 
-    private void setDataForInput() {
+    @Override
+    public void setDataForInput() {
         Client client = ClientHelper.getClient(order.getClientId());
         if(client != null && client.getAvatar().length() > 0){
             Bitmap bitmap = Utils.StringToBitMap(client.getAvatar());
@@ -222,59 +226,9 @@ public class OrderActivity extends AppCompatActivity {
         spPayment.setSelection(order.getPayments());
     }
 
-    private void addSpinnerPayment() {
-        spPayment = findViewById(R.id.spPayment);
-        ArrayList<String> payments = getPayments();
 
-        ArrayAdapter<String> adapterPayment = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_list_item_1,
-                payments);
-        spPayment.setAdapter(adapterPayment);
-    }
-
-    private void addSpinnerCommune() {
-        spCommune = findViewById(R.id.spCommune);
-        communes = getCommunes();
-
-        ArrayAdapter<String> adapterCommune = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_list_item_1,
-                communes);
-        spCommune.setAdapter(adapterCommune);
-    }
-
-    private void addSpinnerDistrict() {
-        spDistrict = findViewById(R.id.spDistrict);
-        districts = getDistricts();
-        ArrayAdapter<String> adapterDistrict = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_list_item_1,
-                districts);
-        spDistrict.setAdapter(adapterDistrict);
-    }
-
-    private void addSpinnerProvince() {
-        spProvince = findViewById(R.id.spProvince);
-        provinces = getProvinces();
-        ArrayAdapter<String> adapterProvince = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_list_item_1,
-                provinces);
-        spProvince.setAdapter(adapterProvince);
-    }
-
-    private void addSpinnerStatus() {
-        spStatus = findViewById(R.id.spStatus);
-        ArrayList<String> statuses = getStatuses();
-        ArrayAdapter<String> adapterStatus = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_list_item_1,
-                statuses);
-        spStatus.setAdapter(adapterStatus);
-    }
-
-    private void addEvents() {
+    @Override
+    public void addEvents() {
         toolbar.setNavigationOnClickListener(view -> onBackPressed());
 
         btnCreatedAt.setOnClickListener(view -> Utils.getDate(OrderActivity.this, txtCreatedAt));
@@ -330,7 +284,58 @@ public class OrderActivity extends AppCompatActivity {
         });
     }
 
-    private void showDialogProduct() {
+    @Override
+    public void showSpinnerDistrict(ArrayList<String> districts) {
+        spDistrict = findViewById(R.id.spDistrict);
+        ArrayAdapter<String> adapterDistrict = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_list_item_1,
+                districts);
+        spDistrict.setAdapter(adapterDistrict);
+    }
+
+    @Override
+    public void showSpinnerProvince(ArrayList<String> provinces) {
+        spProvince = findViewById(R.id.spProvince);
+        ArrayAdapter<String> adapterProvince = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_list_item_1,
+                provinces);
+        spProvince.setAdapter(adapterProvince);
+    }
+
+    @Override
+    public void showSpinnerCommune(ArrayList<String> communes) {
+        spCommune = findViewById(R.id.spCommune);
+        ArrayAdapter<String> adapterCommune = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_list_item_1,
+                communes);
+        spCommune.setAdapter(adapterCommune);
+    }
+
+    @Override
+    public void showSpinnerPayment(ArrayList<String> payments) {
+        spPayment = findViewById(R.id.spPayment);
+        ArrayAdapter<String> adapterPayment = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_list_item_1,
+                payments);
+        spPayment.setAdapter(adapterPayment);
+    }
+
+    @Override
+    public void showSpinnerStatus(ArrayList<String> statues) {
+        spStatus = findViewById(R.id.spStatus);
+        ArrayAdapter<String> adapterStatus = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_list_item_1,
+                statues);
+        spStatus.setAdapter(adapterStatus);
+    }
+
+    @Override
+    public void showDialogProduct() {
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(OrderActivity.this, R.drawable.background_color_gradient);
         LayoutInflater inflater = getLayoutInflater();
         @SuppressLint("InflateParams") View convertView = inflater.inflate(R.layout.recycleview_dialog, null);
@@ -339,15 +344,12 @@ public class OrderActivity extends AppCompatActivity {
         RecyclerView rcProudcts =  convertView.findViewById(R.id.recyclerView);
         final ArrayList<Product> products = ProductHelper.getAllProduct();
         final AlertDialog dialog = alertDialog.show();
-        ProductAdapter adapter = new ProductAdapter(products, rcProudcts, new OnItemRecyclerViewClickListener() {
-            @Override
-            public void onItemClick(Object item) {
-                Product product = (Product) item;
-                getProductFromList(product);
-                txtAmount.setText(String.valueOf(getAmountAllProduct()));
-                addProductToLayout(product);
-                dialog.dismiss();
-            }
+        ProductAdapter adapter = new ProductAdapter(products, rcProudcts, item -> {
+            Product product = (Product) item;
+            productList = orderPresenterImp.getProductFromList(productList, product);
+            txtAmount.setText(String.valueOf(orderPresenterImp.getAmountAllProduct(productList)));
+            addProductToLayout(product);
+            dialog.dismiss();
         });
         rcProudcts.setLayoutManager(new VegaLayoutManager());
         rcProudcts.setAdapter(adapter);
@@ -362,7 +364,8 @@ public class OrderActivity extends AppCompatActivity {
 //        });
     }
 
-    private int checkLayoutProduct(int id){
+    @Override
+    public int checkLayoutProduct(int id){
         for(int i = 0; i < layoutProduct.getChildCount(); i++){
             LinearLayout layout = (LinearLayout) layoutProduct.getChildAt(i);
             if(id == layout.getId()){
@@ -372,14 +375,15 @@ public class OrderActivity extends AppCompatActivity {
         return -1;
     }
 
-    private void updateAmountOfProductInCard(int index, int productId){
+    @Override
+    public void updateAmountOfProductInCard(int index, int productId){
         LinearLayout layout = (LinearLayout) layoutProduct.getChildAt(index);
         TextView textView = (TextView) layout.getChildAt(2);
-        String text = "Số lượng: " + getAmountProduct(productId);
+        String text = "Số lượng: " + orderPresenterImp.getAmountProduct(productList, productId);
         textView.setText(text);
     }
-
-    private LinearLayout createLinearLayout(int id){
+    @Override
+    public LinearLayout createLinearLayout(int id){
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setId(id);
@@ -389,22 +393,20 @@ public class OrderActivity extends AppCompatActivity {
         return layout;
     }
 
-    private RelativeLayout createRelativeLayout(){
+    @Override
+    public RelativeLayout createRelativeLayout(){
         RelativeLayout relativeLayout = new RelativeLayout(this);
         RelativeLayout.LayoutParams paramsRelativeLayout = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         relativeLayout.setLayoutParams(paramsRelativeLayout);
         return  relativeLayout;
     }
 
-    private ImageView createImageView(Product product){
+    @Override
+    public ImageView createImageView(Product product){
         RelativeLayout.LayoutParams imageParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         ImageView imageView = new ImageView(this);
-        if(product.getImages().size() == 0){
-            imageView.setImageResource(R.drawable.noimage);
-        }else{
-            Bitmap bitmap = Utils.StringToBitMap(product.getImages().first());
-            imageView.setImageBitmap(Utils.getRoundedRectBitmap(bitmap));
-        }
+        Bitmap bitmap = orderPresenterImp.getImageFromProduct(this, product);
+        imageView.setImageBitmap(bitmap);
         imageView.setLayoutParams(imageParams);
         imageView.getLayoutParams().height = Constants.IMAGE_HEIGHT * 2;
         imageView.getLayoutParams().width = Constants.IMAGE_WIDTH * 2;
@@ -412,7 +414,8 @@ public class OrderActivity extends AppCompatActivity {
         return  imageView;
     }
 
-    private ImageButton createImageRemoveButton(ImageView imgView){
+    @Override
+    public ImageButton createImageRemoveButton(ImageView imgView){
         RelativeLayout.LayoutParams imageButtonParams = new RelativeLayout.LayoutParams(32, 32);
         imageButtonParams.setMargins(0, 10, 0, 0);
         imageButtonParams.addRule(RelativeLayout.END_OF, imgView.getId());
@@ -422,11 +425,13 @@ public class OrderActivity extends AppCompatActivity {
         return  btnRemove;
     }
 
-    private void updateProudctAmount(){
-        txtAmount.setText(String.valueOf(getAmountAllProduct() ));
+    @Override
+    public void updateProductAmount(){
+        txtAmount.setText(String.valueOf(orderPresenterImp.getAmountAllProduct(productList)));
     }
 
-    private void addProductToLayout(final Product product) {
+    @Override
+    public void addProductToLayout(final Product product) {
         int index = checkLayoutProduct(product.getId());
         if(index != -1){
             updateAmountOfProductInCard(index, product.getId());
@@ -451,7 +456,7 @@ public class OrderActivity extends AppCompatActivity {
                     }
                 }
                 layoutProduct.removeView(layout);
-                updateProudctAmount();
+                updateProductAmount();
             });
 
             layout.addView(relativeLayout);
@@ -466,7 +471,7 @@ public class OrderActivity extends AppCompatActivity {
             // add amount
             TextView txtAmount = new TextView(this);
             txtAmount.setLayoutParams(params);
-            text = "Số lượng: "+getAmountProduct(product.getId());
+            text = "Số lượng: "+orderPresenterImp.getAmountProduct(productList, product.getId());
             txtAmount.setText(text);
             layout.addView(txtAmount);
             // add price
@@ -528,43 +533,8 @@ public class OrderActivity extends AppCompatActivity {
 
     }
 
-    private int getAmountProduct(int id){
-        int total = 1;
-        for(ProductOrder productOrder : productList){
-            if(productOrder.getProductId() == id){
-                total = productOrder.getAmount();
-            }
-        }
-        return total;
-    }
-
-    private int getAmountAllProduct(){
-        int total = 0;
-        for(ProductOrder productOrder : productList){
-            total += productOrder.getAmount();
-        }
-        return total;
-    }
-
-    private void getProductFromList(Product product) {
-        int index = checkProduct(product);
-        if(index != -1){
-            productList.get(index).setAmount(productList.get(index).getAmount() + 1);
-        }else{
-            productList.add(new ProductOrder(product.getId(), 1));
-        }
-    }
-
-    private int checkProduct(Product product) {
-        for(int i = 0; i < productList.size(); i ++){
-            if(productList.get(i).getProductId() == product.getId()){
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    private void showDialogClient() {
+    @Override
+    public void showDialogClient() {
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(OrderActivity.this, R.drawable.background_color_gradient);
         LayoutInflater inflater = getLayoutInflater();
         @SuppressLint("InflateParams") View convertView = inflater.inflate(R.layout.recycleview_dialog, null);
@@ -576,7 +546,7 @@ public class OrderActivity extends AppCompatActivity {
         ClientAdapter adapter = new ClientAdapter(clients, rcClients, item -> {
             Client client = (Client) item;
             dialog.dismiss();
-            getClientFromList(client);
+            addClientInfoFromListToView(client);
             clientSelectedId = client.getId();
         });
         rcClients.setLayoutManager(new VegaLayoutManager());
@@ -591,7 +561,8 @@ public class OrderActivity extends AppCompatActivity {
 //        });
     }
 
-    private void getClientFromList(Client client) {
+    @Override
+    public void addClientInfoFromListToView(Client client) {
         txtName.setText(client.getName());
         if(client.getAvatar()!= null){
             Bitmap bitmap = Utils.StringToBitMap(client.getAvatar());
@@ -724,7 +695,7 @@ public class OrderActivity extends AppCompatActivity {
            boolean res;
 
            if(option == Constants.ADD_OPTION || option == Constants.EDIT_OPTION){
-               Product product = checkInventory();
+               Product product = orderPresenterImp.checkInventory(productList);
                if(product != null){
                    Utils.openDialog(this, "Sản phẩm " + product.getName() +" hiện còn " + product.getInvetory() + " sản phẩm");
                    return;
@@ -739,8 +710,7 @@ public class OrderActivity extends AppCompatActivity {
            }
            if(res){
                if(status - 1 == Constants.COMPLETED){
-                   orderCompletatitio();
-
+                    orderPresenterImp.orderCompetition(productList);
                }
                Intent returnIntent = new Intent();
                Bundle bundle = new Bundle();
@@ -758,82 +728,7 @@ public class OrderActivity extends AppCompatActivity {
        }
     }
 
-    private Product checkInventory(){
-        for(ProductOrder productOrder : productList){
-            Product product = ProductHelper.getProduct(productOrder.getProductId());
-            if(product.getInvetory()  < productOrder.getAmount()){
-                return product;
-            }
-        }
-        return null;
-    }
 
-    private void orderCompletatitio() {
-        for(ProductOrder productOrder : productList){
-            Product product = ProductHelper.getProduct(productOrder.getProductId());
-            product.setInvetory(product.getInvetory() - productOrder.getAmount());
-            ProductHelper.updateProduct(product);
-        }
-    }
-
-
-    private ArrayList<String> getProvinces(){
-        ArrayList<String> list = new ArrayList<>();
-        list.add("Tỉnh/Thành Phố...");
-        list.add("An Giang");
-        list.add("Bình Phước");
-        list.add("Ninh Bình");
-        list.add("Hồ Chí Minh");
-        list.add("Hà Nội");
-        list.add("Đà Nẵng");
-        return list;
-    }
-    private ArrayList<String> getDistricts(){
-        ArrayList<String> list = new ArrayList<>();
-        list.add("Quận/Huyện...");
-        list.add("Ba Đình");
-        list.add("Quận 1");
-        list.add("Quận 9");
-        list.add("Cầu Giấy");
-        list.add("Quận Thủ Đức");
-        list.add("Quận 3");
-        return list;
-    }
-    private ArrayList<String> getCommunes(){
-        ArrayList<String> list = new ArrayList<>();
-        list.add("Phường/Xã...");
-        list.add("Xã 1");
-        list.add("Phường 3");
-        list.add("Phường Tăng Nhơn Phú A");
-        list.add("Phường 5");
-        return list;
-    }
-    private ArrayList<String> getStatuses(){
-        ArrayList<String> list = new ArrayList<>();
-        list.add("Trạng thái");
-        list.add("Hoàn thành");
-        list.add("Hủy");
-        list.add("Đang giao hàng");
-        return list;
-    }
-    private ArrayList<String> getPayments(){
-        ArrayList<String> list = new ArrayList<>();
-        list.add("Hình thức thanh toán");
-        list.add("Tiền mặt");
-        list.add("Chuyển khoản");
-        list.add("Trả góp");
-        return list;
-    }
-
-//    private ArrayList<Client> getClients(){
-//        return ClientHelper.getAllClient();
-//    }
-    public Order getOrder(Bundle bundle) {
-        int orderId = bundle != null ? bundle.getInt(Constants.ORDER) : -1;
-        if(orderId == -1)
-           return null;
-        return OrderHelper.getOrder(orderId);
-    }
 }
 
 

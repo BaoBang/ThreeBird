@@ -1,5 +1,7 @@
 package com.example.baobang.threebird.presenter;
 
+import android.os.Bundle;
+
 import com.example.baobang.threebird.model.Product;
 
 /**
@@ -9,6 +11,8 @@ import com.example.baobang.threebird.model.Product;
 public interface ProductPresenter {
 
     void loadSpinnerData();
-    boolean addProduct(Product product);
-    boolean updateProduct(Product product);
+    int addProduct(Product product);
+    int updateProduct(Product product);
+    Product getProductFromBundle(Bundle bundle);
+    int getOptionFromBundle(Bundle bundle);
 }

@@ -1,9 +1,12 @@
 package com.example.baobang.threebird.presenter;
 
+import android.os.Bundle;
+
 import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.ClientGroup;
 import com.example.baobang.threebird.model.helper.ClientGroupHelper;
 import com.example.baobang.threebird.model.helper.ClientHelper;
+import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.view.ClientView;
 
 import java.util.ArrayList;
@@ -20,6 +23,22 @@ public class ClientPresenterImp implements ClientPresenter {
         this.clientView = clientView;
     }
 
+    @Override
+    public void init() {
+        clientView.addControls();
+        clientView.addEvents();
+        loadSpinnerData();
+    }
+
+    @Override
+    public Client getClientFromBundle(Bundle bundle) {
+        return (bundle != null ? (Client) bundle.getSerializable(Constants.CLIENT) : null);
+    }
+
+    @Override
+    public int getOptionFromBundle(Bundle bundle) {
+        return bundle == null ? Constants.ADD_OPTION : bundle.getInt(Constants.OPTION);
+    }
 
     @Override
     public void loadSpinnerData() {
@@ -38,6 +57,7 @@ public class ClientPresenterImp implements ClientPresenter {
     public boolean updateClient(Client client) {
         return ClientHelper.updateClient(client);
     }
+
 
     private ArrayList<ClientGroup> getGroups(){
         ArrayList<ClientGroup> list = new ArrayList<>();

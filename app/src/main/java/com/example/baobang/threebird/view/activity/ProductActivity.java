@@ -32,10 +32,14 @@ import com.example.baobang.threebird.model.Product;
 import com.example.baobang.threebird.model.helper.BrandHelper;
 import com.example.baobang.threebird.model.helper.CategoryHelper;
 import com.example.baobang.threebird.model.helper.ProductHelper;
+import com.example.baobang.threebird.presenter.ProductPresenter;
+import com.example.baobang.threebird.presenter.ProductPresenterImp;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
+import com.example.baobang.threebird.view.ProductView;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -43,7 +47,9 @@ import io.realm.RealmList;
 import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
 import studio.carbonylgroup.textfieldboxes.TextFieldBoxes;
 
-public class ProductActivity extends AppCompatActivity {
+public class ProductActivity extends AppCompatActivity implements ProductView{
+
+    ProductPresenterImp productPresenterImp;
 
     private ImageView btnCamera, btnPhoto;
     private LinearLayout layoutImage;
@@ -65,56 +71,19 @@ public class ProductActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product);
+
+        productPresenterImp = new ProductPresenterImp(this);
+
         Bundle bundle = getIntent().getExtras();
-        product = getProduct(bundle);
-        option = bundle == null ? Constants.ADD_OPTION : bundle.getInt(Constants.OPTION);
-        addControlls();
-        addEvents();
+        product = productPresenterImp.getProductFromBundle(bundle);
+        option = productPresenterImp.getOptionFromBundle(bundle);
+
+        productPresenterImp.init();
     }
 
-    private Product getProduct(Bundle bundle) {
-        int productId = bundle != null ? bundle.getInt(Constants.PRODUCT) : -1;
-        if(productId == -1)
-            return null;
-        return ProductHelper.getProduct(productId);
 
-    }
-
-    private void addControlls() {
-        // add tool bar
-        toolbar = findViewById(R.id.toolBarAddProduct);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar =  getSupportActionBar();
-        if (actionBar != null){
-            actionBar.setDisplayShowTitleEnabled(false);
-            actionBar.setDisplayShowHomeEnabled(true);
-        }
-        // add views
-        layoutImage = findViewById(R.id.layoutImage);
-        txtDetail = findViewById(R.id.txtDetail);
-        txtProductId = findViewById(R.id.txtProductId);
-        txtProductInventory = findViewById(R.id.txtProductInventory);
-        txtProductName = findViewById(R.id.txtProductName);
-        txtProductPrice = findViewById(R.id.txtProductPrice);
-        txtProductPriceInventory = findViewById(R.id.txtProductPriceInventory);
-        // image button Camera and Photo
-        btnCamera = findViewById(R.id.btnCamera);
-        btnPhoto = findViewById(R.id.btnPhoto);
-        // spinner brand and categoty
-        addSpinnerBrand();
-        addSpinnerCategory();
-        // to save list product images
-
-        if(product != null){
-            setDataForInput();
-        }
-
-        if(option == Constants.DETAIL_OPTION){
-            setDisableInput();
-        }
-    }
-
-    private void setDisableInput() {
+    @Override
+    public void setDisableInput() {
         // add views
         TextFieldBoxes tfbDetail = findViewById(R.id.tfbDetail);
         tfbDetail.setEnabled(false);
@@ -147,9 +116,10 @@ public class ProductActivity extends AppCompatActivity {
         layoutImage.setEnabled(false);
     }
 
-    private void addSpinnerCategory() {
+    @Override
+    public void showSpinnerCategory(ArrayList<Category> categories) {
         spCategory = findViewById(R.id.spProductCategory);
-        categories = getCategories();
+        this.categories = categories;
         for(Category category : categories){
             Log.e("cate: ",category.getId() + "-"+ category.getName());
         }
@@ -160,14 +130,22 @@ public class ProductActivity extends AppCompatActivity {
         spCategory.setAdapter(categoryArrayAdapter);
     }
 
-    private void addSpinnerBrand() {
+    @Override
+    public void showSpinnerBrand(ArrayList<Brand> brands) {
         spBrand = findViewById(R.id.spProductBrand);
-        brands = getBrands();
+        this.brands = brands;
         ArrayAdapter<Brand> brandArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, brands);
         spBrand.setAdapter(brandArrayAdapter);
     }
 
-    private void setDataForInput() {
+    @Override
+    public void setError(ExtendedEditText extendedEditText, String message) {
+        extendedEditText.setError(message);
+        extendedEditText.requestFocus();
+    }
+
+    @Override
+    public void setDataForInput() {
 
         txtProductId.setText(String.valueOf(product.getId()));
         txtProductPriceInventory.setText(String.valueOf(product.getPriceInventory()));
@@ -196,27 +174,46 @@ public class ProductActivity extends AppCompatActivity {
         }
     }
 
-    private void addEvents() {
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+    @Override
+    public void addControls() {
+        // add tool bar
+        toolbar = findViewById(R.id.toolBarAddProduct);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar =  getSupportActionBar();
+        if (actionBar != null){
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setDisplayShowHomeEnabled(true);
+        }
+        // add views
+        layoutImage = findViewById(R.id.layoutImage);
+        txtDetail = findViewById(R.id.txtDetail);
+        txtProductId = findViewById(R.id.txtProductId);
+        txtProductInventory = findViewById(R.id.txtProductInventory);
+        txtProductName = findViewById(R.id.txtProductName);
+        txtProductPrice = findViewById(R.id.txtProductPrice);
+        txtProductPriceInventory = findViewById(R.id.txtProductPriceInventory);
+        // image button Camera and Photo
+        btnCamera = findViewById(R.id.btnCamera);
+        btnPhoto = findViewById(R.id.btnPhoto);
+        // spinner brand and categoty
+        // to save list product images
 
-        btnPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Utils.galleryIntent(ProductActivity.this);
-            }
-        });
+        if(product != null){
+            setDataForInput();
+        }
 
-        btnCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Utils.cameraIntent(ProductActivity.this);
-            }
-        });
+        if(option == Constants.DETAIL_OPTION){
+            setDisableInput();
+        }
+    }
+
+    @Override
+    public void addEvents() {
+        toolbar.setNavigationOnClickListener(view -> onBackPressed());
+
+        btnPhoto.setOnClickListener(view -> Utils.galleryIntent(ProductActivity.this));
+
+        btnCamera.setOnClickListener(view -> Utils.cameraIntent(ProductActivity.this));
 
         txtProductId.addTextChangedListener(new TextWatcher() {
             @Override
@@ -232,8 +229,7 @@ public class ProductActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
-                    txtProductId.setError("Định dạng không đúng");
-                    txtProductId.requestFocus();
+                    setError(txtProductId, "Định dạng không đúng");
                 }
             }
         });
@@ -252,8 +248,7 @@ public class ProductActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
-                    txtProductPrice.setError("Định dạng không đúng");
-                    txtProductPrice.requestFocus();
+                    setError(txtProductPrice, "Định dạng không đúng");
                 }
             }
         });
@@ -272,8 +267,7 @@ public class ProductActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
-                    txtProductPriceInventory.setError("Định dạng không đúng");
-                    txtProductPriceInventory.requestFocus();
+                    setError(txtProductPriceInventory, "Định dạng không đúng");
                 }
             }
         });
@@ -292,8 +286,7 @@ public class ProductActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
-                    txtProductInventory.setError("Định dạng không đúng");
-                    txtProductInventory.requestFocus();
+                    setError(txtProductInventory, "Định dạng không đúng");
                 }
             }
         });
@@ -328,8 +321,8 @@ public class ProductActivity extends AppCompatActivity {
         }
     }
 
-
-    private RelativeLayout createRelativeLayout(){
+    @Override
+    public RelativeLayout createRelativeLayout(){
         RelativeLayout relativeLayout = new RelativeLayout(this);
         RelativeLayout.LayoutParams paramsRelativeLayout = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         relativeLayout.setGravity(Gravity.CENTER_VERTICAL);
@@ -337,7 +330,8 @@ public class ProductActivity extends AppCompatActivity {
         return  relativeLayout;
     }
 
-    private ImageButton createImageRemoveButton(ImageView imgView){
+    @Override
+    public ImageButton createImageRemoveButton(ImageView imgView){
         RelativeLayout.LayoutParams imageButtonParams = new RelativeLayout.LayoutParams(20, 20);
         imageButtonParams.addRule(RelativeLayout.ALIGN_END, imgView.getId());
 
@@ -348,7 +342,95 @@ public class ProductActivity extends AppCompatActivity {
         return  btnRemove;
     }
 
-    private void addImageView(final LinearLayout layoutImage, final int key, Bitmap bitmap){
+    @Override
+    public Product getProductFromInput() {
+        String name = txtProductName.getText().toString();
+        int category = spCategory.getSelectedItemPosition();
+        int brand = spBrand.getSelectedItemPosition();
+        String productId = txtProductId.getText().toString();
+        String inventoryStr = txtProductInventory.getText().toString();
+        String priceInventoryStr = txtProductPriceInventory.getText().toString();
+        String priceStr = txtProductPrice.getText().toString();
+        String detail = txtDetail.getText().toString();
+
+        if(Utils.checkInput(name)){
+            setError(txtProductName, "Vui lòng nhập vào tên sản phẩm");
+            return null;
+        }
+        if(spCategory.getSelectedItemPosition() ==0){
+            Utils.openDialog(this, "Vui lòng chọn loại sản phẩm");
+            return null;
+        }
+        if(spBrand.getSelectedItemPosition() ==0){
+            Utils.openDialog(this, "Vui lòng chọn hãng sản phẩm");
+            return null;
+        }
+
+        if(Utils.checkInput(productId)){
+            setError(txtProductId, "Vui lòng nhập vào mã sản phẩm");
+            return null;
+        }
+
+        if(Utils.checkInput(inventoryStr)){
+            setError(txtProductInventory, "Vui lòng nhập vào số lượng tồn kho");
+            return null;
+        }
+        if(Utils.checkInput(priceInventoryStr)){
+            setError(txtProductPriceInventory, "Vui lòng nhập vào giá nhập kho");
+            return null;
+        }
+        if(Utils.checkInput(priceStr)){
+            setError(txtProductPrice, "Vui lòng nhập vào đơn giá sản phẩm");
+            return null;
+        }
+        int id, inventory, priceInventory, price;
+        try{
+            id = Integer.parseInt(productId);
+        }catch (Exception e){
+            setError(txtProductId, "Định dạng không đúng");
+            return null;
+        }
+
+        try{
+            inventory = Integer.parseInt(inventoryStr);
+        }catch (Exception e){
+
+            setError(txtProductInventory, "Định dạng không đúng");
+            return null;
+        }
+        try{
+            priceInventory = Integer.parseInt(priceInventoryStr);
+        }catch (Exception e){
+            setError(txtProductPriceInventory, "Định dạng không đúng");
+            return null;
+        }
+
+        try{
+            price = Integer.parseInt(priceStr);
+        }catch (Exception e){
+            setError(txtProductPrice, "Định dạng không đúng");
+            return null;
+        }
+
+
+        Product product = new Product(id,
+                name,categories.get(category).getId(),
+                brands.get(brand).getId(),
+                inventory,
+                priceInventory,
+                price,
+                detail);
+        RealmList<String> bitmapStrs = new RealmList<>();
+        for(Integer key : bitmaps.keySet()){
+            Bitmap bitmap = bitmaps.get(key);
+            bitmapStrs.add(Utils.BitMapToString(bitmap, 50));
+        }
+        product.setImages(bitmapStrs);
+        return product;
+    }
+
+    @Override
+    public void addImageView(final LinearLayout layoutImage, final int key, Bitmap bitmap){
 
         final RelativeLayout relativeLayout = createRelativeLayout();
 
@@ -393,122 +475,29 @@ public class ProductActivity extends AppCompatActivity {
     }
 
     private void addProduct(){
-        String name = txtProductName.getText().toString();
-        int category = spCategory.getSelectedItemPosition();
-        int brand = spBrand.getSelectedItemPosition();
-        String productId = txtProductId.getText().toString();
-        String inventoryStr = txtProductInventory.getText().toString();
-        String priceInventoryStr = txtProductPriceInventory.getText().toString();
-        String priceStr = txtProductPrice.getText().toString();
-        String detail = txtDetail.getText().toString();
 
-        if(Utils.checkInput(name)){
-            txtProductName.setError("Vui lòng nhập vào tên sản phẩm");
-            txtProductName.requestFocus();
-            return;
-        }
-        if(spCategory.getSelectedItemPosition() ==0){
-            Utils.openDialog(this, "Vui lòng chọn loại sản phẩm");
-            return;
-        }
-        if(spBrand.getSelectedItemPosition() ==0){
-            Utils.openDialog(this, "Vui lòng chọn hãng sản phẩm");
-            return;
+        Product product = getProductFromInput();
+        if(product != null){
+            int result;
+            if(this.product == null){
+                result =  productPresenterImp.addProduct(product);
+            }else{
+                result = productPresenterImp.updateProduct(product);
+            }
+            if(result != -1){
+                Intent returnIntent = new Intent();
+                Bundle bundle = new Bundle();
+                bundle.putInt(Constants.PRODUCT,result);
+                returnIntent.putExtras(bundle);
+                setResult(Activity.RESULT_OK,returnIntent);
+                finish();
+            }else{
+                Utils.openDialog(this, "Đã có lỗi xảy ra, vui lòng thử lại");
+            }
         }
 
-        if(Utils.checkInput(productId)){
-            txtProductId.setError("Vui lòng nhập vào mã sản phẩm");
-            txtProductId.requestFocus();
-            return;
-        }
-
-        if(Utils.checkInput(inventoryStr)){
-            txtProductInventory.setError("Vui lòng nhập vào số lượng tồn kho");
-            txtProductInventory.requestFocus();
-            return;
-        }
-        if(Utils.checkInput(priceInventoryStr)){
-            txtProductPriceInventory.setError("Vui lòng nhập vào giá nhập kho");
-            txtProductPriceInventory.requestFocus();
-            return;
-        }
-        if(Utils.checkInput(priceStr)){
-            txtProductPrice.setError("Vui lòng nhập vào đơn giá sản phẩm");
-            txtProductPrice.requestFocus();
-            return;
-        }
-        int id, inventory, priceInventory, price;
-        try{
-            id = Integer.parseInt(productId);
-        }catch (Exception e){
-            txtProductId.setError("Định dạng không đúng");
-            txtProductId.requestFocus();
-            return;
-        }
-
-        try{
-            inventory = Integer.parseInt(inventoryStr);
-        }catch (Exception e){
-            txtProductInventory.setError("Định dạng không đúng");
-            txtProductInventory.requestFocus();
-            return;
-        }
-        try{
-            priceInventory = Integer.parseInt(priceInventoryStr);
-        }catch (Exception e){
-            txtProductPriceInventory.setError("Định dạng không đúng");
-            txtProductPriceInventory.requestFocus();
-            return;
-        }
-
-        try{
-            price = Integer.parseInt(priceStr);
-        }catch (Exception e){
-            txtProductPrice.setError("Định dạng không đúng");
-            txtProductPrice.requestFocus();
-            return;
-        }
-
-
-        Product product = new Product(id,
-                name,categories.get(category).getId(),
-                brands.get(brand).getId(),
-                inventory,
-                priceInventory,
-                price,
-                detail);
-        RealmList<String> bitmapStrs = new RealmList<>();
-        for(Integer key : bitmaps.keySet()){
-            Bitmap bitmap = bitmaps.get(key);
-            bitmapStrs.add(Utils.BitMapToString(bitmap, 50));
-        }
-        product.setImages(bitmapStrs);
-        int result;
-        if(this.product == null){
-            result =  ProductHelper.createProudct(product);
-        }else{
-            result = ProductHelper.updateProduct(product);
-        }
-        Log.e("Ida", result + "");
-        if(result != -1){
-            Intent returnIntent = new Intent();
-            Bundle bundle = new Bundle();
-            bundle.putInt(Constants.PRODUCT,result);
-            returnIntent.putExtras(bundle);
-            setResult(Activity.RESULT_OK,returnIntent);
-            finish();
-        }else{
-            Utils.openDialog(this, "Đã có lỗi xảy ra, vui lòng thử lại");
-        }
     }
 
-    private List<Brand> getBrands(){
-        return BrandHelper.getAllBrand();
-    }
-
-    private List<Category> getCategories(){
-        return CategoryHelper.getAllCategory();
-    }
 }
 
 

@@ -57,15 +57,19 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
-        Bundle bundle = getIntent().getExtras();
-        client = (Client) (bundle != null ? bundle.getSerializable(Constants.CLIENT) : null);
-        option = bundle == null ? 0 : bundle.getInt(Constants.OPTION);
+
         clientPresenterImp = new ClientPresenterImp(this);
+
+
+        Bundle bundle = getIntent().getExtras();
+        client = clientPresenterImp.getClientFromBundle(bundle);
+        option = clientPresenterImp.getOptionFromBundle(bundle);
+
+        clientPresenterImp.init();
+
 //        ClientGroupHelper.createClientGroup(new ClientGroup(0, "Admin"));
 //        ClientGroupHelper.createClientGroup(new ClientGroup(0, "Employee"));
 //        ClientGroupHelper.createClientGroup(new ClientGroup(0, "Membber"));
-        addControls();
-        addEvents();
     }
     private void addClient() {
         Client newClient = getClientFromInput();

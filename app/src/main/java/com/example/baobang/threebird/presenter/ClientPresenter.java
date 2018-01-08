@@ -1,8 +1,6 @@
 package com.example.baobang.threebird.presenter;
 
-import android.view.View;
-import android.widget.CompoundButton;
-import android.widget.LinearLayout;
+import android.os.Bundle;
 
 import com.example.baobang.threebird.model.Client;
 
@@ -14,4 +12,7 @@ public interface ClientPresenter {
     void loadSpinnerData();
     boolean addClient(Client client);
     boolean updateClient(Client client);
+    void init();
+    Client getClientFromBundle(Bundle bundle);
+    int getOptionFromBundle(Bundle bundle);
 }
