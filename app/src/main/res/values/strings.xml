@@ -31,12 +31,14 @@
     <string name="product_detail">Chi tiết sản phẩm</string>
 
     <!-- Strings related to home -->
+    <string name="order">ĐƠN HÀNG</string>
     <string name="complete">HOÀN THÀNH</string>
     <string name="destroy">HỦY</string>
     <string name="_new">MỚI</string>
     <!-- Order status -->
     <string name="delivery">ĐANG GIAO HÀNG</string>
     <!--Order-->
+
     <string name="commune">Phường/xã</string>
     <string name="address">Địa chỉ</string>
     <string name="product">Sản phẩm</string>
@@ -50,6 +52,7 @@
     <string name="district">Quận/Huyện</string>
     <string name="enter_other_name">Nhập vào tên khác</string>
     <!--user detail-->
+
     <string name="name">Họ tên</string>
     <string name="group_user">Nhóm khách hàng</string>
     <string name="fax">Số fax</string>
@@ -60,9 +63,10 @@
     <string name="delivery_info">Địa chỉ giao hàng</string>
     <string name="avatar_description">Ảnh đại diện</string>
     <string name="toggle_button">Mở/đóng</string>
+    <string name="user_image">Ảnh đại diện</string>
     <!--Action bar-->
     <string name="search">Tìm kiếm</string>
     <string name="add">Thêm mới</string>
-
+    <string name="image">Hình</string>
 
 </resources>

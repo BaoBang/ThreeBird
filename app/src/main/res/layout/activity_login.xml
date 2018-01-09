@@ -7,16 +7,16 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.baobang.threebird.activity.LoginActivity"
+    tools:context="com.example.baobang.threebird.view.activity.LoginActivity"
     android:background="@drawable/background_color_gradient"
 
     >
 
        <ScrollView
            android:layout_width="match_parent"
-           android:layout_height="match_parent">
+           android:layout_height="match_parent"
+           tools:ignore="UselessParent">
            <LinearLayout
-               android:layout_centerInParent="true"
                android:id="@+id/email_login_form"
                android:layout_width="match_parent"
                android:layout_height="400dp"
@@ -39,7 +39,7 @@
                    android:layout_width="match_parent"
                    android:layout_height="wrap_content"
                    android:hint="@string/user_name"
-                   android:drawableLeft="@drawable/ic_username"
+                   android:drawableStart="@drawable/ic_username"
                    android:drawablePadding="@dimen/padding"
                    android:maxLines="1"
                    android:ems="10"
@@ -50,7 +50,7 @@
                    android:id="@+id/txtPassword"
                    android:layout_width="match_parent"
                    android:layout_height="wrap_content"
-                   android:drawableLeft="@drawable/ic_password"
+                   android:drawableStart="@drawable/ic_password"
                    android:drawablePadding="@dimen/padding"
                    android:inputType="textPassword"
                    android:ems="10"

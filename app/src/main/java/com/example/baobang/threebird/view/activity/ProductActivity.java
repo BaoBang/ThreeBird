@@ -214,9 +214,9 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
-                    setError(txtProductId, "Định dạng không đúng");
-                }
+                   if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
+                       setError(txtProductId, "Định dạng không đúng");
+               }
             }
         });
 
@@ -233,8 +233,8 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
-                    setError(txtProductPrice, "Định dạng không đúng");
+                    if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
+                        setError(txtProductPrice, "Định dạng không đúng");
                 }
             }
         });
@@ -252,9 +252,9 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
-                    setError(txtProductPriceInventory, "Định dạng không đúng");
-                }
+                    if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
+                        setError(txtProductPriceInventory, "Định dạng không đúng");
+                    }
             }
         });
 
@@ -271,9 +271,9 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
-                    setError(txtProductInventory, "Định dạng không đúng");
-                }
+                   if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
+                       setError(txtProductInventory, "Định dạng không đúng");
+                   }
             }
         });
     }

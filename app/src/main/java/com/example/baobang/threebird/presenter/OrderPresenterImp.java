@@ -6,9 +6,12 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import com.example.baobang.threebird.R;
+import com.example.baobang.threebird.model.Address;
+import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.Order;
 import com.example.baobang.threebird.model.Product;
 import com.example.baobang.threebird.model.ProductOrder;
+import com.example.baobang.threebird.model.helper.ClientHelper;
 import com.example.baobang.threebird.model.helper.OrderHelper;
 import com.example.baobang.threebird.model.helper.ProductHelper;
 import com.example.baobang.threebird.utils.Constants;
@@ -16,7 +19,10 @@ import com.example.baobang.threebird.utils.Utils;
 import com.example.baobang.threebird.view.OrderView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import io.realm.RealmList;
 
 /**
  * Created by baobang on 1/8/18.
@@ -34,11 +40,35 @@ public class OrderPresenterImp implements OrderPresenter{
     public void init() {
         orderView.addControls();
         orderView.addEvents();
+    }
+
+    @Override
+    public void loadSpinnerData() {
         orderView.showSpinnerCommune(getCommunes());
         orderView.showSpinnerDistrict(getDistricts());
         orderView.showSpinnerPayment(getPayments());
         orderView.showSpinnerStatus(getStatuses());
         orderView.showSpinnerProvince(getProvinces());
+    }
+
+    @Override
+    public void setData(Activity activity,Order order) {
+
+        Client client = ClientHelper.getClient(order.getId());
+        Bitmap bitmap = null;
+        if(client != null && client.getAvatar().length() > 0){
+            bitmap = Utils.StringToBitMap(client.getAvatar());
+        }else{
+            bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.noimage);
+        }
+
+        List<ProductOrder>productOrders = new ArrayList<>(order.getProducts());
+        int amount = getAmountAllProduct(productOrders);
+
+        orderView.setDataForInput(bitmap, order.getClientName(), order.getId(), order.getCreatedAt(),
+                order.getStatus(), order.getPhone(), order.getAddress().getProvince(),
+                order.getAddress().getDistrict(), order.getAddress().getCommune(),
+                order.getAddress().getAddress(), amount,order.getLiveryDate(), order.getPaymentValue());
     }
 
     @Override
@@ -129,6 +159,97 @@ public class OrderPresenterImp implements OrderPresenter{
             product.setInvetory(product.getInvetory() - productOrder.getAmount());
             ProductHelper.updateProduct(product);
         }
+    }
+
+    private int getSelectedPosition(ArrayList<String> strings, String item){
+        int position = 0;
+        for(int i = 0; i < strings.size(); i++){
+            if(strings.get(i).equals(item)){
+                position = i;
+                break;
+            }
+        }
+        return position;
+    }
+
+    @Override
+    public void setPaymentSelected(int position) {
+        orderView.setSpinnerPaymentSelectedPosition(position);
+    }
+
+    @Override
+    public void setDistrictSelected(ArrayList<String> districts, String district) {
+        orderView.setSpinnerDistrictSelectedPosition(getSelectedPosition(districts, district));
+    }
+
+    @Override
+    public void setProvinceSelected(ArrayList<String> provinces, String province) {
+        orderView.setSpinnerProvincePosition(getSelectedPosition(provinces, province));
+    }
+
+    @Override
+    public void setCommuneSelected(ArrayList<String> communes, String commune) {
+        orderView.setSpinnerCommuneSelectedPosition(getSelectedPosition(communes, commune));
+    }
+
+    @Override
+    public void addProductToLayout(List<ProductOrder> productList) {
+        for(ProductOrder productOrder : productList){
+            Product product = ProductHelper.getProduct(productOrder.getProductId());
+            orderView.addProductToLayout(product);
+        }
+    }
+
+    @Override
+    public int addOrder(int clientId, String name, Date date, int status, String phone, String province, String district, String commune, String address, List<ProductOrder> products, Date deliveryDate, int payment) {
+
+        RealmList<ProductOrder> productList = new RealmList<>();
+        productList.addAll(products);
+        Order order = new Order(0, name, date,
+                status, phone, new Address(
+                        province, district, commune, address),
+                productList, deliveryDate, payment, 0);
+        order.setClientId(clientId);
+
+        return OrderHelper.createOrder(order);
+    }
+
+    @Override
+    public int updateOrder(Order order, int clientId, String name, Date date, int status, String phone, String province, String district, String commune, String address, List<ProductOrder> products, Date deliveryDate, int payment) {
+        RealmList<ProductOrder> productList = new RealmList<>();
+        productList.addAll(products);
+         order = new Order(order.getId(), name, date,
+                status, phone, new Address(
+                province, district, commune, address),
+                productList, deliveryDate, payment, 0);
+        order.setClientId(clientId);
+        return OrderHelper.updateOrder(order);
+    }
+
+    @Override
+    public int setClientData(Activity activity, Client client) {
+
+        Bitmap  bitmap = null;
+        if(client == null){
+            bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.noimage);
+        }else{
+            bitmap = Utils.StringToBitMap(client.getAvatar());
+        }
+        orderView.addClientInfoFromListToView(bitmap, client.getName(), client.getPhone(),
+                client.getAddress().getProvince(), client.getAddress().getDistrict(),
+                client.getAddress().getCommune(), client.getAddress().getAddress());
+
+        return client.getId();
+    }
+
+    @Override
+    public void showDialogClient() {
+        orderView.showDialogClient(ClientHelper.getAllClient());
+    }
+
+    @Override
+    public void showDialogProduct() {
+        orderView.showDialogProduct(ProductHelper.getAllProduct());
     }
 
     private ArrayList<String> getProvinces(){

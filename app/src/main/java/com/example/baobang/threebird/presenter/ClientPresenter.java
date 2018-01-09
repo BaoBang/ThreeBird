@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.ClientGroup;
+import com.example.baobang.threebird.model.Order;
 
 import java.util.ArrayList;
 
@@ -15,6 +16,12 @@ import java.util.ArrayList;
 public interface ClientPresenter {
     void init();
     void loadSpinnerData();
+
+    void clickAddOptionMenu(Client client, int option, String name, int group, ClientGroup clientGroup,
+                            String phone, String fax, String website,
+                            String email, int province, String provinceStr,
+                            int district, String districtStr, int commune,
+                            String communeStr, String address);
 
     Client addClient(String name, ClientGroup group, String phone,
                      String fax, String website, String email,
@@ -34,6 +41,5 @@ public interface ClientPresenter {
     void setDistrictSelected(ArrayList<String> districts, String district);
     void setProvinceSelected(ArrayList<String> provinces, String province);
     void setCommuneSelected(ArrayList<String> communes, String commune);
-
 
 }

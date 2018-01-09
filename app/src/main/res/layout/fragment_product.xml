@@ -3,12 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.example.baobang.threebird.fragments.ProductFragment"
+    tools:context="com.example.baobang.threebird.view.fragments.ProductFragment"
     android:background="@drawable/background_color_gradient">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:ignore="UselessParent">
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolBarProduct"
             android:layout_width="match_parent"
@@ -52,18 +53,18 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="0dp"
                     android:layout_weight="50"
                     android:background="@color/color_white"
                     android:layout_marginTop="@dimen/margin_vertical">
                     <Spinner
                         android:id="@+id/spCategory"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:textSize="@dimen/text_size"
-                        />
+                        tools:ignore="NestedWeights" />
                 </LinearLayout>
 
 
@@ -93,7 +94,7 @@
                     android:background="@color/color_white">
                     <Spinner
                         android:id="@+id/spBrand"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
@@ -115,9 +116,8 @@
                 <TextView
                     android:id="@+id/textView3"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:text="Sắp xếp"
                     android:textAllCaps="true"
                     android:textSize="@dimen/text_size"
                     android:textColor="@color/bold_word"
@@ -130,7 +130,7 @@
 
                     <Spinner
                         android:id="@+id/spSortBy"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:textSize="@dimen/text_size"/>

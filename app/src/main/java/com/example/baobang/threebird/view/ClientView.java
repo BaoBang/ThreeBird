@@ -1,5 +1,6 @@
 package com.example.baobang.threebird.view;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.widget.Spinner;
 
@@ -25,12 +26,18 @@ public interface ClientView {
                          String commune, String address);
     void setDisableInput();
     void startCamera();
-    boolean checkInput();
     Bitmap getAvatar();
     void setAvatar(Bitmap avatar);
-    void setError(ExtendedEditText extendedEditText, String message);
     void setSpinnerClientGroupSelectedPosition(int position);
     void setSpinnerProvincePosition(int position);
     void setSpinnerDistrictSelectedPosition(int position);
     void setSpinnerCommuneSelectedPosition(int position);
+
+    void showMessage(String message);
+    void showNameWarning(String message);
+    void showPhoneWarning(String message);
+    void showEmailWarning(String message);
+    void showAddressWarning(String message);
+    void changeActivity(Client client);
+
 }

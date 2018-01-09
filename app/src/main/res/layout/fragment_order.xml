@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.example.baobang.threebird.fragments.OrderFragment"
+    tools:context="com.example.baobang.threebird.view.fragments.OrderFragment"
     android:background="@drawable/background_color_gradient">
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolBarOrder"
@@ -39,7 +39,6 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Số hóa đơn trong ngày"
                 android:textSize="@dimen/text_size_title"
                 android:textColor="@color/bold_word"
                 android:textAllCaps="true"
@@ -49,7 +48,8 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:weightSum="100">
+                android:weightSum="100"
+                android:baselineAligned="false">
 
                 <LinearLayout
                     android:id="@+id/layoutOrder"
@@ -64,7 +64,6 @@
                         android:id="@+id/txtAmountAllOrder"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="0"
                         android:textSize="@dimen/text_size"
                         android:textColor="@color/bold_word_80"
                         android:textAlignment="center"
@@ -76,7 +75,6 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="ĐƠN HÀNG"
                         android:textSize="@dimen/text_size_small"
                         android:textColor="@color/bold_word_80"
                         android:textAlignment="center"
@@ -84,7 +82,7 @@
                         android:paddingBottom="@dimen/padding_small"
                         android:paddingRight="@dimen/padding_small"
                         android:duplicateParentState="true"
-                        />
+                        android:text="@string/order"/>
                 </LinearLayout>
                 <LinearLayout
                     android:id="@+id/layoutNewOrder"
@@ -98,7 +96,6 @@
                         android:id="@+id/txtAmountNewOrder"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="0"
                         android:textSize="@dimen/text_size"
                         android:textColor="@color/blue"
                         android:textAlignment="center"
@@ -109,8 +106,8 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="MỚI"
                         android:textSize="@dimen/text_size_small"
+                        android:text="@string/_new"
                         android:textColor="@color/blue"
                         android:textAlignment="center"
                         android:paddingLeft="@dimen/padding_small"
@@ -131,7 +128,6 @@
                         android:id="@+id/txtAmountCancelOrder"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="0"
                         android:textSize="@dimen/text_size"
                         android:textColor="@color/red"
                         android:textAlignment="center"
@@ -142,10 +138,10 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="HỦY"
                         android:textSize="@dimen/text_size_small"
                         android:textColor="@color/red"
                         android:textAlignment="center"
+                        android:text="@string/destroy"
                         android:paddingLeft="@dimen/padding_small"
                         android:paddingBottom="@dimen/padding_small"
                         android:paddingRight="@dimen/padding_small"
@@ -166,7 +162,6 @@
                         android:paddingLeft="@dimen/padding_small"
                         android:paddingRight="@dimen/padding_small"
                         android:paddingTop="@dimen/padding_small"
-                        android:text="0"
                         android:textAlignment="center"
                         android:textColor="@color/green"
                         android:textSize="@dimen/text_size"
@@ -174,10 +169,10 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:text="@string/complete"
                         android:paddingBottom="@dimen/padding_small"
                         android:paddingLeft="@dimen/padding_small"
                         android:paddingRight="@dimen/padding_small"
-                        android:text="HOÀN THÀNH"
                         android:textAlignment="center"
                         android:textColor="@color/green"
                         android:textSize="@dimen/text_size_small"

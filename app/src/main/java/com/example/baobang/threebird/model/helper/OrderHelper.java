@@ -15,7 +15,8 @@ import io.realm.RealmList;
 import io.realm.RealmResults;
 
 public class OrderHelper {
-    public static boolean createOrder(Order order){
+
+    public static int createOrder(Order order){
         try (Realm realm = Realm.getDefaultInstance()) {
             int nextID = 0;
             Number number = realm.where(Order.class).max("id");
@@ -25,11 +26,11 @@ public class OrderHelper {
             order.setId(nextID);
             realm.copyToRealm(order);
             realm.commitTransaction();
-            return true;
+            return nextID;
         } catch (Exception e) {
             Log.e("Lỗi: ", e.getMessage());
         }
-        return false;
+        return -1;
     }
 
 
@@ -68,14 +69,14 @@ public class OrderHelper {
         return  order;
     }
 
-    public static boolean updateOrder(Order order) {
+    public static int updateOrder(Order order) {
         try (Realm realm = Realm.getDefaultInstance()) {
             realm.beginTransaction();
             realm.copyToRealmOrUpdate(order);
             realm.commitTransaction();
-            return true;
+            return order.getId();
         } catch (Exception e) {
-            return false;
+            return -1;
         }
     }
 

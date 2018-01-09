@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.baobang.threebird.activity.ClientActivity"
+    tools:context="com.example.baobang.threebird.view.activity.ClientActivity"
     android:orientation="vertical"
     android:background="@drawable/background_color_gradient">
 
@@ -126,6 +126,7 @@
                             android:id="@+id/spGroupClient"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:textSize="@dimen/text_size"
                             />
 
                     </LinearLayout>

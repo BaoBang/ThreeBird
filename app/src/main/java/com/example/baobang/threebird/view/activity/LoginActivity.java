@@ -9,15 +9,19 @@ import android.widget.TextView;
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.model.User;
 import com.example.baobang.threebird.model.helper.UserHelper;
+import com.example.baobang.threebird.presenter.LoginPresenter;
+import com.example.baobang.threebird.presenter.LoginPresenterImp;
 import com.example.baobang.threebird.utils.Utils;
+import com.example.baobang.threebird.view.LoginView;
 
 import io.realm.Realm;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements LoginView{
 
+    private LoginPresenterImp loginPresenterImp;
 
     private EditText txtUserName, txtPassword;
     private Button btnLogin;
@@ -28,8 +32,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         Realm.init(this);
-        addControlls();
-        addEvents();
+        loginPresenterImp = new LoginPresenterImp(this);
+        loginPresenterImp.init();
     }
 
     @Override
@@ -38,7 +42,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    private void addControlls() {
+    @Override
+    public void addControls() {
         txtUserName = findViewById(R.id.txtUserName);
         txtPassword = findViewById(R.id.txtPassword);
         btnLogin = findViewById(R.id.btnLogin);
@@ -46,54 +51,38 @@ public class LoginActivity extends AppCompatActivity {
         txtSignIn = findViewById(R.id.txtSigniIn);
     }
 
-    private void addEvents() {
-        btnLogin.setOnClickListener(view -> doLogin());
+    @Override
+    public void addEvents() {
+        btnLogin.setOnClickListener(view -> loginPresenterImp.clickLogin(txtUserName.getText().toString(), txtPassword.getText().toString()));
 
-        txtSignIn.setOnClickListener(view -> clickSignIn());
+        txtSignIn.setOnClickListener(view -> loginPresenterImp.clickRegister());
 
-        txtForgetPassword.setOnClickListener(view -> clickForgetPassword());
+        txtForgetPassword.setOnClickListener(view -> loginPresenterImp.clickForgetPassword());
     }
 
-    private void doLogin() {
-        String userName = txtUserName.getText().toString().trim();
-        String password = txtPassword.getText().toString().trim();
-        if(userName.equals("")){
-            Utils.openDialog(LoginActivity.this,
-                    "Nhập vào tài khoản.");
-            return;
-        }
-        if(password.equals("")){
-            Utils.openDialog(LoginActivity.this,
-                    "Nhập vào mật khẩu.");
-            return;
-        }
-        if(checkLogin(userName, password)){
-            startMainActivity();
-        }else{
-            Utils.openDialog(LoginActivity.this, "Tài khoản hoặc mật khẩu không đúng.");
-        }
+    @Override
+    public void showMessage(String message) {
+        Utils.openDialog(LoginActivity.this,
+                message);
     }
 
-    private void startMainActivity() {
+
+    @Override
+    public void startMainActivity() {
         Intent mainActivity = new Intent(LoginActivity.this, MainActivity.class);
         LoginActivity.this.startActivity(mainActivity);
     }
 
-    private void clickForgetPassword() {
+    @Override
+    public void startRegisterActivity() {
         Intent registerActivity = new Intent(LoginActivity.this, RegisterActivity.class);
         LoginActivity.this.startActivity(registerActivity);
     }
 
-    private void clickSignIn() {
+    @Override
+    public void startForgetPasswordInActivity() {
         Intent registerActivity = new Intent(LoginActivity.this, RegisterActivity.class);
         LoginActivity.this.startActivity(registerActivity);
-    }
-
-    private boolean checkLogin(String userName, String password) {
-        User user = new User();
-        user.setUserName(userName);
-        user.setPassWord(password);
-        return UserHelper.checkUser( user);
     }
 
 }

@@ -128,6 +128,77 @@ public class ClientPresenterImp implements ClientPresenter {
     }
 
     @Override
+    public void clickAddOptionMenu(Client client, int option, String name, int group, ClientGroup clientGroup,
+                                   String phone,String fax, String website,
+                                   String email, int province, String provinceStr,
+                                   int district, String districtStr,int commune,
+                                   String communeStr, String address) {
+        if(Utils.checkInput(name)){
+            clientView.showNameWarning("Vui lòng nhập vào họ tên");
+            return;
+        }
+        if(group ==0){
+            clientView.showMessage("Vui lòng chọn nhóm thành viên");
+            return;
+        }
+        if(Utils.checkInput(phone)){
+            clientView.showPhoneWarning("Vui lòng nhập vào số điện thoại");
+            return;
+        }
+        if(!phone.matches(Constants.PHONE_REGULAR)){
+            clientView.showPhoneWarning("Số điện thoại bắt đầu với +84/0 và tiếp theo từ 9-10 kí tự số");
+            return;
+        }
+//        if(Utils.checkInput(fax)){
+//            Utils.openDialog(this, "Vui lòng nhập vào số fax");
+//            return;
+//        }
+//        if(Utils.checkInput(website)){
+//            Utils.openDialog(this, "Vui lòng nhập vào website");
+//            return;
+//        }
+//        if(Utils.checkInput(email)){
+//            Utils.openDialog(this, "Vui lòng nhập vào email");
+//            return;
+//        }
+        if(email.length() > 0){
+            if(!email.matches(Constants.EMAIL_REGULAR)){
+                clientView.showEmailWarning("Email định dạng không đúng");
+                return;
+            }
+
+        }
+
+        if(province ==0){
+            clientView.showMessage("Vui lòng chọn tỉnh/thành phố");
+            return;
+        }
+        if(district == 0){
+            clientView.showMessage("Vui lòng chọn quận/huyện");
+            return;
+        }
+        if(commune==0){
+            clientView.showMessage("Vui lòng chọn phường/xã");
+            return;
+        }
+        if(Utils.checkInput(address)){
+            clientView.showAddressWarning("Vui lòng nhập vào địa chỉ");
+            return;
+        }
+        if(option == Constants.ADD_OPTION){
+            client =  addClient(name,clientGroup , phone, fax, website, email, provinceStr, districtStr, communeStr, address);
+        }else if(option == Constants.EDIT_OPTION){
+            client =  updateClient(client ,name, clientGroup, phone, fax, website, email, provinceStr, districtStr, communeStr, address);
+        }
+
+        if(client != null){
+            clientView.changeActivity(client);
+        }else{
+            clientView.showMessage("Đã có lỗi xảy ra, vui lòng thử lại");
+        }
+    }
+
+    @Override
     public Client addClient(String name, ClientGroup group, String phone, String fax, String website, String email, String province, String district, String commune, String address) {
         Client newClient = new Client(0,
                 name,group.getId(), phone,fax, website, email,

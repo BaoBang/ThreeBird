@@ -11,9 +11,13 @@ import android.widget.TextView;
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.model.User;
 import com.example.baobang.threebird.model.helper.UserHelper;
+import com.example.baobang.threebird.presenter.RegisterPresenterIml;
 import com.example.baobang.threebird.utils.Utils;
+import com.example.baobang.threebird.view.RegisterView;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity implements RegisterView{
+
+    private RegisterPresenterIml registerPresenterIml;
 
     private EditText txtUserName, txtPassword, txtPasswordConfirm;
     private Button btnSignUp;
@@ -25,12 +29,12 @@ public class RegisterActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
         setContentView(R.layout.activity_register);
-
-        addControlls();
-        addEvents();
+        registerPresenterIml = new RegisterPresenterIml(this);
+        registerPresenterIml.init();
     }
 
-    private void addControlls() {
+    @Override
+    public void addControls() {
         txtUserName = findViewById(R.id.txtUserName);
         txtPassword=  findViewById(R.id.txtPassword);
         txtPasswordConfirm = findViewById(R.id.txtPasswordConfirm);
@@ -38,53 +42,23 @@ public class RegisterActivity extends AppCompatActivity {
         txtCancel = findViewById(R.id.txtCancel);
     }
 
-    private void addEvents() {
-        btnSignUp.setOnClickListener(view -> doSignUp());
-
-        txtCancel.setOnClickListener(view -> finish());
+    @Override
+    public void addEvents() {
+        btnSignUp.setOnClickListener(view ->
+                registerPresenterIml.clickSignUp(txtUserName.getText().toString(),
+                        txtPassword.getText().toString(),
+                        txtPasswordConfirm.getText().toString()));
+        txtCancel.setOnClickListener(view -> registerPresenterIml.clickCancel());
     }
 
-    private void doSignUp() {
-        String userName = txtUserName.getText().toString().trim();
-        String passWord = txtPassword.getText().toString().trim();
-        String passWordConfirm = txtPasswordConfirm.getText().toString().trim();
+    @Override
+    public void finishActivity() {
+        finish();
+    }
 
-        if(Utils.checkInput(userName)){
-            Utils.openDialog(this,
-                    "Nhập vào tài khoản.");
-            return;
-        }
-        if(Utils.checkInput(passWord)){
-            Utils.openDialog(this,
-                    "Nhập vào mật khẩu.");
-            return;
-        }
-        if(Utils.checkInput(passWordConfirm)){
-            Utils.openDialog(this,
-                    "Nhập vào xác nhận mật khẩu.");
-            return;
-        }
-        if(!passWord.equals(passWordConfirm)){
-            Utils.openDialog(this,
-                    "Mật khẩu và xác nhận mật khẩu không trùng nhau");
-            return;
-        }
-        if(UserHelper.checkUser( userName)){
-            Utils.openDialog(this,
-                    "Tài khoản đã tồn tại");
-            return;
-        }
-        User user = new User();
-        user.setUserName(userName);
-        user.setPassWord(passWord);
-        if(!UserHelper.createUser(user)){
-            Utils.openDialog(this,
-                    "Không thể tạo tài khoản");
-        }else{
-            Utils.openDialog(this,
-                    "Tạo tài khoản thành công");
-        }
-
+    @Override
+    public void showMessage(String message) {
+        Utils.openDialog(this, message);
     }
 
 }

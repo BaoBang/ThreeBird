@@ -3,12 +3,15 @@ package com.example.baobang.threebird.view.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,7 +23,6 @@ import android.widget.Spinner;
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.ClientGroup;
-import com.example.baobang.threebird.model.helper.ClientGroupHelper;
 import com.example.baobang.threebird.presenter.ClientPresenterImp;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
@@ -28,6 +30,7 @@ import com.example.baobang.threebird.utils.SlideView;
 import com.example.baobang.threebird.view.ClientView;
 import com.kyleduo.switchbutton.SwitchButton;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
@@ -121,7 +124,7 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
 
         toolbar.setNavigationOnClickListener(view -> onBackPressed());
 
-        imgAvatar.setOnClickListener(view -> startCamera());
+        imgAvatar.setOnClickListener(view -> Utils.openDialogChosseImage(ClientActivity.this));
 
         txtPhone.addTextChangedListener(new TextWatcher() {
             @Override
@@ -136,9 +139,10 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(!editable.toString().matches(Constants.PHONE_REGULAR)){
-                    setError(txtPhone, "Số điện thoại bắt đầu với +84/0 và tiếp theo từ 9-10 kí tự số");
-                }
+                  Log.e("s", "s" + editable.toString() + "s");
+                  if(!editable.toString().matches(Constants.PHONE_REGULAR)){
+                      showPhoneWarning("Số điện thoại bắt đầu với +84/0 và tiếp theo từ 9-10 kí tự số");
+                  }
             }
         });
 
@@ -155,9 +159,9 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(!editable.toString().matches(Constants.EMAIL_REGULAR)){
-                    setError(txtEmail, "Email định dạng không đúng");
-                }
+                    if(!editable.toString().matches(Constants.EMAIL_REGULAR)){
+                        showEmailWarning("Email định dạng không đúng");
+                    }
             }
         });
     }
@@ -223,74 +227,6 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
         startActivityForResult(cameraIntent, Constants.CAMERA_PIC_REQUEST);
     }
     @Override
-    public boolean checkInput() {
-        String name = txtName.getText().toString();
-        int group = spGroupClient.getSelectedItemPosition();
-        String phone = txtPhone.getText().toString();
-        String fax = txtFax.getText().toString();
-        String website = txtWebsite.getText().toString();
-        String email = txtEmail.getText().toString();
-        String province = spProvince.getSelectedItem().toString();
-        String district = spDistrict.getSelectedItem().toString();
-        String commune = spCommune.getSelectedItem().toString();
-        String address = txtAddress.getText().toString();
-
-        if(Utils.checkInput(name)){
-            setError(txtName, "Vui lòng nhập vào họ tên");
-            return false;
-        }
-        if(group ==0){
-            Utils.openDialog(this, "Vui lòng chọn nhóm thành viên");
-            return false;
-        }
-        if(Utils.checkInput(phone)){
-            setError(txtPhone, "Vui lòng nhập vào số điện thoại");
-            return false;
-        }
-        if(!phone.matches(Constants.PHONE_REGULAR)){
-            setError(txtPhone, "Số điện thoại bắt đầu với +84/0 và tiếp theo từ 9-10 kí tự số");
-            return false;
-        }
-//        if(Utils.checkInput(fax)){
-//            Utils.openDialog(this, "Vui lòng nhập vào số fax");
-//            return;
-//        }
-//        if(Utils.checkInput(website)){
-//            Utils.openDialog(this, "Vui lòng nhập vào website");
-//            return;
-//        }
-//        if(Utils.checkInput(email)){
-//            Utils.openDialog(this, "Vui lòng nhập vào email");
-//            return;
-//        }
-        if(email.length() > 0){
-            if(!email.matches(Constants.EMAIL_REGULAR)){
-                setError(txtEmail, "Email định dạng không đúng");
-                return false;
-            }
-
-        }
-
-        if(spProvince.getSelectedItemPosition() ==0){
-            Utils.openDialog(this, "Vui lòng chọn tỉnh/thành phố");
-            return false;
-        }
-        if(spDistrict.getSelectedItemPosition() ==0){
-            Utils.openDialog(this, "Vui lòng chọn quận/huyện");
-            return false;
-        }
-        if(spCommune.getSelectedItemPosition() ==0){
-            Utils.openDialog(this, "Vui lòng chọn phường/xã");
-            return false;
-        }
-        if(Utils.checkInput(address)){
-            txtAddress.setError("Vui lòng nhập vào địa chỉ");
-            txtAddress.requestFocus();
-            return false;
-        }
-        return true;
-    }
-    @Override
     public Bitmap getAvatar() {
         return avatar;
     }
@@ -298,11 +234,11 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
     public void setAvatar(Bitmap avatar) {
         this.avatar = avatar;
     }
-    @Override
-    public void setError(ExtendedEditText extendedEditText, String message) {
-        extendedEditText.setError(message);
-        extendedEditText.requestFocus();
-    }
+//    @Override
+//    public void setError(ExtendedEditText extendedEditText, String message) {
+//        extendedEditText.setError(message);
+//        extendedEditText.requestFocus();
+//    }
 
     @Override
     public void setSpinnerClientGroupSelectedPosition(int position) {
@@ -325,12 +261,60 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
     }
 
     @Override
+    public void showMessage(String message) {
+        Utils.openDialog(this, message);
+    }
+
+    @Override
+    public void showNameWarning(String message) {
+        txtName.setError(message);
+        txtName.requestFocus();
+    }
+
+    @Override
+    public void showPhoneWarning(String message) {
+        txtPhone.setError(message);
+        txtPhone.requestFocus();
+    }
+
+    @Override
+    public void showEmailWarning(String message) {
+        txtEmail.setError(message);
+        txtEmail.requestFocus();
+    }
+
+    @Override
+    public void showAddressWarning(String message) {
+        txtAddress.setError(message);
+        txtAddress.requestFocus();
+    }
+
+    @Override
+    public void changeActivity(Client client) {
+        Intent returnIntent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Constants.CLIENT,client);
+        returnIntent.putExtras(bundle);
+        setResult(Activity.RESULT_OK,returnIntent);
+        finish();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == Activity.RESULT_OK){
             if (requestCode == Constants.CAMERA_PIC_REQUEST) {
                 Bundle bundle =  data.getExtras();
                 if(bundle != null){
                     avatar = (Bitmap) bundle.get("data");
+                }
+                imgAvatar.setImageBitmap(avatar);
+            }else if(requestCode == Constants.SELECT_FILE){
+                Uri selectedImageUri = data.getData();
+                try {
+                    avatar = Utils.getBitmapFromUri(this,selectedImageUri);
+                    avatar = Utils.getResizedBitmap(avatar, Constants.IMAGE_WIDTH, Constants.IMAGE_HEIGHT);
+                } catch (IOException e) {
+                    avatar = BitmapFactory.decodeResource(getResources(), R.drawable.noimage);
                 }
                 imgAvatar.setImageBitmap(avatar);
             }
@@ -347,7 +331,6 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.actionBar_add){
             if(option != Constants.DETAIL_OPTION){
-                if(checkInput()){
                     String name = txtName.getText().toString();
                     int group = spGroupClient.getSelectedItemPosition();
                     String phone = txtPhone.getText().toString();
@@ -359,24 +342,12 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
                     String commune = spCommune.getSelectedItem().toString();
                     String address = txtAddress.getText().toString();
 
-                    Client client = null;
-                    if(option == Constants.ADD_OPTION){
-                        client =  clientPresenterImp.addClient(name, groups.get(group), phone, fax, website, email, province, district, commune, address);
-                    }else if(option == Constants.EDIT_OPTION){
-                        client =  clientPresenterImp.updateClient(this.client,name, groups.get(group), phone, fax, website, email, province, district, commune, address);
-                    }
+                    clientPresenterImp.clickAddOptionMenu(client, option, name,
+                            group, groups.get(group), phone, fax, website,
+                            email, spProvince.getSelectedItemPosition(), province,
+                            spDistrict.getSelectedItemPosition(), district,
+                            spCommune.getSelectedItemPosition(), commune, address);
 
-                    if(client != null){
-                        Intent returnIntent = new Intent();
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable(Constants.CLIENT,client);
-                        returnIntent.putExtras(bundle);
-                        setResult(Activity.RESULT_OK,returnIntent);
-                        finish();
-                    }else{
-                        Utils.openDialog(this, "Đã có lỗi xảy ra, vui lòng thử lại");
-                    }
-                }
             }
             else{
                 finish();
@@ -391,7 +362,7 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
             this.districts = districts;
             ArrayAdapter<String> districtAdapter = new ArrayAdapter<>(
                     this,
-                    android.R.layout.simple_spinner_dropdown_item,
+                    android.R.layout.simple_list_item_1,
                     districts );
             spDistrict.setAdapter(districtAdapter);
     }
@@ -401,7 +372,7 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
             this.provinces = provinces;
             ArrayAdapter<String> provinceAdapter = new ArrayAdapter<>(
                     this,
-                    android.R.layout.simple_spinner_dropdown_item,
+                    android.R.layout.simple_list_item_1,
                     provinces);
             spProvince.setAdapter(provinceAdapter);
     }
@@ -412,7 +383,7 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
 
             ArrayAdapter<String> communeAdapter = new ArrayAdapter<>(
                     this,
-                    android.R.layout.simple_spinner_dropdown_item,
+                    android.R.layout.simple_list_item_1,
                     communes);
             spCommune.setAdapter(communeAdapter);
     }
@@ -422,7 +393,7 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
             this.groups = clientGroups;
             ArrayAdapter<ClientGroup> groupAdapter = new ArrayAdapter<>(
                     this,
-                    android.R.layout.simple_spinner_dropdown_item,
+                    android.R.layout.simple_list_item_1,
                     groups);
             spGroupClient.setAdapter(groupAdapter);
     }

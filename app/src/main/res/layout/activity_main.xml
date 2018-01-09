@@ -5,7 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.baobang.threebird.activity.MainActivity"
+    tools:context="com.example.baobang.threebird.view.activity.MainActivity"
     android:orientation="vertical"
     android:background="@drawable/background_color"
     >
