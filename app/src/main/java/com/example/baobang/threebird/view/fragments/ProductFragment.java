@@ -324,7 +324,7 @@ public class ProductFragment extends Fragment {
     }
 
     private List<Category> getCategories(){
-
+//
 //        CategoryHelper.createCategory(new Category(0, "Chọn loại sản phẩm"));
 //        CategoryHelper.createCategory(new Category(1, "Phone"));
 //        CategoryHelper.createCategory(new Category(2, "Laptop"));

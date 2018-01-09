@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.example.baobang.threebird.R;
-import com.example.baobang.threebird.model.Address;
 import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.ClientGroup;
 import com.example.baobang.threebird.model.helper.ClientGroupHelper;
@@ -60,7 +59,6 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
 
         clientPresenterImp = new ClientPresenterImp(this);
 
-
         Bundle bundle = getIntent().getExtras();
         client = clientPresenterImp.getClientFromBundle(bundle);
         option = clientPresenterImp.getOptionFromBundle(bundle);
@@ -70,28 +68,6 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
 //        ClientGroupHelper.createClientGroup(new ClientGroup(0, "Admin"));
 //        ClientGroupHelper.createClientGroup(new ClientGroup(0, "Employee"));
 //        ClientGroupHelper.createClientGroup(new ClientGroup(0, "Membber"));
-    }
-    private void addClient() {
-        Client newClient = getClientFromInput();
-        if(newClient != null){
-            boolean res;
-            if(this.client == null){
-                res = clientPresenterImp.addClient(newClient);
-            }else{
-                res = clientPresenterImp.updateClient(newClient);
-            }
-            if(res){
-                Intent returnIntent = new Intent();
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(Constants.CLIENT,newClient);
-                returnIntent.putExtras(bundle);
-                setResult(Activity.RESULT_OK,returnIntent);
-                finish();
-            }else{
-                Utils.openDialog(this, "Đã có lỗi xảy ra, vui lòng thử lại");
-            }
-
-        }
     }
     @Override
     public void addControls() {
@@ -120,7 +96,8 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
         clientPresenterImp.loadSpinnerData();
 
         if(client != null){
-            setDataForInput();
+            clientPresenterImp.setAvatar(this, client);
+            clientPresenterImp.setData(this, client);
         }
         if(option == Constants.DETAIL_OPTION){
             setDisableInput();
@@ -185,48 +162,25 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
         });
     }
     @Override
-    public void setDataForInput() {
-        if(client.getAvatar() != null && client.getAvatar().length() > 0){
-            avatar = Utils.StringToBitMap(client.getAvatar());
-            imgAvatar.setImageBitmap(avatar);
-        }else{
-            imgAvatar.setImageResource(R.drawable.noimage);
-        }
-        txtName.setText(client.getName());
-        txtPhone.setText(client.getPhone());
-        txtFax.setText(client.getFax());
-        txtWebsite.setText(client.getWebsite());
-        txtEmail.setText(client.getEmail());
-        txtAddress.setText(client.getAddress().getAddress());
+    public void setDataForInput(Bitmap bitmap, String name, String phone,
+                                String fax, String website, String email,
+                                int groupId, String province, String district,
+                                String commune, String address) {
+
+        imgAvatar.setImageBitmap(bitmap);
+        txtName.setText(name);
+        txtPhone.setText(phone);
+        txtFax.setText(fax);
+        txtWebsite.setText(website);
+        txtEmail.setText(email);
+        txtAddress.setText(address);
         //
-        ClientGroup clientGroup =  ClientGroupHelper.getClientById(client.getGroup());
-        for(int i = 0; i < groups.size(); i ++){
-            if(groups.get(i).getId() == clientGroup.getId()){
-                spGroupClient.setSelection(i);
-                break;
-            }
-        }
 
-        for(int i = 0; i < provinces.size(); i ++){
-            if(provinces.get(i).equals(client.getAddress().getProvince())){
-                spProvince.setSelection(i);
-                break;
-            }
-        }
+        clientPresenterImp.setGroupClientSelected(groups, groupId);
+        clientPresenterImp.setProvinceSelected(provinces, province);
+        clientPresenterImp.setDistrictSelected(districts, district);
+        clientPresenterImp.setCommuneSelected(communes, commune);
 
-        for(int i = 0; i < districts.size(); i ++){
-            if(districts.get(i).equals(client.getAddress().getDistrict())){
-                spDistrict.setSelection(i);
-                break;
-            }
-        }
-
-        for(int i = 0; i < communes.size(); i ++){
-            if(communes.get(i).equals(client.getAddress().getCommune())){
-                spCommune.setSelection(i);
-                break;
-            }
-        }
     }
     @Override
     public void setDisableInput() {
@@ -269,7 +223,7 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
         startActivityForResult(cameraIntent, Constants.CAMERA_PIC_REQUEST);
     }
     @Override
-    public Client getClientFromInput() {
+    public boolean checkInput() {
         String name = txtName.getText().toString();
         int group = spGroupClient.getSelectedItemPosition();
         String phone = txtPhone.getText().toString();
@@ -283,19 +237,19 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
 
         if(Utils.checkInput(name)){
             setError(txtName, "Vui lòng nhập vào họ tên");
-            return null;
+            return false;
         }
         if(group ==0){
             Utils.openDialog(this, "Vui lòng chọn nhóm thành viên");
-            return null;
+            return false;
         }
         if(Utils.checkInput(phone)){
             setError(txtPhone, "Vui lòng nhập vào số điện thoại");
-            return null;
+            return false;
         }
         if(!phone.matches(Constants.PHONE_REGULAR)){
             setError(txtPhone, "Số điện thoại bắt đầu với +84/0 và tiếp theo từ 9-10 kí tự số");
-            return null;
+            return false;
         }
 //        if(Utils.checkInput(fax)){
 //            Utils.openDialog(this, "Vui lòng nhập vào số fax");
@@ -312,47 +266,64 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
         if(email.length() > 0){
             if(!email.matches(Constants.EMAIL_REGULAR)){
                 setError(txtEmail, "Email định dạng không đúng");
-                return null;
+                return false;
             }
 
         }
 
         if(spProvince.getSelectedItemPosition() ==0){
             Utils.openDialog(this, "Vui lòng chọn tỉnh/thành phố");
-            return null;
+            return false;
         }
         if(spDistrict.getSelectedItemPosition() ==0){
             Utils.openDialog(this, "Vui lòng chọn quận/huyện");
-            return null;
+            return false;
         }
         if(spCommune.getSelectedItemPosition() ==0){
             Utils.openDialog(this, "Vui lòng chọn phường/xã");
-            return null;
+            return false;
         }
         if(Utils.checkInput(address)){
             txtAddress.setError("Vui lòng nhập vào địa chỉ");
             txtAddress.requestFocus();
-            return null;
+            return false;
         }
-        int clientId = -1;
-        if(this.client != null){
-            clientId = this.client.getId();
-        }
-        Client newClient = new Client(clientId,
-                name,groups.get(group).getId(), phone,fax, website, email,
-                new Address(province, district, commune,  address));
-        if(avatar != null){
-            newClient.setAvatar(Utils.BitMapToString(avatar, Constants.AVATAR_HEIGHT));
-        }else{
-            newClient.setAvatar(null);
-        }
-        return newClient;
+        return true;
+    }
+    @Override
+    public Bitmap getAvatar() {
+        return avatar;
+    }
+    @Override
+    public void setAvatar(Bitmap avatar) {
+        this.avatar = avatar;
     }
     @Override
     public void setError(ExtendedEditText extendedEditText, String message) {
         extendedEditText.setError(message);
         extendedEditText.requestFocus();
     }
+
+    @Override
+    public void setSpinnerClientGroupSelectedPosition(int position) {
+        spGroupClient.setSelection(position);
+    }
+
+    @Override
+    public void setSpinnerProvincePosition(int position) {
+        spProvince.setSelection(position);
+    }
+
+    @Override
+    public void setSpinnerDistrictSelectedPosition(int position) {
+      spDistrict.setSelection(position);
+    }
+
+    @Override
+    public void setSpinnerCommuneSelectedPosition(int position) {
+        spCommune.setSelection(position);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == Activity.RESULT_OK){
@@ -376,7 +347,36 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.actionBar_add){
             if(option != Constants.DETAIL_OPTION){
-                addClient();
+                if(checkInput()){
+                    String name = txtName.getText().toString();
+                    int group = spGroupClient.getSelectedItemPosition();
+                    String phone = txtPhone.getText().toString();
+                    String fax = txtFax.getText().toString();
+                    String website = txtWebsite.getText().toString();
+                    String email = txtEmail.getText().toString();
+                    String province = spProvince.getSelectedItem().toString();
+                    String district = spDistrict.getSelectedItem().toString();
+                    String commune = spCommune.getSelectedItem().toString();
+                    String address = txtAddress.getText().toString();
+
+                    Client client = null;
+                    if(option == Constants.ADD_OPTION){
+                        client =  clientPresenterImp.addClient(name, groups.get(group), phone, fax, website, email, province, district, commune, address);
+                    }else if(option == Constants.EDIT_OPTION){
+                        client =  clientPresenterImp.updateClient(this.client,name, groups.get(group), phone, fax, website, email, province, district, commune, address);
+                    }
+
+                    if(client != null){
+                        Intent returnIntent = new Intent();
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable(Constants.CLIENT,client);
+                        returnIntent.putExtras(bundle);
+                        setResult(Activity.RESULT_OK,returnIntent);
+                        finish();
+                    }else{
+                        Utils.openDialog(this, "Đã có lỗi xảy ra, vui lòng thử lại");
+                    }
+                }
             }
             else{
                 finish();

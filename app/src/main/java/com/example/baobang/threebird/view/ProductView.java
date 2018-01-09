@@ -21,13 +21,19 @@ import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
 public interface ProductView {
     void addControls();
     void addEvents();
-    void setDataForInput();
+    void setDataForInput(int id, int priceInventory, int price, int inventory,
+                         String productName, String detail, int brandId,
+                         int categoryId, ArrayList<String> images);
     void setDisableInput();
     void showSpinnerCategory(ArrayList<Category> categories);
     void showSpinnerBrand(ArrayList<Brand> brands);
     void setError(ExtendedEditText extendedEditText, String message);
-    void addImageView(final LinearLayout layoutImage, final int key, Bitmap bitmap);
+
+    RelativeLayout createImageViewAndImageButtonRemove(final int key, Bitmap bitmap);
+
     RelativeLayout createRelativeLayout();
     ImageButton createImageRemoveButton(ImageView imgView);
-    Product getProductFromInput();
+    boolean checkInput();
+    void setBrandSelectedPosition(int position);
+    void setCategorySelectedPosition(int position);
 }

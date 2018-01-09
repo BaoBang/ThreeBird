@@ -16,7 +16,6 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
@@ -29,10 +28,6 @@ import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.model.Brand;
 import com.example.baobang.threebird.model.Category;
 import com.example.baobang.threebird.model.Product;
-import com.example.baobang.threebird.model.helper.BrandHelper;
-import com.example.baobang.threebird.model.helper.CategoryHelper;
-import com.example.baobang.threebird.model.helper.ProductHelper;
-import com.example.baobang.threebird.presenter.ProductPresenter;
 import com.example.baobang.threebird.presenter.ProductPresenterImp;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
@@ -43,7 +38,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import io.realm.RealmList;
 import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
 import studio.carbonylgroup.textfieldboxes.TextFieldBoxes;
 
@@ -66,7 +60,6 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
     private Toolbar toolbar;
     private HashMap<Integer,Bitmap> bitmaps = new HashMap<>();
     private int option;
-    private int key = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +73,6 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
 
         productPresenterImp.init();
     }
-
 
     @Override
     public void setDisableInput() {
@@ -145,37 +137,30 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
     }
 
     @Override
-    public void setDataForInput() {
+    public void setDataForInput(int id, int priceInventory, int price, int inventory,
+                                String productName, String detail, int brandId,
+                                int categoryId, ArrayList<String> images) {
 
-        txtProductId.setText(String.valueOf(product.getId()));
-        txtProductPriceInventory.setText(String.valueOf(product.getPriceInventory()));
-        txtProductPrice.setText(String.valueOf(product.getPrice()));
-        txtProductName.setText(product.getName());
-        txtDetail.setText(product.getDetail());
-        txtProductInventory.setText(String.valueOf(product.getInvetory()));
+        txtProductId.setText(String.valueOf(id));
+        txtProductPriceInventory.setText(String.valueOf(priceInventory));
+        txtProductPrice.setText(String.valueOf(price));
+        txtProductName.setText(productName);
+        txtDetail.setText(detail);
+        txtProductInventory.setText(String.valueOf(inventory));
 
-        for(int i = 0; i < brands.size(); i ++){
-            if(brands.get(i).getId() == product.getBrand()){
-                spBrand.setSelection(i);
-                break;
-            }
-        }
+        productPresenterImp.setBrandSelected(brands, brandId);
+        productPresenterImp.setCategorySelected(categories, categoryId);
 
-        for(int i = 0; i < categories.size(); i ++){
-            if(categories.get(i).getId() == product.getCategory()){
-                spCategory.setSelection(i);
-                break;
-            }
-        }
-        for(String bitmapStr : product.getImages()){
-            Bitmap bitmap = Utils.StringToBitMap(bitmapStr);
-            bitmaps.put( key, bitmap);
-            addImageView(layoutImage, key++, bitmap);
+        bitmaps = productPresenterImp.getHashMapImage(images);
+        for(Integer key : bitmaps.keySet()){
+            Bitmap bitmap = bitmaps.get(key);
+            layoutImage.addView(createImageViewAndImageButtonRemove(productPresenterImp.getNextKey(), bitmap));
         }
     }
 
     @Override
     public void addControls() {
+
         // add tool bar
         toolbar = findViewById(R.id.toolBarAddProduct);
         setSupportActionBar(toolbar);
@@ -196,10 +181,11 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
         btnCamera = findViewById(R.id.btnCamera);
         btnPhoto = findViewById(R.id.btnPhoto);
         // spinner brand and categoty
+        productPresenterImp.loadSpinnerData();
         // to save list product images
 
         if(product != null){
-            setDataForInput();
+            productPresenterImp.setData(product);
         }
 
         if(option == Constants.DETAIL_OPTION){
@@ -302,8 +288,8 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
                 if(bundle != null){
                     Bitmap bitmap = (Bitmap) bundle.get("data");
                     bitmap = Utils.getResizedBitmap(bitmap, Constants.IMAGE_WIDTH, Constants.IMAGE_HEIGHT);
-                    bitmaps.put(key, bitmap);
-                    addImageView(layoutImage, key++, bitmap);
+                    bitmaps.put(productPresenterImp.getNextKey(), bitmap);
+                    layoutImage.addView(createImageViewAndImageButtonRemove(productPresenterImp.getNextKey(), bitmap));
                 }
 
             }else if(requestCode == Constants.SELECT_FILE){
@@ -315,8 +301,8 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
                 } catch (IOException e) {
                     bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.noimage);
                 }
-                bitmaps.put(key, bitmap);
-                addImageView(layoutImage, key++, bitmap);
+                bitmaps.put(productPresenterImp.getNextKey(), bitmap);
+                layoutImage.addView(createImageViewAndImageButtonRemove(productPresenterImp.getNextKey(), bitmap));
             }
         }
     }
@@ -343,97 +329,87 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
     }
 
     @Override
-    public Product getProductFromInput() {
+    public boolean checkInput() {
         String name = txtProductName.getText().toString();
-        int category = spCategory.getSelectedItemPosition();
-        int brand = spBrand.getSelectedItemPosition();
         String productId = txtProductId.getText().toString();
         String inventoryStr = txtProductInventory.getText().toString();
         String priceInventoryStr = txtProductPriceInventory.getText().toString();
         String priceStr = txtProductPrice.getText().toString();
-        String detail = txtDetail.getText().toString();
 
         if(Utils.checkInput(name)){
             setError(txtProductName, "Vui lòng nhập vào tên sản phẩm");
-            return null;
+            return false;
         }
         if(spCategory.getSelectedItemPosition() ==0){
             Utils.openDialog(this, "Vui lòng chọn loại sản phẩm");
-            return null;
+            return false;
         }
         if(spBrand.getSelectedItemPosition() ==0){
             Utils.openDialog(this, "Vui lòng chọn hãng sản phẩm");
-            return null;
+            return false;
         }
 
         if(Utils.checkInput(productId)){
             setError(txtProductId, "Vui lòng nhập vào mã sản phẩm");
-            return null;
+            return false;
         }
 
         if(Utils.checkInput(inventoryStr)){
             setError(txtProductInventory, "Vui lòng nhập vào số lượng tồn kho");
-            return null;
+            return false;
         }
         if(Utils.checkInput(priceInventoryStr)){
             setError(txtProductPriceInventory, "Vui lòng nhập vào giá nhập kho");
-            return null;
+            return false;
         }
         if(Utils.checkInput(priceStr)){
             setError(txtProductPrice, "Vui lòng nhập vào đơn giá sản phẩm");
-            return null;
+            return false;
         }
-        int id, inventory, priceInventory, price;
         try{
-            id = Integer.parseInt(productId);
+            Integer.parseInt(productId);
         }catch (Exception e){
             setError(txtProductId, "Định dạng không đúng");
-            return null;
+            return false;
         }
 
         try{
-            inventory = Integer.parseInt(inventoryStr);
+            Integer.parseInt(inventoryStr);
         }catch (Exception e){
 
             setError(txtProductInventory, "Định dạng không đúng");
-            return null;
+            return false;
         }
         try{
-            priceInventory = Integer.parseInt(priceInventoryStr);
+            Integer.parseInt(priceInventoryStr);
         }catch (Exception e){
             setError(txtProductPriceInventory, "Định dạng không đúng");
-            return null;
+            return false;
         }
 
         try{
-            price = Integer.parseInt(priceStr);
+            Integer.parseInt(priceStr);
         }catch (Exception e){
             setError(txtProductPrice, "Định dạng không đúng");
-            return null;
+            return false;
         }
-
-
-        Product product = new Product(id,
-                name,categories.get(category).getId(),
-                brands.get(brand).getId(),
-                inventory,
-                priceInventory,
-                price,
-                detail);
-        RealmList<String> bitmapStrs = new RealmList<>();
-        for(Integer key : bitmaps.keySet()){
-            Bitmap bitmap = bitmaps.get(key);
-            bitmapStrs.add(Utils.BitMapToString(bitmap, 50));
-        }
-        product.setImages(bitmapStrs);
-        return product;
+        return true;
     }
 
     @Override
-    public void addImageView(final LinearLayout layoutImage, final int key, Bitmap bitmap){
+    public void setBrandSelectedPosition(int position) {
+        spBrand.setSelection(position);
+    }
+
+    @Override
+    public void setCategorySelectedPosition(int position) {
+        spCategory.setSelection(position);
+    }
+
+    @Override
+    public RelativeLayout createImageViewAndImageButtonRemove(final int key, Bitmap bitmap){
 
         final RelativeLayout relativeLayout = createRelativeLayout();
-
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(115, 115);
         ImageView imageView = new ImageView(this);
         imageView.setImageBitmap(bitmap);
@@ -450,7 +426,7 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
 
         relativeLayout.addView(imageView);
         relativeLayout.addView(imageButton);
-        layoutImage.addView(relativeLayout);
+        return  relativeLayout;
     }
 
     @Override
@@ -465,7 +441,41 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
 
         if(item.getItemId() == R.id.actionBar_add){
             if(option != Constants.DETAIL_OPTION){
-                addProduct();
+                String name = txtProductName.getText().toString();
+                int category = spCategory.getSelectedItemPosition();
+                int brand = spBrand.getSelectedItemPosition();
+                String inventoryStr = txtProductInventory.getText().toString();
+                String priceInventoryStr = txtProductPriceInventory.getText().toString();
+                String priceStr = txtProductPrice.getText().toString();
+                String detail = txtDetail.getText().toString();
+                if(checkInput()){
+                    int result = -1;
+                    if(option == Constants.ADD_OPTION){
+                        result = productPresenterImp.addProduct(name,categories.get(category).getId(),
+                                brands.get(brand).getId(),
+                                Integer.parseInt(inventoryStr),
+                                Integer.parseInt(priceInventoryStr),
+                                Integer.parseInt(priceStr),
+                                detail, bitmaps);
+                    }else if(option == Constants.EDIT_OPTION){
+                        result = productPresenterImp.updateProduct(product,name,categories.get(category).getId(),
+                                brands.get(brand).getId(),
+                                Integer.parseInt(inventoryStr),
+                                Integer.parseInt(priceInventoryStr),
+                                Integer.parseInt(priceStr),
+                                detail, bitmaps);
+                    }
+                    if(result != -1){
+                            Intent returnIntent = new Intent();
+                            Bundle bundle = new Bundle();
+                            bundle.putInt(Constants.PRODUCT,result);
+                            returnIntent.putExtras(bundle);
+                            setResult(Activity.RESULT_OK,returnIntent);
+                            finish();
+                    }else{
+                            Utils.openDialog(this, "Đã có lỗi xảy ra, vui lòng thử lại");
+                    }
+                }
             }else{
                 finish();
             }
@@ -473,31 +483,6 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
 
         return super.onOptionsItemSelected(item);
     }
-
-    private void addProduct(){
-
-        Product product = getProductFromInput();
-        if(product != null){
-            int result;
-            if(this.product == null){
-                result =  productPresenterImp.addProduct(product);
-            }else{
-                result = productPresenterImp.updateProduct(product);
-            }
-            if(result != -1){
-                Intent returnIntent = new Intent();
-                Bundle bundle = new Bundle();
-                bundle.putInt(Constants.PRODUCT,result);
-                returnIntent.putExtras(bundle);
-                setResult(Activity.RESULT_OK,returnIntent);
-                finish();
-            }else{
-                Utils.openDialog(this, "Đã có lỗi xảy ra, vui lòng thử lại");
-            }
-        }
-
-    }
-
 }
 
 

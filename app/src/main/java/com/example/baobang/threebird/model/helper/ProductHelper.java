@@ -27,6 +27,23 @@ public class ProductHelper {
         return -1;
     }
 
+    public static Product createProudctReturnObject(Product product){
+        try (Realm realm = Realm.getDefaultInstance()) {
+            int nextID = 0;
+            Number number = realm.where(Product.class).max("id");
+            if (number != null)
+                nextID = number.intValue() + 1;
+            realm.beginTransaction();
+            product.setId(nextID);
+            realm.copyToRealm(product);
+            realm.commitTransaction();
+            return product;
+        } catch (Exception e) {
+            Log.e("Lỗi: ", e.getMessage());
+        }
+        return null;
+    }
+
     public static ArrayList<Product> getAllProduct(){
         List<Product> list;
         ArrayList<Product> products = new ArrayList<>();
@@ -76,6 +93,17 @@ public class ProductHelper {
         } catch (Exception e) {
             return -1;
         }
+    }
+
+    public static Product updateProductReturnObject(Product product) {
+        try (Realm realm = Realm.getDefaultInstance()) {
+            realm.beginTransaction();
+            realm.copyToRealmOrUpdate(product);
+            realm.commitTransaction();
+            return product;
+        } catch (Exception e) {
+        }
+        return null;
     }
 
     public static boolean deleteProduct(Product product){

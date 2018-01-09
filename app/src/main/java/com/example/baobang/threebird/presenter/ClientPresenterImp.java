@@ -1,12 +1,18 @@
 package com.example.baobang.threebird.presenter;
 
+import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
+import com.example.baobang.threebird.R;
+import com.example.baobang.threebird.model.Address;
 import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.ClientGroup;
 import com.example.baobang.threebird.model.helper.ClientGroupHelper;
 import com.example.baobang.threebird.model.helper.ClientHelper;
 import com.example.baobang.threebird.utils.Constants;
+import com.example.baobang.threebird.utils.Utils;
 import com.example.baobang.threebird.view.ClientView;
 
 import java.util.ArrayList;
@@ -27,7 +33,6 @@ public class ClientPresenterImp implements ClientPresenter {
     public void init() {
         clientView.addControls();
         clientView.addEvents();
-        loadSpinnerData();
     }
 
     @Override
@@ -41,6 +46,80 @@ public class ClientPresenterImp implements ClientPresenter {
     }
 
     @Override
+    public void setData(Activity activity, Client client) {
+        Bitmap bitmap = null;
+        if(client.getAvatar() != null && client.getAvatar().length() > 0){
+            bitmap = Utils.StringToBitMap(client.getAvatar());
+        }else{
+            bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.noimage);
+        }
+        clientView.setDataForInput(bitmap, client.getName(), client.getPhone(),
+                client.getFax(), client.getWebsite(), client.getEmail(),
+                client.getGroupId(), client.getAddress().getProvince(),
+                client.getAddress().getDistrict(), client.getAddress().getCommune(),
+                client.getAddress().getAddress());
+    }
+
+    @Override
+    public void setAvatar(Activity activity, Client client) {
+        Bitmap bitmap = null;
+        if(client.getAvatar() != null && client.getAvatar().length() > 0){
+            bitmap = Utils.StringToBitMap(client.getAvatar());
+        }else{
+            bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.noimage);
+        }
+        clientView.setAvatar(bitmap);
+    }
+
+    @Override
+    public void setGroupClientSelected(ArrayList<ClientGroup> groups, int groupId) {
+       int position = 0;
+        for(int i = 0; i < groups.size(); i++){
+           if(groups.get(i).getId() == groupId){
+                position = i;
+                break;
+           }
+       }
+       clientView.setSpinnerClientGroupSelectedPosition(position);
+    }
+
+    @Override
+    public void setDistrictSelected(ArrayList<String> districts, String district) {
+        int position = 0;
+        for(int i = 0; i < districts.size(); i++){
+            if(districts.get(i).equals(district)){
+                position = i;
+                break;
+            }
+        }
+        clientView.setSpinnerDistrictSelectedPosition(position);
+    }
+
+    @Override
+    public void setProvinceSelected(ArrayList<String> provinces, String province) {
+        int position = 0;
+        for(int i = 0; i < provinces.size(); i++){
+            if(provinces.get(i).equals(province)){
+                position = i;
+                break;
+            }
+        }
+        clientView.setSpinnerProvincePosition(position);
+    }
+
+    @Override
+    public void setCommuneSelected(ArrayList<String> communes, String commune) {
+        int position = 0;
+        for(int i = 0; i < communes.size(); i++){
+            if(communes.get(i).equals(commune)){
+                position = i;
+                break;
+            }
+        }
+        clientView.setSpinnerCommuneSelectedPosition(position);
+    }
+
+    @Override
     public void loadSpinnerData() {
         clientView.showSpinnerProvince(getProvinces());
         clientView.showSpinnerCommune(getCommunes());
@@ -49,13 +128,43 @@ public class ClientPresenterImp implements ClientPresenter {
     }
 
     @Override
-    public boolean addClient(Client client) {
-        return ClientHelper.createClient(client);
+    public Client addClient(String name, ClientGroup group, String phone, String fax, String website, String email, String province, String district, String commune, String address) {
+        Client newClient = new Client(0,
+                name,group.getId(), phone,fax, website, email,
+                new Address(province, district, commune,  address));
+        if(clientView.getAvatar() != null){
+            newClient.setAvatar(Utils.BitMapToString(clientView.getAvatar(), Constants.AVATAR_HEIGHT));
+        }else{
+            newClient.setAvatar(null);
+        }
+        return ClientHelper.createClientReturnObject(newClient);
     }
 
     @Override
-    public boolean updateClient(Client client) {
-        return ClientHelper.updateClient(client);
+    public Client updateClient(Client client, String name, ClientGroup group,
+                               String phone, String fax, String website,
+                               String email, String province, String district,
+                               String commune, String address) {
+        if(client == null)
+             return null;
+
+        client.setName(name);
+        client.setGroupId(group.getId());
+        client.setPhone(phone);
+        client.setFax(fax);
+        client.setWebsite(website);
+        client.setEmail(email);
+        client.getAddress().setProvince(province);
+        client.getAddress().setDistrict(district);
+        client.getAddress().setCommune(commune);
+        client.getAddress().setAddress(address);
+        if(clientView.getAvatar() != null){
+            client.setAvatar(Utils.BitMapToString(clientView.getAvatar(), Constants.AVATAR_HEIGHT));
+        }else{
+            client.setAvatar(null);
+        }
+
+        return ClientHelper.updateClientReturnObject(client);
     }
 
 

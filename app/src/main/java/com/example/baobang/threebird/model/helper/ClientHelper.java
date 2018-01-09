@@ -29,6 +29,23 @@ public class ClientHelper {
         return false;
     }
 
+    public static Client createClientReturnObject(Client client){
+        try (Realm realm = Realm.getDefaultInstance()) {
+            int nextID = 0;
+            Number number = realm.where(Client.class).max("id");
+            if (number != null)
+                nextID = number.intValue() + 1;
+            realm.beginTransaction();
+            client.setId(nextID);
+            realm.copyToRealm(client);
+            realm.commitTransaction();
+            return client;
+        } catch (Exception e) {
+            Log.e("Lỗi: ", e.getMessage());
+        }
+        return null;
+    }
+
     public static boolean checkClient(Client client){
         Realm realm = Realm.getDefaultInstance();
         RealmResults<Client> results = realm.where(Client.class)
@@ -98,6 +115,18 @@ public class ClientHelper {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public static Client updateClientReturnObject(Client client){
+        try (Realm realm = Realm.getDefaultInstance()) {
+            realm.beginTransaction();
+            realm.copyToRealmOrUpdate(client);
+            realm.commitTransaction();
+            return client;
+        } catch (Exception e) {
+        }
+        return null;
+
     }
 
     public static boolean deleteClient(Client client){

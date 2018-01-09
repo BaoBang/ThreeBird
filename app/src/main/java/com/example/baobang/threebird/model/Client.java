@@ -74,14 +74,6 @@ public class Client extends RealmObject implements Serializable{
         this.name = name;
     }
 
-    public int getGroup() {
-        return groupId;
-    }
-
-    public void setGroup(int groupId) {
-        this.groupId = groupId;
-    }
-
     public String getPhone() {
         return phone;
     }
