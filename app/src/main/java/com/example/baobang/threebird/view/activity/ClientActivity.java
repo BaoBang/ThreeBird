@@ -27,7 +27,7 @@ import com.example.baobang.threebird.model.Commune;
 import com.example.baobang.threebird.model.District;
 import com.example.baobang.threebird.model.Province;
 import com.example.baobang.threebird.model.helper.ProvinceHelper;
-import com.example.baobang.threebird.presenter.ClientPresenterImp;
+import com.example.baobang.threebird.presenter.imp.ClientPresenterImp;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
 import com.example.baobang.threebird.utils.SlideView;
@@ -66,6 +66,9 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
+
+        LinearLayout layoutRoot = findViewById(R.id.layoutRoot);
+        Utils.hideKeyboardOutside(layoutRoot, this);
 
         clientPresenterImp = new ClientPresenterImp(this);
         provinces = ProvinceHelper.getAllProvinces();

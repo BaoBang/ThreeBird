@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     tools:context="com.example.baobang.threebird.view.activity.ClientActivity"
     android:orientation="vertical"
-    android:background="@drawable/background_color_gradient">
+    android:background="@drawable/background_color_gradient"
+    android:id="@+id/layoutRoot">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolBarUserDetail"

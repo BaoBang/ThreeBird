@@ -9,8 +9,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.baobang.threebird.view.activity.LoginActivity"
     android:background="@drawable/background_color_gradient"
-
-    >
+    android:id="@+id/layoutRoot">
 
        <ScrollView
            android:layout_width="match_parent"

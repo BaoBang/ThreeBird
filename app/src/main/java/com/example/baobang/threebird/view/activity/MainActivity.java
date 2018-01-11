@@ -7,7 +7,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
+
 import com.example.baobang.threebird.R;
+import com.example.baobang.threebird.utils.Utils;
 import com.example.baobang.threebird.view.fragments.ClientFragment;
 import com.example.baobang.threebird.view.fragments.HomeFragment;
 import com.example.baobang.threebird.view.fragments.OrderFragment;
@@ -24,6 +27,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Realm.init(this);
+
+        LinearLayout layoutRoot = findViewById(R.id.container);
+        Utils.hideKeyboardOutside(layoutRoot, this);
+
         addControlls(savedInstanceState);
         addEvents();
 

@@ -1,7 +1,8 @@
-package com.example.baobang.threebird.presenter;
+package com.example.baobang.threebird.presenter.imp;
 
 import com.example.baobang.threebird.model.User;
 import com.example.baobang.threebird.model.helper.UserHelper;
+import com.example.baobang.threebird.presenter.LoginPresenter;
 import com.example.baobang.threebird.view.LoginView;
 
 /**

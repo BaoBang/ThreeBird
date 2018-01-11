@@ -28,7 +28,7 @@ import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.model.Brand;
 import com.example.baobang.threebird.model.Category;
 import com.example.baobang.threebird.model.Product;
-import com.example.baobang.threebird.presenter.ProductPresenterImp;
+import com.example.baobang.threebird.presenter.imp.ProductPresenterImp;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
 import com.example.baobang.threebird.view.ProductView;
@@ -64,6 +64,9 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product);
+
+        LinearLayout layoutRoot = findViewById(R.id.layoutRoot);
+        Utils.hideKeyboardOutside(layoutRoot, this);
 
         productPresenterImp = new ProductPresenterImp(this);
 

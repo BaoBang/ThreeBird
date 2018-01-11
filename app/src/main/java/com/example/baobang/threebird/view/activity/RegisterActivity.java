@@ -6,12 +6,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.baobang.threebird.R;
-import com.example.baobang.threebird.model.User;
-import com.example.baobang.threebird.model.helper.UserHelper;
-import com.example.baobang.threebird.presenter.RegisterPresenterIml;
+import com.example.baobang.threebird.presenter.imp.RegisterPresenterIml;
 import com.example.baobang.threebird.utils.Utils;
 import com.example.baobang.threebird.view.RegisterView;
 
@@ -29,6 +28,10 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView{
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
         setContentView(R.layout.activity_register);
+
+        LinearLayout layoutRoot = findViewById(R.id.layoutRoot);
+        Utils.hideKeyboardOutside(layoutRoot, this);
+
         registerPresenterIml = new RegisterPresenterIml(this);
         registerPresenterIml.init();
     }

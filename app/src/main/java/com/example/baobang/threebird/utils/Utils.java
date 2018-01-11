@@ -1,5 +1,6 @@
 package com.example.baobang.threebird.utils;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -19,7 +20,9 @@ import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.TextView;
 
 
@@ -165,5 +168,21 @@ public class Utils {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    public static void hideKeyboardOutside(View view, final Activity activity) {
+        //Set up touch listener for non-text box views to hide keyboard.
+        if (!(view instanceof EditText)) view.setOnTouchListener(
+                (v, event) -> {
+                    Utils.hideSoftKeyboard(activity);
+                    return false;
+                });
+        //If a layout container, iterate over children
+        if (view instanceof ViewGroup) {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+                View innerView = ((ViewGroup) view).getChildAt(i);
+                hideKeyboardOutside(innerView, activity);
+            }
+        }
+    }
 
 }

@@ -1,4 +1,4 @@
-package com.example.baobang.threebird.presenter;
+package com.example.baobang.threebird.presenter.imp;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import com.example.baobang.threebird.model.Product;
 import com.example.baobang.threebird.model.helper.BrandHelper;
 import com.example.baobang.threebird.model.helper.CategoryHelper;
 import com.example.baobang.threebird.model.helper.ProductHelper;
+import com.example.baobang.threebird.presenter.ProductPresenter;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
 import com.example.baobang.threebird.view.ProductView;
@@ -24,7 +25,7 @@ import io.realm.RealmResults;
  * Created by baobang on 1/8/18.
  */
 
-public class ProductPresenterImp implements ProductPresenter{
+public class ProductPresenterImp implements ProductPresenter {
 
     private ProductView productView;
     private int key = 0;

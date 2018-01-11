@@ -1,4 +1,4 @@
-package com.example.baobang.threebird.presenter;
+package com.example.baobang.threebird.presenter.imp;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -21,6 +21,7 @@ import com.example.baobang.threebird.model.helper.DistrictHelper;
 import com.example.baobang.threebird.model.helper.OrderHelper;
 import com.example.baobang.threebird.model.helper.ProductHelper;
 import com.example.baobang.threebird.model.helper.ProvinceHelper;
+import com.example.baobang.threebird.presenter.OrderPresenter;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
 import com.example.baobang.threebird.view.OrderView;
@@ -37,7 +38,7 @@ import io.realm.RealmList;
  * Created by baobang on 1/8/18.
  */
 
-public class OrderPresenterImp implements OrderPresenter{
+public class OrderPresenterImp implements OrderPresenter {
 
     private OrderView orderView;
 

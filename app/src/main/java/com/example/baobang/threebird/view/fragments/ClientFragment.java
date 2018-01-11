@@ -15,15 +15,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.FrameLayout;
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.adapter.ClientAdapter;
 import com.example.baobang.threebird.annimator.VegaLayoutManager;
 import com.example.baobang.threebird.model.Client;
-import com.example.baobang.threebird.model.helper.ClientHelper;
-import com.example.baobang.threebird.model.helper.OrderHelper;
+import com.example.baobang.threebird.presenter.imp.ClientFragmentPresenterImp;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
+import com.example.baobang.threebird.view.ClientFragmentView;
 import com.example.baobang.threebird.view.activity.ClientActivity;
 
 import java.util.ArrayList;
@@ -31,8 +31,10 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ClientFragment extends Fragment {
+public class ClientFragment extends Fragment implements ClientFragmentView{
 
+    ClientFragmentPresenterImp clientFragmentPresenterImp;
+    Toolbar toolbar;
     private ArrayList<Client> clients;
     private ClientAdapter clientAdapter;
     private RecyclerView rcClients;
@@ -42,33 +44,16 @@ public class ClientFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         return addControls(inflater,container);
-
     }
 
     private View addControls(LayoutInflater inflater, ViewGroup container) {
         View view = inflater.inflate(R.layout.fragment_client, container, false);
         // add toolbar
-        Toolbar toolbar = view.findViewById(R.id.toolBarClient);
-        if (toolbar != null) {
-            AppCompatActivity appCompatActivity = (AppCompatActivity) getActivity();
-            if(appCompatActivity != null){
-                appCompatActivity.setSupportActionBar(toolbar);
-            }
-            toolbar.setTitle(null);
-        }
+        clientFragmentPresenterImp = new ClientFragmentPresenterImp(this);
         setHasOptionsMenu(true);
         // add views
-
-        rcClients = view.findViewById(R.id.rcClients);
-//        rcClients.setHasFixedSize(true);
-        clients = ClientHelper.getClientOn30Days();
-        //
-        clientAdapter = new ClientAdapter(clients, rcClients, item -> openOptionDialog((Client)item));
-        rcClients.setLayoutManager(new VegaLayoutManager());
-        rcClients.setAdapter(clientAdapter);
-
+        clientFragmentPresenterImp.init(view);
         return view;
     }
 
@@ -110,7 +95,7 @@ public class ClientFragment extends Fragment {
         if(requestCode == Constants.CLIENT_REQUEST_CODE && resultCode == Activity.RESULT_OK){
                 Bundle bundle = data.getExtras();
                 Client client = bundle == null ? null : (Client) bundle.getSerializable(Constants.CLIENT);
-                int indexChange = checkClients(client);
+                int indexChange = clientFragmentPresenterImp.checkClients(clients,client);
                 if( indexChange == -1){
                     clients.add(client);
                 }else{
@@ -134,48 +119,10 @@ public class ClientFragment extends Fragment {
                 goToUserDetailActivity(client, Constants.DETAIL_OPTION);
             }
             else{
-                deleteClient(client);
+                clientFragmentPresenterImp.deleteClient(getActivity(),clients,client);
             }
         });
         builder.show();
-    }
-
-    private void deleteClient(final Client client) {
-        if(OrderHelper.checkClientHasOreder(client.getId())){
-            Utils.openDialog(getActivity(), "Khách hàng đã lập hóa đơn không thể xóa.");
-            return;
-        }
-        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-        dialog.setCancelable(false);
-        dialog.setTitle("Thông báo!");
-        dialog.setMessage("Bạn có muốn xóa khách hàng " + client.getName());
-
-        dialog.setPositiveButton("Đồng ý", (dialog1, id) -> {
-                boolean res = ClientHelper.deleteClient(client);
-                if(res){
-                    clients.remove(client);
-                    clientAdapter.notifyDataSetChanged();
-                    Toast.makeText(getContext(), "Xóa thành công", Toast.LENGTH_SHORT).show();
-                }else{
-                    Utils.openDialog(getActivity(), "Có lỗi xảy ra, vui lòng thử lại");
-                }
-        }).setNegativeButton("Hủy ", (dialog12, which) -> {
-
-        });
-        final AlertDialog alert = dialog.create();
-        alert.show();
-
-
-
-    }
-
-    private int checkClients(Client client){
-        for(int i = 0; i < clients.size(); i++){
-            if(client.getId() == clients.get(i).getId()){
-                return i;
-            }
-        }
-        return -1;
     }
 
     private void goToUserDetailActivity(Client client, int option) {
@@ -185,5 +132,41 @@ public class ClientFragment extends Fragment {
         bundle.putInt(Constants.OPTION, option);
         userDetailActivity.putExtras(bundle);
         startActivityForResult(userDetailActivity, Constants.CLIENT_REQUEST_CODE);
+    }
+
+    @Override
+    public void addControls(View view) {
+        FrameLayout layoutRoot =  view.findViewById(R.id.layoutRoot);
+        Utils.hideKeyboardOutside(layoutRoot, getActivity());
+
+        rcClients = view.findViewById(R.id.rcClients);
+
+    }
+
+    @Override
+    public void addToolBar(View view) {
+        toolbar = view.findViewById(R.id.toolBarClient);
+        if (toolbar != null) {
+            AppCompatActivity appCompatActivity = (AppCompatActivity) getActivity();
+            if(appCompatActivity != null){
+                appCompatActivity.setSupportActionBar(toolbar);
+            }
+            toolbar.setTitle(null);
+        }
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Utils.openDialog(getActivity(), message);
+    }
+
+    @Override
+    public void showRecyclerViewClient( ArrayList<Client> clients) {
+        this.clients = clients;
+        clientAdapter = new ClientAdapter(clients,
+                rcClients,
+                item -> openOptionDialog((Client)item));
+        rcClients.setLayoutManager(new VegaLayoutManager());
+        rcClients.setAdapter(clientAdapter);
     }
 }

@@ -1,4 +1,4 @@
-package com.example.baobang.threebird.presenter;
+package com.example.baobang.threebird.presenter.imp;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -21,6 +21,7 @@ import com.example.baobang.threebird.model.helper.ClientHelper;
 import com.example.baobang.threebird.model.helper.CommuneHelper;
 import com.example.baobang.threebird.model.helper.DistrictHelper;
 import com.example.baobang.threebird.model.helper.ProvinceHelper;
+import com.example.baobang.threebird.presenter.ClientPresenter;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
 import com.example.baobang.threebird.view.ClientView;

@@ -9,10 +9,12 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.utils.Model;
 import com.example.baobang.threebird.utils.Model2;
+import com.example.baobang.threebird.utils.Utils;
 import com.example.baobang.threebird.utils.ViewPagerHander;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
@@ -52,6 +54,9 @@ public class HomeFragment extends Fragment {
 
 
         ViewPager viewPager = view.findViewById(R.id.pager);
+
+        FrameLayout layoutRoot =  view.findViewById(R.id.layoutRoot);
+        Utils.hideKeyboardOutside(layoutRoot, getActivity());
 
         CircleIndicator circleIndicator = view.findViewById(R.id.indicator);
         List<Model> models;

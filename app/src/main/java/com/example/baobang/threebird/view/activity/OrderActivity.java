@@ -36,7 +36,7 @@ import com.example.baobang.threebird.model.Order;
 import com.example.baobang.threebird.model.Product;
 import com.example.baobang.threebird.model.ProductOrder;
 import com.example.baobang.threebird.model.Province;
-import com.example.baobang.threebird.presenter.OrderPresenterImp;
+import com.example.baobang.threebird.presenter.imp.OrderPresenterImp;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
 import com.example.baobang.threebird.view.OrderView;
@@ -78,6 +78,9 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activy_order);
+
+        LinearLayout layoutRoot = findViewById(R.id.layoutRoot);
+        Utils.hideKeyboardOutside(layoutRoot, this);
 
         orderPresenterImp = new OrderPresenterImp(this);
 

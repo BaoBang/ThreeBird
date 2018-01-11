@@ -5,12 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.example.baobang.threebird.R;
-import com.example.baobang.threebird.model.User;
-import com.example.baobang.threebird.model.helper.UserHelper;
-import com.example.baobang.threebird.presenter.LoginPresenter;
-import com.example.baobang.threebird.presenter.LoginPresenterImp;
+import com.example.baobang.threebird.presenter.imp.LoginPresenterImp;
 import com.example.baobang.threebird.utils.Utils;
 import com.example.baobang.threebird.view.LoginView;
 
@@ -32,6 +30,10 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         Realm.init(this);
+
+        RelativeLayout layoutRoot = findViewById(R.id.layoutRoot);
+        Utils.hideKeyboardOutside(layoutRoot, this);
+
         loginPresenterImp = new LoginPresenterImp(this);
         loginPresenterImp.init();
     }

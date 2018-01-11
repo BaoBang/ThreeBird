@@ -17,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,18 +28,24 @@ import com.example.baobang.threebird.annimator.VegaLayoutManager;
 import com.example.baobang.threebird.listener.OnItemRecyclerViewClickListener;
 import com.example.baobang.threebird.model.Order;
 import com.example.baobang.threebird.model.helper.OrderHelper;
+import com.example.baobang.threebird.presenter.OrderFragmentPresenter;
+import com.example.baobang.threebird.presenter.imp.OrderFragmentPresenterImp;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
+import com.example.baobang.threebird.view.OrderFragmentView;
 import com.example.baobang.threebird.view.activity.OrderActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderFragment extends Fragment {
-    private TextView txtAmountAllOrder, txtAmountNewOrder, txtAmountCancelOrder, txtAmountCompletedOrder;
+public class OrderFragment extends Fragment implements OrderFragmentView {
 
+    private OrderFragmentPresenterImp orderFragmentPresenterImp;
+
+    private TextView txtAmountAllOrder, txtAmountNewOrder,
+            txtAmountCancelOrder, txtAmountCompletedOrder;
     private RecyclerView rcOrders;
-    private List<Order> orders;
+    private ArrayList<Order> orders;
     private OrderAdapter orderAdapter;
     private LinearLayout layoutOrder, layoutNewOrder, layoutCancelOrder, layoutCompletedOrder;
     private int layoutSelected = 0;
@@ -52,70 +59,48 @@ public class OrderFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_order, container, false);
-        Toolbar toolbar = view.findViewById(R.id.toolBarOrder);
-        if (toolbar != null) {
-            AppCompatActivity appCompatActivity = (AppCompatActivity) getActivity();
-            if(appCompatActivity != null){
-                appCompatActivity.setSupportActionBar(toolbar);
-            }
-            toolbar.setTitle(null);
-        }
+
         setHasOptionsMenu(true);
+        orderFragmentPresenterImp = new OrderFragmentPresenterImp(this);
+        orderFragmentPresenterImp.init(view);
         // Inflate the layout for this fragment
-        txtAmountAllOrder = view.findViewById(R.id.txtAmountAllOrder);
-        txtAmountNewOrder = view.findViewById(R.id.txtAmountNewOrder);
-        txtAmountCancelOrder = view.findViewById(R.id.txtAmountCancelOrder);
-        txtAmountCompletedOrder = view.findViewById(R.id.txtAmountCompletedOrder);
 
-        setupOrderInDay();
+        return view;
+    }
+    @Override
+    public void setupOrderInDay(int allOrderAmount, int newOrderAmount,
+                                 int cancelOrderAmount, int completedOrderAmount) {
+        txtAmountAllOrder.setText(String.valueOf(allOrderAmount));
+        txtAmountNewOrder.setText(String.valueOf(newOrderAmount));
+        txtAmountCancelOrder.setText(String.valueOf(cancelOrderAmount));
+        txtAmountCompletedOrder.setText(String.valueOf(completedOrderAmount));
+    }
 
-        rcOrders = view.findViewById(R.id.rcOrders);
-        orders = OrderHelper.getAllOrderByStatusInDay();
-        onItemRecyclerViewClickListener = item -> {
-            Order order = (Order) item;
-            openOptionDialog(order.getId());
-        };
-        orderAdapter = new OrderAdapter(getActivity(), orders, rcOrders, onItemRecyclerViewClickListener);
-        rcOrders.setLayoutManager(new VegaLayoutManager());
-        rcOrders.setAdapter(orderAdapter);
-
-        layoutOrder = view.findViewById(R.id.layoutOrder);
-        layoutNewOrder = view.findViewById(R.id.layoutNewOrder);
-        layoutCancelOrder = view.findViewById(R.id.layoutCancelOrder);
-        layoutCompletedOrder = view.findViewById(R.id.layoutCompletedOrder);
-
+    @Override
+    public void addEvents() {
         layoutCancelOrder.setOnClickListener(view1 -> {
             setBackGround(layoutCancelOrder, 2);
-            orders = getOrderListByStatus(Constants.CANCEL);
-            updateListView();
+            orders = orderFragmentPresenterImp.getOrderListByStatus(Constants.CANCEL);
+            updateListView(orders);
         });
 
         layoutCompletedOrder.setOnClickListener(view12 -> {
             setBackGround(layoutCompletedOrder, 3);
-            orders = getOrderListByStatus(Constants.COMPLETED);
-            updateListView();
+            orders = orderFragmentPresenterImp.getOrderListByStatus(Constants.COMPLETED);
+            updateListView(orders);
         });
 
         layoutOrder.setOnClickListener(view13 -> {
             setBackGround(layoutOrder, 0);
-            orders = getOrderListByStatus(-1);
-            updateListView();
+            orders = orderFragmentPresenterImp.getOrderListByStatus(-1);
+            updateListView(orders);
         });
 
         layoutNewOrder.setOnClickListener(view14 -> {
             setBackGround(layoutNewOrder, 1);
-            orders = getOrderListByStatus(Constants.DELIVERY);
-            updateListView();
+            orders = orderFragmentPresenterImp.getOrderListByStatus(Constants.DELIVERY);
+            updateListView(orders);
         });
-        return view;
-    }
-
-    private void setupOrderInDay() {
-
-        txtAmountAllOrder.setText(String.valueOf(getOrderListByStatus(-1).size()));
-        txtAmountNewOrder.setText(String.valueOf(getOrderListByStatus(Constants.DELIVERY).size()));
-        txtAmountCancelOrder.setText(String.valueOf(getOrderListByStatus(Constants.CANCEL).size()));
-        txtAmountCompletedOrder.setText(String.valueOf(getOrderListByStatus(Constants.COMPLETED).size()));
     }
 
     @Override
@@ -126,50 +111,28 @@ public class OrderFragment extends Fragment {
             if(bundle != null){
                 orderId = bundle.getInt(Constants.ORDER);
             }
-            Order order = OrderHelper.getOrder(orderId);
-            int indexChange = checkOrders(orderId);
-            if( indexChange == -1){
-                orders.add(order);
-            }else{
-                orders.set(indexChange, order);
-            }
-            orderAdapter.notifyDataSetChanged();
-            setupOrderInDay();
+            orderFragmentPresenterImp.addOrder(orders, orderId);
+
         }
     }
-
-    private int checkOrders(int orderId) {
-        for(int i = 0; i < orders.size(); i++){
-            if(orders.get(i).getId() == orderId){
-                return i;
-            }
-        }
-        return -1;
-    }
-
 
     private void setBackGround(LinearLayout  layout, int layoutSelected){
 
         switch (this.layoutSelected){
             case 0:
                 layoutOrder.setBackgroundResource(R.drawable.background_border_white);
-//                setTextColorForViewChild(layoutOrder, R.color.bold_word_80);
                 break;
             case 1:
                 layoutNewOrder.setBackgroundResource(R.drawable.background_border_white);
-//                setTextColorForViewChild(layoutNewOrder, R.color.bold_word_80);
                 break;
             case 2:
                 layoutCancelOrder.setBackgroundResource(R.drawable.background_border_white);
-//                setTextColorForViewChild(layoutCancelOrder, R.color.bold_word_80);
                 break;
             case 3:
                 layoutCompletedOrder.setBackgroundResource(R.drawable.background_border_white);
-//                setTextColorForViewChild(layoutCompletedOrder, R.color.bold_word_80);
                 break;
         }
         layout.setBackgroundResource(R.drawable.background_color);
-//        setTextColorForViewChild(layout, R.color.red);
         this.layoutSelected = layoutSelected;
     }
 
@@ -186,40 +149,16 @@ public class OrderFragment extends Fragment {
             }else if(items[item].equals("Xem chi tiết")){
                 goToCreateOrderActivity(orderId, Constants.DETAIL_OPTION);
             }else{
-                deleteOrder(orderId);
+                orderFragmentPresenterImp.deleteOrder(getActivity(), orders, orderId);
             }
         });
         builder.show();
     }
 
-    private void deleteOrder(int orderId) {
-        Order order = OrderHelper.getOrder(orderId);
-        if(order != null){
-            boolean res = OrderHelper.deleteOrder(order);
-            if(res){
-                remove(order);
-                updateListView();
-                Toast.makeText(getContext(), "Xóa thành công", Toast.LENGTH_SHORT).show();
-            }else{
-                Utils.openDialog(getActivity(), "Có lỗi xảy ra, vui lòng thử lại");
-            }
-        }else{
-            Utils.openDialog(getActivity(), "Có lỗi xảy ra, vui lòng thử lại");
-        }
-    }
-
-    private boolean remove(Order order){
-        for(Order o : orders){
-            if(o.getId() == order.getId()){
-                orders.remove(o);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void updateListView() {
-        orderAdapter = new OrderAdapter(getActivity(), orders, rcOrders, onItemRecyclerViewClickListener);
+    @Override
+    public void updateListView(ArrayList<Order> orders) {
+        this.orders = orders;
+        orderAdapter = new OrderAdapter(getActivity(), this.orders, rcOrders, onItemRecyclerViewClickListener);
         rcOrders.setAdapter(orderAdapter);
     }
 
@@ -265,21 +204,48 @@ public class OrderFragment extends Fragment {
         startActivityForResult(addProductActivity, Constants.ORDER_REQUEST_CODE);
     }
 
-    private ArrayList<Order> getOrderListByStatus(int status){
-        ArrayList<Order> list;
-        switch (status){
-            case 0:
-                list = OrderHelper.getOrderByStatusInDay(Constants.COMPLETED);
-                break;
-            case 1:
-                list = OrderHelper.getOrderByStatusInDay(Constants.CANCEL);
-                break;
-            case 2:
-                list = OrderHelper.getOrderByStatusInDay(Constants.DELIVERY);
-                break;
-            default:
-                list = OrderHelper.getAllOrderByStatusInDay();
+    @Override
+    public void addControls(View view) {
+        FrameLayout layoutRoot =  view.findViewById(R.id.layoutRoot);
+        Utils.hideKeyboardOutside(layoutRoot, getActivity());
+        txtAmountAllOrder = view.findViewById(R.id.txtAmountAllOrder);
+        txtAmountNewOrder = view.findViewById(R.id.txtAmountNewOrder);
+        txtAmountCancelOrder = view.findViewById(R.id.txtAmountCancelOrder);
+        txtAmountCompletedOrder = view.findViewById(R.id.txtAmountCompletedOrder);
+        rcOrders = view.findViewById(R.id.rcOrders);
+
+        layoutOrder = view.findViewById(R.id.layoutOrder);
+        layoutNewOrder = view.findViewById(R.id.layoutNewOrder);
+        layoutCancelOrder = view.findViewById(R.id.layoutCancelOrder);
+        layoutCompletedOrder = view.findViewById(R.id.layoutCompletedOrder);
+    }
+
+    @Override
+    public void addToolBar(View view) {
+        Toolbar toolbar = view.findViewById(R.id.toolBarOrder);
+        if (toolbar != null) {
+            AppCompatActivity appCompatActivity = (AppCompatActivity) getActivity();
+            if(appCompatActivity != null){
+                appCompatActivity.setSupportActionBar(toolbar);
+            }
+            toolbar.setTitle(null);
         }
-        return list;
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Utils.openDialog(getActivity(), message);
+    }
+
+    @Override
+    public void showRecyclerViewOrder(ArrayList<Order> orders) {
+        orders = OrderHelper.getAllOrderByStatusInDay();
+        onItemRecyclerViewClickListener = item -> {
+            Order order = (Order) item;
+            openOptionDialog(order.getId());
+        };
+        orderAdapter = new OrderAdapter(getActivity(), orders, rcOrders, onItemRecyclerViewClickListener);
+        rcOrders.setLayoutManager(new VegaLayoutManager());
+        rcOrders.setAdapter(orderAdapter);
     }
 }

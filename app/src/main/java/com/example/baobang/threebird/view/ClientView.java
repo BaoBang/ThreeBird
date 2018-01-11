@@ -49,6 +49,7 @@ public interface ClientView {
     void showNameWarning(String message);
 
     void showPhoneWarning(String message);
+
     void showEmailWarning(String message);
 
     void showAddressWarning(String message);
