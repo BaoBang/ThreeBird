@@ -1,46 +1,50 @@
 package com.example.baobang.threebird.model;
 
+import com.example.baobang.threebird.model.helper.CommuneHelper;
+import com.example.baobang.threebird.model.helper.DistrictHelper;
+import com.example.baobang.threebird.model.helper.ProvinceHelper;
+
 import java.io.Serializable;
 import io.realm.RealmObject;
 
 public class Address extends RealmObject implements Serializable {
-    private String province;
-    private String district;
-    private String commune;
+    private int provinceId;
+    private int districtId;
+    private int communeId;
     private String address;
 
     public Address() {
     }
 
-    public Address(String province, String district, String commune, String address) {
-        this.province = province;
-        this.district = district;
-        this.commune = commune;
+    public Address(int provinceId, int districtId, int communeId, String address) {
+        this.provinceId = provinceId;
+        this.districtId = districtId;
+        this.communeId = communeId;
         this.address = address;
     }
 
-    public String getProvince() {
-        return province;
+    public int getProvinceId() {
+        return provinceId;
     }
 
-    public void setProvince(String province) {
-        this.province = province;
+    public void setProvinceId(int provinceId) {
+        this.provinceId = provinceId;
     }
 
-    public String getDistrict() {
-        return district;
+    public int getDistrictId() {
+        return districtId;
     }
 
-    public void setDistrict(String district) {
-        this.district = district;
+    public void setDistrictId(int districtId) {
+        this.districtId = districtId;
     }
 
-    public String getCommune() {
-        return commune;
+    public int getCommuneId() {
+        return communeId;
     }
 
-    public void setCommune(String commune) {
-        this.commune = commune;
+    public void setCommuneId(int communeId) {
+        this.communeId = communeId;
     }
 
     public String getAddress() {
@@ -53,10 +57,26 @@ public class Address extends RealmObject implements Serializable {
 
     @Override
     public String toString() {
-        return address
-                + ", " + commune
-                + ", " + district
-                + ", " + province;
+        Province province = ProvinceHelper.getProvinceById(provinceId);
+        Commune commune = CommuneHelper.getCommuneById(communeId);
+        District district = DistrictHelper.getDistrictById(provinceId);
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(province.toString());
+
+        if(!district.toString().equals(""))
+            stringBuilder.append(",")
+                .append(district.toString());
+
+        if(!commune.toString().equals(""))
+            stringBuilder.append(",")
+                    .append(commune.toString());
+
+        if(!address.equals(""))
+            stringBuilder.append(",")
+                    .append(address);
+
+        return stringBuilder.toString();
     }
 }
 

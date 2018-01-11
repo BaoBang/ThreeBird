@@ -30,9 +30,12 @@ import com.example.baobang.threebird.adapter.ClientAdapter;
 import com.example.baobang.threebird.adapter.ProductAdapter;
 import com.example.baobang.threebird.annimator.VegaLayoutManager;
 import com.example.baobang.threebird.model.Client;
+import com.example.baobang.threebird.model.Commune;
+import com.example.baobang.threebird.model.District;
 import com.example.baobang.threebird.model.Order;
 import com.example.baobang.threebird.model.Product;
 import com.example.baobang.threebird.model.ProductOrder;
+import com.example.baobang.threebird.model.Province;
 import com.example.baobang.threebird.presenter.OrderPresenterImp;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
@@ -58,9 +61,10 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
 
     private Spinner spStatus, spProvince,
             spDistrict, spCommune,  spPayment;
-    private ArrayList<String>  provinces,
-            districts, communes;
 
+    private ArrayList<Province> provinces;
+    private ArrayList<District> districts;
+    private ArrayList<Commune> communes;
 
     private ImageButton btnAddClient, btnCreatedAt, btnAddProduct, btnDeliveryDate;
     private LinearLayout layoutProduct;
@@ -171,9 +175,9 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
 
     @Override
     public void setDataForInput(Bitmap bitmap, String name, int orderId,
-                                Date createdAt, int status, String phone, String province,
-                                String district, String commune, String address,
-                                int amount, Date deliveryDate, int payment) {
+                                Date createdAt, int status, String phone,
+                                int province,int district, int commune,
+                                String address,int amount, Date deliveryDate, int payment) {
 
         imgAvatar.setImageBitmap(Utils.getRoundedRectBitmap(bitmap));
         txtName.setText(name);
@@ -259,10 +263,10 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
     }
 
     @Override
-    public void showSpinnerDistrict(ArrayList<String> districts) {
+    public void showSpinnerDistrict(ArrayList<District> districts) {
         spDistrict = findViewById(R.id.spDistrict);
         this.districts = districts;
-        ArrayAdapter<String> adapterDistrict = new ArrayAdapter<>(
+        ArrayAdapter<District> adapterDistrict = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_list_item_1,
                 districts);
@@ -270,10 +274,10 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
     }
 
     @Override
-    public void showSpinnerProvince(ArrayList<String> provinces) {
+    public void showSpinnerProvince(ArrayList<Province> provinces) {
         spProvince = findViewById(R.id.spProvince);
         this.provinces = provinces;
-        ArrayAdapter<String> adapterProvince = new ArrayAdapter<>(
+        ArrayAdapter<Province> adapterProvince = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_list_item_1,
                 provinces);
@@ -281,10 +285,10 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
     }
 
     @Override
-    public void showSpinnerCommune(ArrayList<String> communes) {
+    public void showSpinnerCommune(ArrayList<Commune> communes) {
         spCommune = findViewById(R.id.spCommune);
         this.communes = communes;
-        ArrayAdapter<String> adapterCommune = new ArrayAdapter<>(
+        ArrayAdapter<Commune> adapterCommune = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_list_item_1,
                 communes);
@@ -481,7 +485,7 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
 
     @Override
     public void addClientInfoFromListToView(Bitmap bitmap, String name, String phone,
-                                            String province, String district, String commune,
+                                            int province, int district, int commune,
                                             String address) {
         imgAvatar.setImageBitmap(Utils.getRoundedRectBitmap(bitmap));
 
@@ -516,99 +520,42 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
     }
 
     @Override
-    public boolean checkInput() {
-        try {
-            String name = txtName.getText().toString();
-            String orderId = txtOrderId.getText().toString();
-            String createdAtStr = txtCreatedAt.getText().toString();
-            int status = spStatus.getSelectedItemPosition();
-            String phone = txtPhone.getText().toString();
-            int province = spProvince.getSelectedItemPosition();
-            int district = spDistrict.getSelectedItemPosition();
-            int commune = spCommune.getSelectedItemPosition();
-            String address = txtAddress.getText().toString();
-            String deliveryDateStr = txtDeliveryDate.getText().toString();
-            int payment = spPayment.getSelectedItemPosition();
+    public void showMessage(String message) {
+        Utils.openDialog(this, message);
+    }
 
-            if(Utils.checkInput(name)){
-                txtName.setError("Vui lòng nhập vào tên khách hàng");
-                txtName.requestFocus();
-                return false;
-            }
-            if(Utils.checkInput(orderId)){
-                txtOrderId.setError("Vui lòng nhập vào số hóa đơn");
-                txtOrderId.requestFocus();
-                return false;
-            }
-            if(Utils.checkInput(createdAtStr)){
-                Utils.openDialog(this, "Vui lòng chọn ngày lập hóa đơn");
-                return false;
-            }
-            Date date = new Date(createdAtStr);
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", new Locale("vi", "VN"));
-            if(date.before(simpleDateFormat.getCalendar().getTime())){
-                Utils.openDialog(this, "Ngày đặt hàng không hợp lệ");
-                return false;
-            }
+    @Override
+    public void showClientNameWarning(String message) {
+        txtName.setError(message);
+        txtName.requestFocus();
+    }
 
-            if(status == 0){
-                Utils.openDialog(this, "Vui lòng chọn trạng thái của hóa đơn");
-                return false;
-            }
-            if(Utils.checkInput(phone)){
-                txtPhone.setError("Vui lòng nhâp vào số điện thoại");
-                txtPhone.requestFocus();
-                return false;
-            }
-            if(!phone.matches(Constants.PHONE_REGULAR)){
-                txtPhone.setError("Số điện thoại không đúng");
-                txtPhone.requestFocus();
-                return false;
-            }
-            if(province == 0){
-                Utils.openDialog(this, "Vui lòng chọn tỉnh/thành phố");
-                return false;
-            }
-            if(district == 0){
-                Utils.openDialog(this, "Vui lòng chọn quận/huyện");
-                return false;
-            }
-            if(commune == 0){
-                Utils.openDialog(this, "Vui lòng chọn phường/xã");
-                return false;
-            }
-            if(Utils.checkInput(address)){
-                txtAddress.setError("Vui lòng nhâp vào địa chỉ");
-                txtAddress.requestFocus();
-                return false;
-            }
+    @Override
+    public void showOrderIdWarning(String message) {
+        txtOrderId.setError(message);
+        txtOrderId.requestFocus();
+    }
 
-            if(productList.size() == 0){
-                Utils.openDialog(this, "Vui lòng chọn sản phẩm");
-                return false;
-            }
+    @Override
+    public void showPhoneWarning(String message) {
+        txtPhone.setError(message);
+        txtPhone.requestFocus();
+    }
 
-            if(Utils.checkInput(deliveryDateStr)){
-                Utils.openDialog(this, "Vui lòng chọn ngày giao hàng");
-                return false;
-            }
+    @Override
+    public void showAddressWarning(String message) {
+        txtAddress.setError(message);
+        txtAddress.requestFocus();
+    }
 
-            Date date2 = new Date(deliveryDateStr);
-
-            if(date.after(date2)){
-                Utils.openDialog(this, "Ngày giao hàng không hợp lệ");
-                return false;
-            }
-            if(payment == 0){
-                Utils.openDialog(this, "Vui lòng chọn hình thức thanh toán");
-                return false;
-            }
-
-        }catch (Exception e){
-            Utils.openDialog(this, "Lỗi: " + e.getMessage());
-            return false;
-        }
-        return true;
+    @Override
+    public void changeActivity(int orderId) {
+        Intent returnIntent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putInt(Constants.ORDER,orderId);
+        returnIntent.putExtras(bundle);
+        setResult(Activity.RESULT_OK,returnIntent);
+        finish();
     }
 
     @Override
@@ -622,43 +569,35 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.actionBar_add){
             if(option != Constants.DETAIL_OPTION){
-                if(checkInput()){
-                    String name = txtName.getText().toString();
-                    String createdAtStr = txtCreatedAt.getText().toString();
-                    int status = spStatus.getSelectedItemPosition();
-                    String phone = txtPhone.getText().toString();
-                    String province = spProvince.getSelectedItem().toString();
-                    String district = spDistrict.getSelectedItem().toString();
-                    String commune = spCommune.getSelectedItem().toString();
-                    String address = txtAddress.getText().toString();
-                    String deliveryDateStr = txtDeliveryDate.getText().toString();
-                    int payment = spPayment.getSelectedItemPosition();
+                String name = txtName.getText().toString();
 
-                    int result = -1;
-                    if(option == Constants.ADD_OPTION){
-                        result = orderPresenterImp.addOrder(clientSelectedId, name, new Date(createdAtStr),
-                                status - 1, phone, province, district,
-                                commune, address, productList, new Date(deliveryDateStr), payment);
-                    }else if(option == Constants.EDIT_OPTION){
-                        result = orderPresenterImp.updateOrder(order, clientSelectedId, name, new Date(deliveryDateStr),
-                                status - 1, phone, province, district,
-                                commune, address, productList, new Date(deliveryDateStr), payment);
-                    }
+                String createdAtStr = txtCreatedAt.getText().toString();
+                Date date = createdAtStr.equals("") ? null : new Date(createdAtStr);
 
-                    if(result != -1){
-                        if(status - 1 == Constants.COMPLETED){
-                            orderPresenterImp.orderCompetition(productList);
-                        }
-                        Intent returnIntent = new Intent();
-                        Bundle bundle = new Bundle();
-                        bundle.putInt(Constants.ORDER,result);
-                        returnIntent.putExtras(bundle);
-                        setResult(Activity.RESULT_OK,returnIntent);
-                        finish();
-                    }else{
-                        Utils.openDialog(this, "Đã có lỗi xảy ra, vui lòng thử lại");
-                    }
-                }
+                int status = spStatus.getSelectedItemPosition();
+                String phone = txtPhone.getText().toString();
+
+                int position = spProvince.getSelectedItemPosition();
+                Province province = position > 0 ? provinces.get(position) : null;
+
+                position = spDistrict.getSelectedItemPosition();
+                District district = districts.get(position);
+
+                position = spCommune.getSelectedItemPosition();
+                Commune commune = communes.get(position);
+
+                String address = txtAddress.getText().toString();
+
+                String deliveryDateStr = txtDeliveryDate.getText().toString();
+                Date deliveryDate = deliveryDateStr.equals("") ? null : new Date(deliveryDateStr);
+
+                int payment = spPayment.getSelectedItemPosition();
+
+                orderPresenterImp.clickAddOptionMenu(order, option, txtOrderId.getText().toString(), name,
+                        date, status, phone,
+                        province, district, commune,
+                        address, productList, deliveryDate, payment);
+
             }else{
                 finish();
             }

@@ -7,19 +7,25 @@ import android.os.Bundle;
 
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.model.Address;
+import com.example.baobang.threebird.model.Brand;
+import com.example.baobang.threebird.model.Category;
 import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.ClientGroup;
+import com.example.baobang.threebird.model.Commune;
+import com.example.baobang.threebird.model.District;
+import com.example.baobang.threebird.model.Province;
+import com.example.baobang.threebird.model.helper.BrandHelper;
+import com.example.baobang.threebird.model.helper.CategoryHelper;
 import com.example.baobang.threebird.model.helper.ClientGroupHelper;
 import com.example.baobang.threebird.model.helper.ClientHelper;
+import com.example.baobang.threebird.model.helper.CommuneHelper;
+import com.example.baobang.threebird.model.helper.DistrictHelper;
+import com.example.baobang.threebird.model.helper.ProvinceHelper;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
 import com.example.baobang.threebird.view.ClientView;
 
 import java.util.ArrayList;
-
-/**
- * Created by baobang on 1/8/18.
- */
 
 public class ClientPresenterImp implements ClientPresenter {
 
@@ -47,7 +53,7 @@ public class ClientPresenterImp implements ClientPresenter {
 
     @Override
     public void setData(Activity activity, Client client) {
-        Bitmap bitmap = null;
+        Bitmap bitmap;
         if(client.getAvatar() != null && client.getAvatar().length() > 0){
             bitmap = Utils.StringToBitMap(client.getAvatar());
         }else{
@@ -55,14 +61,14 @@ public class ClientPresenterImp implements ClientPresenter {
         }
         clientView.setDataForInput(bitmap, client.getName(), client.getPhone(),
                 client.getFax(), client.getWebsite(), client.getEmail(),
-                client.getGroupId(), client.getAddress().getProvince(),
-                client.getAddress().getDistrict(), client.getAddress().getCommune(),
+                client.getGroupId(), client.getAddress().getProvinceId(),
+                client.getAddress().getDistrictId(), client.getAddress().getCommuneId(),
                 client.getAddress().getAddress());
     }
 
     @Override
     public void setAvatar(Activity activity, Client client) {
-        Bitmap bitmap = null;
+        Bitmap bitmap;
         if(client.getAvatar() != null && client.getAvatar().length() > 0){
             bitmap = Utils.StringToBitMap(client.getAvatar());
         }else{
@@ -84,10 +90,10 @@ public class ClientPresenterImp implements ClientPresenter {
     }
 
     @Override
-    public void setDistrictSelected(ArrayList<String> districts, String district) {
+    public void setDistrictSelected(ArrayList<District> districts, int districtId) {
         int position = 0;
         for(int i = 0; i < districts.size(); i++){
-            if(districts.get(i).equals(district)){
+            if(districts.get(i).getId() == districtId){
                 position = i;
                 break;
             }
@@ -96,10 +102,10 @@ public class ClientPresenterImp implements ClientPresenter {
     }
 
     @Override
-    public void setProvinceSelected(ArrayList<String> provinces, String province) {
+    public void setProvinceSelected(ArrayList<Province> provinces, int provinceId) {
         int position = 0;
         for(int i = 0; i < provinces.size(); i++){
-            if(provinces.get(i).equals(province)){
+            if(provinces.get(i).getId() == provinceId){
                 position = i;
                 break;
             }
@@ -108,10 +114,10 @@ public class ClientPresenterImp implements ClientPresenter {
     }
 
     @Override
-    public void setCommuneSelected(ArrayList<String> communes, String commune) {
+    public void setCommuneSelected(ArrayList<Commune> communes, int communeId) {
         int position = 0;
         for(int i = 0; i < communes.size(); i++){
-            if(communes.get(i).equals(commune)){
+            if(communes.get(i).getId() == communeId){
                 position = i;
                 break;
             }
@@ -128,11 +134,12 @@ public class ClientPresenterImp implements ClientPresenter {
     }
 
     @Override
-    public void clickAddOptionMenu(Client client, int option, String name, int group, ClientGroup clientGroup,
-                                   String phone,String fax, String website,
-                                   String email, int province, String provinceStr,
-                                   int district, String districtStr,int commune,
-                                   String communeStr, String address) {
+    public void clickAddOptionMenu(Client client, int option, String name,
+                                   int group, ClientGroup clientGroup,
+                                   String phone, String fax, String website,
+                                   String email, Province province,
+                                   District district, Commune commune,
+                                   String address) {
         if(Utils.checkInput(name)){
             clientView.showNameWarning("Vui lòng nhập vào họ tên");
             return;
@@ -169,15 +176,15 @@ public class ClientPresenterImp implements ClientPresenter {
 
         }
 
-        if(province ==0){
+        if(province == null){
             clientView.showMessage("Vui lòng chọn tỉnh/thành phố");
             return;
         }
-        if(district == 0){
+        if(district == null){
             clientView.showMessage("Vui lòng chọn quận/huyện");
             return;
         }
-        if(commune==0){
+        if(commune == null){
             clientView.showMessage("Vui lòng chọn phường/xã");
             return;
         }
@@ -186,9 +193,14 @@ public class ClientPresenterImp implements ClientPresenter {
             return;
         }
         if(option == Constants.ADD_OPTION){
-            client =  addClient(name,clientGroup , phone, fax, website, email, provinceStr, districtStr, communeStr, address);
+            client =  addClient(name,clientGroup , phone,
+                    fax, website, email,
+                    province, district, commune, address);
         }else if(option == Constants.EDIT_OPTION){
-            client =  updateClient(client ,name, clientGroup, phone, fax, website, email, provinceStr, districtStr, communeStr, address);
+            client =  updateClient(client ,name, clientGroup,
+                    phone, fax, website,
+                    email, province, district,
+                    commune, address);
         }
 
         if(client != null){
@@ -199,10 +211,13 @@ public class ClientPresenterImp implements ClientPresenter {
     }
 
     @Override
-    public Client addClient(String name, ClientGroup group, String phone, String fax, String website, String email, String province, String district, String commune, String address) {
+    public Client addClient(String name, ClientGroup group, String phone,
+                            String fax, String website, String email,
+                            Province province, District district,
+                            Commune commune, String address) {
         Client newClient = new Client(0,
                 name,group.getId(), phone,fax, website, email,
-                new Address(province, district, commune,  address));
+                new Address(province.getId(), district.getId(), commune.getId(),  address));
         if(clientView.getAvatar() != null){
             newClient.setAvatar(Utils.BitMapToString(clientView.getAvatar(), Constants.AVATAR_HEIGHT));
         }else{
@@ -214,8 +229,8 @@ public class ClientPresenterImp implements ClientPresenter {
     @Override
     public Client updateClient(Client client, String name, ClientGroup group,
                                String phone, String fax, String website,
-                               String email, String province, String district,
-                               String commune, String address) {
+                               String email, Province province, District district,
+                               Commune commune, String address) {
         if(client == null)
              return null;
 
@@ -225,9 +240,9 @@ public class ClientPresenterImp implements ClientPresenter {
         client.setFax(fax);
         client.setWebsite(website);
         client.setEmail(email);
-        client.getAddress().setProvince(province);
-        client.getAddress().setDistrict(district);
-        client.getAddress().setCommune(commune);
+        client.getAddress().setProvinceId(province.getId());
+        client.getAddress().setDistrictId(district.getId());
+        client.getAddress().setCommuneId(commune.getId());
         client.getAddress().setAddress(address);
         if(clientView.getAvatar() != null){
             client.setAvatar(Utils.BitMapToString(clientView.getAvatar(), Constants.AVATAR_HEIGHT));
@@ -240,41 +255,58 @@ public class ClientPresenterImp implements ClientPresenter {
 
 
     private ArrayList<ClientGroup> getGroups(){
-        ArrayList<ClientGroup> list = new ArrayList<>();
-        list.add(new ClientGroup(-1, "Nhóm khách hàng..."));
-        ArrayList<ClientGroup> temp = ClientGroupHelper.getAllClientGroup();
-        list.addAll(temp);
-        return list;
+        return ClientGroupHelper.getAllClientGroup();
     }
-    private ArrayList<String> getProvinces(){
-        ArrayList<String> list = new ArrayList<>();
-        list.add("Tỉnh/Thành Phố...");
-        list.add("An Giang");
-        list.add("Bình Phước");
-        list.add("Ninh Bình");
-        list.add("Hồ Chí Minh");
-        list.add("Hà Nội");
-        list.add("Đà Nẵng");
-        return list;
+    private ArrayList<Province> getProvinces(){
+        return ProvinceHelper.getAllProvinces();
     }
-    private ArrayList<String> getDistricts(){
-        ArrayList<String> list = new ArrayList<>();
-        list.add("Quận/Huyện...");
-        list.add("Ba Đình");
-        list.add("Quận 1");
-        list.add("Quận 9");
-        list.add("Cầu Giấy");
-        list.add("Quận Thủ Đức");
-        list.add("Quận 3");
-        return list;
+
+    private ArrayList<District> getDistricts(){
+        return DistrictHelper.getAllDistricts();
     }
-    private ArrayList<String> getCommunes(){
-        ArrayList<String> list = new ArrayList<>();
-        list.add("Phường/Xã...");
-        list.add("Xã 1");
-        list.add("Phường 3");
-        list.add("Phường Tăng Nhơn Phú A");
-        list.add("Phường 5");
-        return list;
+    private ArrayList<Commune> getCommunes(){
+        return CommuneHelper.getAllCommunes();
+    }
+
+    public void initData(){
+        ProvinceHelper.createProvince(new Province(0, "Tỉnh/Thành phố..."));
+        ProvinceHelper.createProvince(new Province(1, "An Giang"));
+        ProvinceHelper.createProvince(new Province(2, "Bình Phước"));
+        ProvinceHelper.createProvince(new Province(3, "Ninh Bình"));
+        ProvinceHelper.createProvince(new Province(4, "Hồ Chí Minh"));
+        ProvinceHelper.createProvince(new Province(5, "Hà Nội"));
+        ProvinceHelper.createProvince(new Province(6, "Đà Nẵng"));
+
+        DistrictHelper.createDistrict(new District(0, "Quận/Huyện", 0));
+        DistrictHelper.createDistrict(new District(1, "Ba Đình", 1));
+        DistrictHelper.createDistrict(new District(2, "Ba Đình", 2));
+        DistrictHelper.createDistrict(new District(3, "Quận 1", 2));
+        DistrictHelper.createDistrict(new District(4, "Quận 9", 1));
+        DistrictHelper.createDistrict(new District(5, "Cầu Giấy", 2));
+        DistrictHelper.createDistrict(new District(6, "Quận Thủ Đức", 3));
+        DistrictHelper.createDistrict(new District(7, "Quận 3", 4));
+
+        CommuneHelper.createCommune(new Commune(-1, "Phường/Xã...", 0));
+        CommuneHelper.createCommune(new Commune(0, "Xã 1", 1));
+        CommuneHelper.createCommune(new Commune(0, "Phường 3", 1));
+        CommuneHelper.createCommune(new Commune(0, "Phường Tăng Nhơn Phú A", 1));
+        CommuneHelper.createCommune(new Commune(0, "Phường 5", 3));
+
+
+        ClientGroupHelper.createClientGroup(new ClientGroup(0, "Nhóm khách hàng..."));
+        ClientGroupHelper.createClientGroup(new ClientGroup(1, "Admin"));
+        ClientGroupHelper.createClientGroup(new ClientGroup(2, "Employee"));
+        ClientGroupHelper.createClientGroup(new ClientGroup(3, "Membber"));
+
+        CategoryHelper.createCategory(new Category(0, "Loại sản phẩm..."));
+        CategoryHelper.createCategory(new Category(0, "Điện thoại"));
+        CategoryHelper.createCategory(new Category(0, "Laptop"));
+        CategoryHelper.createCategory(new Category(0, "Tablet"));
+
+        BrandHelper.createBrand(new Brand(0, "Thương hiệu..."));
+        BrandHelper.createBrand(new Brand(0, "Apple"));
+        BrandHelper.createBrand(new Brand(0, "SamSung"));
+        BrandHelper.createBrand(new Brand(0, "Oppo"));
+
     }
 }

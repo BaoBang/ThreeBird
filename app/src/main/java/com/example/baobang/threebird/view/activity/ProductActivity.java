@@ -130,11 +130,7 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
         spBrand.setAdapter(brandArrayAdapter);
     }
 
-    @Override
-    public void setError(ExtendedEditText extendedEditText, String message) {
-        extendedEditText.setError(message);
-        extendedEditText.requestFocus();
-    }
+
 
     @Override
     public void setDataForInput(int id, int priceInventory, int price, int inventory,
@@ -215,7 +211,7 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
             @Override
             public void afterTextChanged(Editable editable) {
                    if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
-                       setError(txtProductId, "Định dạng không đúng");
+                       showProductIdWarning("Định dạng không đúng");
                }
             }
         });
@@ -234,7 +230,7 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
             @Override
             public void afterTextChanged(Editable editable) {
                     if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
-                        setError(txtProductPrice, "Định dạng không đúng");
+                        showProductPriceWarning("Định dạng không đúng");
                 }
             }
         });
@@ -253,7 +249,7 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
             @Override
             public void afterTextChanged(Editable editable) {
                     if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
-                        setError(txtProductPriceInventory, "Định dạng không đúng");
+                        showProductPriceInventoryWarning("Định dạng không đúng");
                     }
             }
         });
@@ -272,7 +268,7 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
             @Override
             public void afterTextChanged(Editable editable) {
                    if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
-                       setError(txtProductInventory, "Định dạng không đúng");
+                       showProductInventoryWarning("Định dạng không đúng");
                    }
             }
         });
@@ -329,74 +325,6 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
     }
 
     @Override
-    public boolean checkInput() {
-        String name = txtProductName.getText().toString();
-        String productId = txtProductId.getText().toString();
-        String inventoryStr = txtProductInventory.getText().toString();
-        String priceInventoryStr = txtProductPriceInventory.getText().toString();
-        String priceStr = txtProductPrice.getText().toString();
-
-        if(Utils.checkInput(name)){
-            setError(txtProductName, "Vui lòng nhập vào tên sản phẩm");
-            return false;
-        }
-        if(spCategory.getSelectedItemPosition() ==0){
-            Utils.openDialog(this, "Vui lòng chọn loại sản phẩm");
-            return false;
-        }
-        if(spBrand.getSelectedItemPosition() ==0){
-            Utils.openDialog(this, "Vui lòng chọn hãng sản phẩm");
-            return false;
-        }
-
-        if(Utils.checkInput(productId)){
-            setError(txtProductId, "Vui lòng nhập vào mã sản phẩm");
-            return false;
-        }
-
-        if(Utils.checkInput(inventoryStr)){
-            setError(txtProductInventory, "Vui lòng nhập vào số lượng tồn kho");
-            return false;
-        }
-        if(Utils.checkInput(priceInventoryStr)){
-            setError(txtProductPriceInventory, "Vui lòng nhập vào giá nhập kho");
-            return false;
-        }
-        if(Utils.checkInput(priceStr)){
-            setError(txtProductPrice, "Vui lòng nhập vào đơn giá sản phẩm");
-            return false;
-        }
-        try{
-            Integer.parseInt(productId);
-        }catch (Exception e){
-            setError(txtProductId, "Định dạng không đúng");
-            return false;
-        }
-
-        try{
-            Integer.parseInt(inventoryStr);
-        }catch (Exception e){
-
-            setError(txtProductInventory, "Định dạng không đúng");
-            return false;
-        }
-        try{
-            Integer.parseInt(priceInventoryStr);
-        }catch (Exception e){
-            setError(txtProductPriceInventory, "Định dạng không đúng");
-            return false;
-        }
-
-        try{
-            Integer.parseInt(priceStr);
-        }catch (Exception e){
-            setError(txtProductPrice, "Định dạng không đúng");
-            return false;
-        }
-        return true;
-    }
-
-    @Override
     public void setBrandSelectedPosition(int position) {
         spBrand.setSelection(position);
     }
@@ -404,6 +332,46 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
     @Override
     public void setCategorySelectedPosition(int position) {
         spCategory.setSelection(position);
+    }
+
+    @Override
+    public void changeActivity(int productId) {
+        Intent returnIntent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putInt(Constants.PRODUCT,productId);
+        returnIntent.putExtras(bundle);
+        setResult(Activity.RESULT_OK,returnIntent);
+        finish();
+    }
+
+    @Override
+    public void showMessage(String message) {
+
+    }
+
+    @Override
+    public void showProductNameWarning(String message) {
+
+    }
+
+    @Override
+    public void showProductIdWarning(String message) {
+
+    }
+
+    @Override
+    public void showProductPriceWarning(String message) {
+
+    }
+
+    @Override
+    public void showProductPriceInventoryWarning(String message) {
+
+    }
+
+    @Override
+    public void showProductInventoryWarning(String message) {
+
     }
 
     @Override
@@ -441,6 +409,7 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
 
         if(item.getItemId() == R.id.actionBar_add){
             if(option != Constants.DETAIL_OPTION){
+                String productId = txtProductId.getText().toString();
                 String name = txtProductName.getText().toString();
                 int category = spCategory.getSelectedItemPosition();
                 int brand = spBrand.getSelectedItemPosition();
@@ -448,34 +417,8 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
                 String priceInventoryStr = txtProductPriceInventory.getText().toString();
                 String priceStr = txtProductPrice.getText().toString();
                 String detail = txtDetail.getText().toString();
-                if(checkInput()){
-                    int result = -1;
-                    if(option == Constants.ADD_OPTION){
-                        result = productPresenterImp.addProduct(name,categories.get(category).getId(),
-                                brands.get(brand).getId(),
-                                Integer.parseInt(inventoryStr),
-                                Integer.parseInt(priceInventoryStr),
-                                Integer.parseInt(priceStr),
-                                detail, bitmaps);
-                    }else if(option == Constants.EDIT_OPTION){
-                        result = productPresenterImp.updateProduct(product,name,categories.get(category).getId(),
-                                brands.get(brand).getId(),
-                                Integer.parseInt(inventoryStr),
-                                Integer.parseInt(priceInventoryStr),
-                                Integer.parseInt(priceStr),
-                                detail, bitmaps);
-                    }
-                    if(result != -1){
-                            Intent returnIntent = new Intent();
-                            Bundle bundle = new Bundle();
-                            bundle.putInt(Constants.PRODUCT,result);
-                            returnIntent.putExtras(bundle);
-                            setResult(Activity.RESULT_OK,returnIntent);
-                            finish();
-                    }else{
-                            Utils.openDialog(this, "Đã có lỗi xảy ra, vui lòng thử lại");
-                    }
-                }
+                productPresenterImp.clickAdd(product, option, name, categories.get(category),
+                        brands.get(brand), productId, inventoryStr, priceInventoryStr, priceStr, detail, bitmaps);
             }else{
                 finish();
             }

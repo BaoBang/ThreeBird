@@ -1,6 +1,7 @@
 package com.example.baobang.threebird.presenter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -8,19 +9,27 @@ import android.os.Bundle;
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.model.Address;
 import com.example.baobang.threebird.model.Client;
+import com.example.baobang.threebird.model.Commune;
+import com.example.baobang.threebird.model.District;
 import com.example.baobang.threebird.model.Order;
 import com.example.baobang.threebird.model.Product;
 import com.example.baobang.threebird.model.ProductOrder;
+import com.example.baobang.threebird.model.Province;
 import com.example.baobang.threebird.model.helper.ClientHelper;
+import com.example.baobang.threebird.model.helper.CommuneHelper;
+import com.example.baobang.threebird.model.helper.DistrictHelper;
 import com.example.baobang.threebird.model.helper.OrderHelper;
 import com.example.baobang.threebird.model.helper.ProductHelper;
+import com.example.baobang.threebird.model.helper.ProvinceHelper;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
 import com.example.baobang.threebird.view.OrderView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import io.realm.RealmList;
 
@@ -55,7 +64,7 @@ public class OrderPresenterImp implements OrderPresenter{
     public void setData(Activity activity,Order order) {
 
         Client client = ClientHelper.getClient(order.getId());
-        Bitmap bitmap = null;
+        Bitmap bitmap;
         if(client != null && client.getAvatar().length() > 0){
             bitmap = Utils.StringToBitMap(client.getAvatar());
         }else{
@@ -66,9 +75,9 @@ public class OrderPresenterImp implements OrderPresenter{
         int amount = getAmountAllProduct(productOrders);
 
         orderView.setDataForInput(bitmap, order.getClientName(), order.getId(), order.getCreatedAt(),
-                order.getStatus(), order.getPhone(), order.getAddress().getProvince(),
-                order.getAddress().getDistrict(), order.getAddress().getCommune(),
-                order.getAddress().getAddress(), amount,order.getLiveryDate(), order.getPaymentValue());
+                order.getStatus(), order.getPhone(), order.getAddress().getProvinceId(),
+                order.getAddress().getDistrictId(), order.getAddress().getCommuneId(),
+                order.getAddress().getAddress(), amount, order.getLiveryDate(), order.getPaymentValue());
     }
 
     @Override
@@ -161,35 +170,45 @@ public class OrderPresenterImp implements OrderPresenter{
         }
     }
 
-    private int getSelectedPosition(ArrayList<String> strings, String item){
-        int position = 0;
-        for(int i = 0; i < strings.size(); i++){
-            if(strings.get(i).equals(item)){
-                position = i;
-                break;
-            }
-        }
-        return position;
-    }
-
     @Override
     public void setPaymentSelected(int position) {
         orderView.setSpinnerPaymentSelectedPosition(position);
     }
 
     @Override
-    public void setDistrictSelected(ArrayList<String> districts, String district) {
-        orderView.setSpinnerDistrictSelectedPosition(getSelectedPosition(districts, district));
+    public void setDistrictSelected(ArrayList<District> districts, int districtId) {
+        int position = 0;
+        for(int i = 0; i < districts.size(); i++){
+            if(districts.get(i).getId() == districtId){
+                position = i;
+                break;
+            }
+        }
+        orderView.setSpinnerDistrictSelectedPosition(position);
     }
 
     @Override
-    public void setProvinceSelected(ArrayList<String> provinces, String province) {
-        orderView.setSpinnerProvincePosition(getSelectedPosition(provinces, province));
+    public void setProvinceSelected(ArrayList<Province> provinces, int provinceId) {
+        int position = 0;
+        for(int i = 0; i < provinces.size(); i++){
+            if(provinces.get(i).getId() == provinceId){
+                position = i;
+                break;
+            }
+        }
+        orderView.setSpinnerProvincePosition(position);
     }
 
     @Override
-    public void setCommuneSelected(ArrayList<String> communes, String commune) {
-        orderView.setSpinnerCommuneSelectedPosition(getSelectedPosition(communes, commune));
+    public void setCommuneSelected(ArrayList<Commune> communes, int communeId) {
+        int position = 0;
+        for(int i = 0; i < communes.size(); i++){
+            if(communes.get(i).getId() == communeId){
+                position = i;
+                break;
+            }
+        }
+        orderView.setSpinnerCommuneSelectedPosition(position);
     }
 
     @Override
@@ -201,13 +220,16 @@ public class OrderPresenterImp implements OrderPresenter{
     }
 
     @Override
-    public int addOrder(int clientId, String name, Date date, int status, String phone, String province, String district, String commune, String address, List<ProductOrder> products, Date deliveryDate, int payment) {
+    public int addOrder(int clientId, String name, Date date,
+                        int status, String phone, Province province,
+                        District district, Commune commune, String address,
+                        List<ProductOrder> products, Date deliveryDate, int payment) {
 
         RealmList<ProductOrder> productList = new RealmList<>();
         productList.addAll(products);
         Order order = new Order(0, name, date,
                 status, phone, new Address(
-                        province, district, commune, address),
+                        province.getId(), district.getId(), commune.getId(), address),
                 productList, deliveryDate, payment, 0);
         order.setClientId(clientId);
 
@@ -215,31 +237,139 @@ public class OrderPresenterImp implements OrderPresenter{
     }
 
     @Override
-    public int updateOrder(Order order, int clientId, String name, Date date, int status, String phone, String province, String district, String commune, String address, List<ProductOrder> products, Date deliveryDate, int payment) {
+    public int updateOrder(Order order, int clientId, String name,
+                           Date date, int status, String phone,
+                           Province province, District district, Commune commune,
+                           String address, List<ProductOrder> products,
+                           Date deliveryDate, int payment) {
         RealmList<ProductOrder> productList = new RealmList<>();
         productList.addAll(products);
          order = new Order(order.getId(), name, date,
                 status, phone, new Address(
-                province, district, commune, address),
+                province.getId(), district.getId(), commune.getId(), address),
                 productList, deliveryDate, payment, 0);
         order.setClientId(clientId);
         return OrderHelper.updateOrder(order);
     }
 
     @Override
+    public void clickAddOptionMenu(Order order,int option, String clientIdStr, String name,
+                                   Date date, int status, String phone,
+                                   Province province, District district, Commune commune,
+                                   String address, List<ProductOrder> products,
+                                   Date deliveryDate, int payment) {
+        try {
+
+            if(Utils.checkInput(name)){
+                orderView.showClientNameWarning("Vui lòng nhập vào tên khách hàng");
+                return;
+            }
+            if(Utils.checkInput(clientIdStr)){
+                orderView.showOrderIdWarning("Vui lòng nhập vào số hóa đơn");
+                return;
+            }
+            if(date == null){
+                orderView.showMessage("Vui lòng chọn ngày lập hóa đơn");
+                return;
+            }
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", new Locale("vi", "VN"));
+            if(date.before(simpleDateFormat.getCalendar().getTime())){
+                orderView.showMessage("Ngày đặt hàng không hợp lệ");
+                return;
+            }
+
+            if(status == 0){
+                orderView.showMessage("Vui lòng chọn trạng thái của hóa đơn");
+                return;
+            }
+            if(Utils.checkInput(phone)){
+                orderView.showPhoneWarning("Vui lòng nhâp vào số điện thoại");
+                return;
+            }
+            if(!phone.matches(Constants.PHONE_REGULAR)){
+                orderView.showPhoneWarning("Số điện thoại không đúng");
+                return;
+            }
+            if(province == null){
+                orderView.showMessage("Vui lòng chọn tỉnh/thành phố");
+                return;
+            }
+            if(district == null){
+                orderView.showMessage("Vui lòng chọn quận/huyện");
+                return;
+            }
+            if(commune == null){
+                orderView.showMessage("Vui lòng chọn phường/xã");
+                return;
+            }
+            if(Utils.checkInput(address)){
+                orderView.showAddressWarning("Vui lòng nhâp vào địa chỉ");
+                return;
+            }
+
+            if(products.size() == 0){
+                orderView.showMessage("Vui lòng chọn sản phẩm");
+                return;
+            }
+
+            if(deliveryDate == null){
+                orderView.showMessage("Vui lòng chọn ngày giao hàng");
+                return;
+            }
+
+            if(date.after(deliveryDate)){
+                orderView.showMessage("Ngày giao hàng không hợp lệ");
+                return;
+            }
+            if(payment == 0){
+                orderView.showMessage("Vui lòng chọn hình thức thanh toán");
+                return;
+            }
+
+
+
+            int result = -1;
+            if(option == Constants.ADD_OPTION){
+                result = addOrder(Integer.parseInt(clientIdStr), name,date,
+                        status - 1, phone, province, district,
+                        commune, address, products, deliveryDate, payment);
+            }else if(option == Constants.EDIT_OPTION){
+                result = updateOrder(order, Integer.parseInt(clientIdStr), name, date,
+                        status - 1, phone, province, district,
+                        commune, address, products, deliveryDate, payment);
+            }
+
+            if(result != -1){
+                if(status - 1 == Constants.COMPLETED){
+                    orderCompetition(products);
+                }
+                orderView.changeActivity(result);
+
+            }else{
+                orderView.showMessage("Đã có lỗi xảy ra, vui lòng thử lại");
+            }
+
+
+        }catch (Exception e){
+            orderView.showMessage("Lỗi: " + e.getMessage());
+        }
+    }
+
+    @Override
     public int setClientData(Activity activity, Client client) {
 
-        Bitmap  bitmap = null;
+        Bitmap  bitmap;
         if(client == null){
             bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.noimage);
         }else{
             bitmap = Utils.StringToBitMap(client.getAvatar());
         }
+        if(client != null)
         orderView.addClientInfoFromListToView(bitmap, client.getName(), client.getPhone(),
-                client.getAddress().getProvince(), client.getAddress().getDistrict(),
-                client.getAddress().getCommune(), client.getAddress().getAddress());
+                client.getAddress().getProvinceId(), client.getAddress().getDistrictId(),
+                client.getAddress().getCommuneId(), client.getAddress().getAddress());
 
-        return client.getId();
+        return client == null ? -1 : client.getId();
     }
 
     @Override
@@ -252,36 +382,15 @@ public class OrderPresenterImp implements OrderPresenter{
         orderView.showDialogProduct(ProductHelper.getAllProduct());
     }
 
-    private ArrayList<String> getProvinces(){
-        ArrayList<String> list = new ArrayList<>();
-        list.add("Tỉnh/Thành Phố...");
-        list.add("An Giang");
-        list.add("Bình Phước");
-        list.add("Ninh Bình");
-        list.add("Hồ Chí Minh");
-        list.add("Hà Nội");
-        list.add("Đà Nẵng");
-        return list;
+    private ArrayList<Province> getProvinces(){
+        return ProvinceHelper.getAllProvinces();
     }
-    private ArrayList<String> getDistricts(){
-        ArrayList<String> list = new ArrayList<>();
-        list.add("Quận/Huyện...");
-        list.add("Ba Đình");
-        list.add("Quận 1");
-        list.add("Quận 9");
-        list.add("Cầu Giấy");
-        list.add("Quận Thủ Đức");
-        list.add("Quận 3");
-        return list;
+
+    private ArrayList<District> getDistricts(){
+        return DistrictHelper.getAllDistricts();
     }
-    private ArrayList<String> getCommunes(){
-        ArrayList<String> list = new ArrayList<>();
-        list.add("Phường/Xã...");
-        list.add("Xã 1");
-        list.add("Phường 3");
-        list.add("Phường Tăng Nhơn Phú A");
-        list.add("Phường 5");
-        return list;
+    private ArrayList<Commune> getCommunes(){
+        return CommuneHelper.getAllCommunes();
     }
     private ArrayList<String> getStatuses(){
         ArrayList<String> list = new ArrayList<>();

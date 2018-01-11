@@ -5,17 +5,17 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import com.example.baobang.threebird.model.Client;
+import com.example.baobang.threebird.model.Commune;
+import com.example.baobang.threebird.model.District;
 import com.example.baobang.threebird.model.Order;
 import com.example.baobang.threebird.model.Product;
 import com.example.baobang.threebird.model.ProductOrder;
+import com.example.baobang.threebird.model.Province;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by baobang on 1/8/18.
- */
 
 public interface OrderPresenter {
 
@@ -36,20 +36,27 @@ public interface OrderPresenter {
     void orderCompetition(List<ProductOrder> productList);
 
     void setPaymentSelected(int position);
-    void setDistrictSelected(ArrayList<String> districts, String district);
-    void setProvinceSelected(ArrayList<String> provinces, String province);
-    void setCommuneSelected(ArrayList<String> communes, String commune);
+    void setDistrictSelected(ArrayList<District> districts, int district);
+    void setProvinceSelected(ArrayList<Province> provinces, int province);
+    void setCommuneSelected(ArrayList<Commune> communes, int commune);
 
     void addProductToLayout(List<ProductOrder> productList);
 
-    int addOrder(int clientId, String name, Date date, int status , String phone,
-            String province, String district, String commune,
-                 String address, List<ProductOrder> products,
-            Date deliveryDate,int payment);
-    int updateOrder(Order order, int clientId, String name, Date date, int status , String phone,
-                    String province, String district, String commune,
+    int addOrder(int clientId, String name, Date date,
+                 int status, String phone, Province province,
+                 District district, Commune commune, String address,
+                 List<ProductOrder> products, Date deliveryDate, int payment);
+    int updateOrder(Order order, int clientId, String name,
+                    Date date, int status, String phone,
+                    Province province, District district, Commune commune,
                     String address, List<ProductOrder> products,
-                    Date deliveryDate,int payment);
+                    Date deliveryDate, int payment);
+
+    void clickAddOptionMenu(Order order, int option, String clientIdStr, String name,
+                            Date date, int status, String phone,
+                            Province province, District district, Commune commune,
+                            String address, List<ProductOrder> products,
+                            Date deliveryDate, int payment);
 
     int setClientData(Activity activity, Client client);
 

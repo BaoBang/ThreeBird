@@ -132,6 +132,92 @@ public class ProductPresenterImp implements ProductPresenter{
         productView.setCategorySelectedPosition(getCategoryPosition(categories, categoryId));
     }
 
+    @Override
+    public void clickAdd(Product product, int option, String name, Category category, Brand brand, String productId, String inventoryStr,
+                         String priceInventoryStr, String priceStr, String detail, HashMap<Integer,Bitmap> bitmaps) {
+
+        if(Utils.checkInput(name)){
+            productView.showProductNameWarning("Vui lòng nhập vào tên sản phẩm");
+            return;
+        }
+        if(category == null){
+            productView.showMessage("Vui lòng chọn loại sản phẩm");
+            return;
+        }
+        if(brand == null){
+            productView.showMessage("Vui lòng chọn hãng sản phẩm");
+            return;
+        }
+
+        if(Utils.checkInput(productId)){
+            productView.showProductIdWarning("Vui lòng nhập vào mã sản phẩm");
+            return;
+        }
+
+        if(Utils.checkInput(inventoryStr)){
+            productView.showProductInventoryWarning("Vui lòng nhập vào số lượng tồn kho");
+            return;
+        }
+        if(Utils.checkInput(priceInventoryStr)){
+            productView.showProductPriceInventoryWarning("Vui lòng nhập vào giá nhập kho");
+            return;
+        }
+        if(Utils.checkInput(priceStr)){
+            productView.showProductPriceWarning("Vui lòng nhập vào đơn giá sản phẩm");
+            return;
+        }
+        int id, inventory, inventoryPrice, price;
+        try{
+            id = Integer.parseInt(productId);
+        }catch (Exception e){
+            productView.showProductIdWarning("Định dạng không đúng");
+            return;
+        }
+
+        try{
+            inventory = Integer.parseInt(inventoryStr);
+        }catch (Exception e){
+            productView.showProductInventoryWarning("Định dạng không đúng");
+            return;
+        }
+        try{
+            inventoryPrice = Integer.parseInt(priceInventoryStr);
+        }catch (Exception e){
+            productView.showProductPriceWarning("Định dạng không đúng");
+            return;
+        }
+
+        try{
+            price = Integer.parseInt(priceStr);
+        }catch (Exception e){
+            productView.showProductPriceWarning("Định dạng không đúng");
+            return;
+        }
+
+
+        int result = -1;
+        if(option == Constants.ADD_OPTION){
+            result = addProduct(name,category.getId(),
+                    brand.getId(),
+                    Integer.parseInt(inventoryStr),
+                    Integer.parseInt(priceInventoryStr),
+                    Integer.parseInt(priceStr),
+                    detail, bitmaps);
+        }else if(option == Constants.EDIT_OPTION){
+            result = updateProduct(product,name,category.getId(),
+                    brand.getId(),
+                    Integer.parseInt(inventoryStr),
+                    Integer.parseInt(priceInventoryStr),
+                    Integer.parseInt(priceStr),
+                    detail, bitmaps);
+        }
+        if(result != -1){
+                productView.changeActivity(result);
+        }else{
+            productView.showMessage("Đã có lỗi xảy ra, vui lòng thử lại");
+        }
+    }
+
     private List<Brand> getBrands(){
         return BrandHelper.getAllBrand();
     }

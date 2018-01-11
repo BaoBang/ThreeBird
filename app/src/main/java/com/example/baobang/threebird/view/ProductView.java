@@ -1,5 +1,6 @@
 package com.example.baobang.threebird.view;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -27,13 +28,19 @@ public interface ProductView {
     void setDisableInput();
     void showSpinnerCategory(ArrayList<Category> categories);
     void showSpinnerBrand(ArrayList<Brand> brands);
-    void setError(ExtendedEditText extendedEditText, String message);
 
     RelativeLayout createImageViewAndImageButtonRemove(final int key, Bitmap bitmap);
 
     RelativeLayout createRelativeLayout();
     ImageButton createImageRemoveButton(ImageView imgView);
-    boolean checkInput();
     void setBrandSelectedPosition(int position);
     void setCategorySelectedPosition(int position);
+
+    void changeActivity(int productId);
+    void showMessage(String message);
+    void showProductNameWarning(String message);
+    void showProductIdWarning(String message);
+    void showProductPriceWarning(String message);
+    void showProductPriceInventoryWarning(String message);
+    void showProductInventoryWarning(String message);
 }

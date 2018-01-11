@@ -7,6 +7,7 @@ import com.example.baobang.threebird.model.Brand;
 import com.example.baobang.threebird.model.Category;
 import com.example.baobang.threebird.model.Product;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,4 +29,6 @@ public interface ProductPresenter {
     void setData(Product product);
     void setBrandSelected(List<Brand> brands, int brandId);
     void setCategorySelected(List<Category> categories, int categoryId);
+    void clickAdd(Product product, int option, String name, Category category, Brand brand, String productId, String inventoryStr,
+                  String priceInventoryStr, String priceStr, String detail, HashMap<Integer,Bitmap> bitmaps);
 }

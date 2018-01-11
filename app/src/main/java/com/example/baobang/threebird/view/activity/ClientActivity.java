@@ -23,6 +23,10 @@ import android.widget.Spinner;
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.ClientGroup;
+import com.example.baobang.threebird.model.Commune;
+import com.example.baobang.threebird.model.District;
+import com.example.baobang.threebird.model.Province;
+import com.example.baobang.threebird.model.helper.ProvinceHelper;
 import com.example.baobang.threebird.presenter.ClientPresenterImp;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
@@ -49,7 +53,10 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
             txtWebsite, txtEmail, txtAddress;
 
     private Spinner spGroupClient, spProvince, spDistrict, spCommune;
-    private ArrayList<String> provinces, districts, communes;
+    private ArrayList<Province> provinces;
+    private ArrayList<District> districts;
+    private ArrayList<Commune> communes;
+
     private ArrayList<ClientGroup> groups;
 
     private Bitmap avatar = null;
@@ -61,16 +68,17 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
         setContentView(R.layout.activity_client);
 
         clientPresenterImp = new ClientPresenterImp(this);
-
+        provinces = ProvinceHelper.getAllProvinces();
+        if(provinces.size() == 0){
+            clientPresenterImp.initData();
+        }
         Bundle bundle = getIntent().getExtras();
         client = clientPresenterImp.getClientFromBundle(bundle);
         option = clientPresenterImp.getOptionFromBundle(bundle);
 
         clientPresenterImp.init();
 
-//        ClientGroupHelper.createClientGroup(new ClientGroup(0, "Admin"));
-//        ClientGroupHelper.createClientGroup(new ClientGroup(0, "Employee"));
-//        ClientGroupHelper.createClientGroup(new ClientGroup(0, "Membber"));
+
     }
     @Override
     public void addControls() {
@@ -168,8 +176,8 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
     @Override
     public void setDataForInput(Bitmap bitmap, String name, String phone,
                                 String fax, String website, String email,
-                                int groupId, String province, String district,
-                                String commune, String address) {
+                                int groupId, int provinceId, int districtId,
+                                int communeId, String address) {
 
         imgAvatar.setImageBitmap(bitmap);
         txtName.setText(name);
@@ -181,9 +189,9 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
         //
 
         clientPresenterImp.setGroupClientSelected(groups, groupId);
-        clientPresenterImp.setProvinceSelected(provinces, province);
-        clientPresenterImp.setDistrictSelected(districts, district);
-        clientPresenterImp.setCommuneSelected(communes, commune);
+        clientPresenterImp.setProvinceSelected(provinces, provinceId);
+        clientPresenterImp.setDistrictSelected(districts, districtId);
+        clientPresenterImp.setCommuneSelected(communes, communeId);
 
     }
     @Override
@@ -234,11 +242,6 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
     public void setAvatar(Bitmap avatar) {
         this.avatar = avatar;
     }
-//    @Override
-//    public void setError(ExtendedEditText extendedEditText, String message) {
-//        extendedEditText.setError(message);
-//        extendedEditText.requestFocus();
-//    }
 
     @Override
     public void setSpinnerClientGroupSelectedPosition(int position) {
@@ -330,24 +333,28 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.actionBar_add){
-            if(option != Constants.DETAIL_OPTION){
-                    String name = txtName.getText().toString();
-                    int group = spGroupClient.getSelectedItemPosition();
-                    String phone = txtPhone.getText().toString();
-                    String fax = txtFax.getText().toString();
-                    String website = txtWebsite.getText().toString();
-                    String email = txtEmail.getText().toString();
-                    String province = spProvince.getSelectedItem().toString();
-                    String district = spDistrict.getSelectedItem().toString();
-                    String commune = spCommune.getSelectedItem().toString();
-                    String address = txtAddress.getText().toString();
+            if(option != Constants.DETAIL_OPTION) {
+                String name = txtName.getText().toString();
+                int group = spGroupClient.getSelectedItemPosition();
+                String phone = txtPhone.getText().toString();
+                String fax = txtFax.getText().toString();
+                String website = txtWebsite.getText().toString();
+                String email = txtEmail.getText().toString();
 
-                    clientPresenterImp.clickAddOptionMenu(client, option, name,
-                            group, groups.get(group), phone, fax, website,
-                            email, spProvince.getSelectedItemPosition(), province,
-                            spDistrict.getSelectedItemPosition(), district,
-                            spCommune.getSelectedItemPosition(), commune, address);
+                int position = spProvince.getSelectedItemPosition();
+                Province province = position > 0 ? provinces.get(position) : null;
 
+                position = spDistrict.getSelectedItemPosition();
+                District district = position > 0 ? districts.get(position) : null;
+
+                position = spCommune.getSelectedItemPosition();
+                Commune commune = position > 0 ? communes.get(position) : null;
+
+                String address = txtAddress.getText().toString();
+
+                clientPresenterImp.clickAddOptionMenu(client, option, name,
+                        group, groups.get(group), phone, fax, website,
+                        email, province, district, commune, address);
             }
             else{
                 finish();
@@ -357,31 +364,31 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
         return super.onOptionsItemSelected(item);
     }
     @Override
-    public void showSpinnerDistrict(ArrayList<String> districts) {
+    public void showSpinnerDistrict(ArrayList<District> districts) {
             spDistrict = findViewById(R.id.spDistrict);
             this.districts = districts;
-            ArrayAdapter<String> districtAdapter = new ArrayAdapter<>(
+            ArrayAdapter<District> districtAdapter = new ArrayAdapter<>(
                     this,
                     android.R.layout.simple_list_item_1,
                     districts );
             spDistrict.setAdapter(districtAdapter);
     }
     @Override
-    public void showSpinnerProvince(ArrayList<String> provinces) {
+    public void showSpinnerProvince(ArrayList<Province> provinces) {
             spProvince = findViewById(R.id.spProvince);
             this.provinces = provinces;
-            ArrayAdapter<String> provinceAdapter = new ArrayAdapter<>(
+            ArrayAdapter<Province> provinceAdapter = new ArrayAdapter<>(
                     this,
                     android.R.layout.simple_list_item_1,
                     provinces);
             spProvince.setAdapter(provinceAdapter);
     }
     @Override
-    public void showSpinnerCommune(ArrayList<String> communes) {
+    public void showSpinnerCommune(ArrayList<Commune> communes) {
             spCommune = findViewById(R.id.spCommune);
             this.communes = communes;
 
-            ArrayAdapter<String> communeAdapter = new ArrayAdapter<>(
+            ArrayAdapter<Commune> communeAdapter = new ArrayAdapter<>(
                     this,
                     android.R.layout.simple_list_item_1,
                     communes);

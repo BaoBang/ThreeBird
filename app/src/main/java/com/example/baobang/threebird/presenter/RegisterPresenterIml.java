@@ -52,12 +52,12 @@ public class RegisterPresenterIml implements RegisterPresenter {
         if(!UserHelper.createUser(user)){
             registerView.showMessage("Không thể tạo tài khoản");
         }else{
-            registerView.showMessage("ạo tài khoản thành công");
+            registerView.showMessage("Tạo tài khoản thành công");
         }
     }
 
     @Override
     public void clickCancel() {
-
+        registerView.finishActivity();
     }
 }
