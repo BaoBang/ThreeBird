@@ -8,9 +8,13 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.example.baobang.threebird.R;
+import com.example.baobang.threebird.model.Province;
+import com.example.baobang.threebird.model.helper.ProvinceHelper;
 import com.example.baobang.threebird.presenter.imp.LoginPresenterImp;
 import com.example.baobang.threebird.utils.Utils;
 import com.example.baobang.threebird.view.LoginView;
+
+import java.util.ArrayList;
 
 import io.realm.Realm;
 
@@ -31,10 +35,18 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
         setContentView(R.layout.activity_login);
         Realm.init(this);
 
+
         RelativeLayout layoutRoot = findViewById(R.id.layoutRoot);
         Utils.hideKeyboardOutside(layoutRoot, this);
 
         loginPresenterImp = new LoginPresenterImp(this);
+
+        ArrayList<Province> provinces = ProvinceHelper.getAllProvinces();
+        if(provinces.size() == 0){
+            loginPresenterImp.initData();
+        }
+
+
         loginPresenterImp.init();
     }
 

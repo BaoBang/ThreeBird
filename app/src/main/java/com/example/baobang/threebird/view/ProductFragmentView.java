@@ -23,5 +23,5 @@ public interface ProductFragmentView {
     void addSpinnerBrand(View view, ArrayList<Brand> brands);
     void addSpinnerSortBy(View view);
 
-    void updateRecyclerView(ArrayList<Product> products, OnItemRecyclerViewClickListener onItemRecyclerViewClickListener);
+    void updateRecyclerView(ArrayList<Product> products);
 }

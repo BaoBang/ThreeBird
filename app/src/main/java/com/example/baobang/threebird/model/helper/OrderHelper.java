@@ -33,8 +33,6 @@ public class OrderHelper {
         return -1;
     }
 
-
-
     public static ArrayList<Order> getAllOrderByStatusInDay(){
         List<Order> list;
         ArrayList<Order> orders = new ArrayList<>();

@@ -71,10 +71,7 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
         Utils.hideKeyboardOutside(layoutRoot, this);
 
         clientPresenterImp = new ClientPresenterImp(this);
-        provinces = ProvinceHelper.getAllProvinces();
-        if(provinces.size() == 0){
-            clientPresenterImp.initData();
-        }
+
         Bundle bundle = getIntent().getExtras();
         client = clientPresenterImp.getClientFromBundle(bundle);
         option = clientPresenterImp.getOptionFromBundle(bundle);

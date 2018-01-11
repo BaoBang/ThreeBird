@@ -20,9 +20,9 @@ public class Constants {
     public static int MARGIN = 20;
     public static int MARGIN_SMALL = 8;
     // order status;
-    public static int COMPLETED = 0;
-    public static int CANCEL = 1;
-    public static int DELIVERY = 2;
+    public static final int COMPLETED = 1;
+    public static final int CANCEL = 2;
+    public static final int DELIVERY = 3;
 
     // option
     public static int ADD_OPTION = 0;

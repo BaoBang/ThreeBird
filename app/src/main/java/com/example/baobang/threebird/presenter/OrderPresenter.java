@@ -8,9 +8,11 @@ import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.Commune;
 import com.example.baobang.threebird.model.District;
 import com.example.baobang.threebird.model.Order;
+import com.example.baobang.threebird.model.Payment;
 import com.example.baobang.threebird.model.Product;
 import com.example.baobang.threebird.model.ProductOrder;
 import com.example.baobang.threebird.model.Province;
+import com.example.baobang.threebird.model.Status;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,8 +36,8 @@ public interface OrderPresenter {
     int checkProduct(List<ProductOrder> productList,Product product);
     Product checkInventory(List<ProductOrder> productList);
     void orderCompetition(List<ProductOrder> productList);
-
-    void setPaymentSelected(int position);
+    int getStatusSelectedPosition(ArrayList<Status> statuses, int statusId);
+    int getPaymentSelectedPosition(ArrayList<Payment> payments, int paymentId);
     void setDistrictSelected(ArrayList<District> districts, int district);
     void setProvinceSelected(ArrayList<Province> provinces, int province);
     void setCommuneSelected(ArrayList<Commune> communes, int commune);
@@ -43,20 +45,20 @@ public interface OrderPresenter {
     void addProductToLayout(List<ProductOrder> productList);
 
     int addOrder(int clientId, String name, Date date,
-                 int status, String phone, Province province,
+                 Status status, String phone, Province province,
                  District district, Commune commune, String address,
-                 List<ProductOrder> products, Date deliveryDate, int payment);
+                 List<ProductOrder> products, Date deliveryDate, Payment payment);
     int updateOrder(Order order, int clientId, String name,
-                    Date date, int status, String phone,
+                    Date date, Status status, String phone,
                     Province province, District district, Commune commune,
                     String address, List<ProductOrder> products,
-                    Date deliveryDate, int payment);
+                    Date deliveryDate, Payment payment);
 
     void clickAddOptionMenu(Order order, int option, String clientIdStr, String name,
-                            Date date, int status, String phone,
+                            Date date, Status status, String phone,
                             Province province, District district, Commune commune,
                             String address, List<ProductOrder> products,
-                            Date deliveryDate, int payment);
+                            Date deliveryDate, Payment payment);
 
     int setClientData(Activity activity, Client client);
 

@@ -3,12 +3,12 @@ package com.example.baobang.threebird.utils;
 import java.io.Serializable;
 
 
-public class Model implements Serializable {
+public class SlideModel implements Serializable {
     private int image;
     private String title;
     private int amount;
 
-    public Model(int image, String title, int amount) {
+    public SlideModel(int image, String title, int amount) {
         this.image = image;
         this.title = title;
         this.amount = amount;

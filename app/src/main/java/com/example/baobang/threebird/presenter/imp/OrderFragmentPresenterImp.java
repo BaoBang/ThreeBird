@@ -8,7 +8,6 @@ import com.example.baobang.threebird.model.Order;
 import com.example.baobang.threebird.model.helper.OrderHelper;
 import com.example.baobang.threebird.presenter.OrderFragmentPresenter;
 import com.example.baobang.threebird.utils.Constants;
-import com.example.baobang.threebird.utils.Utils;
 import com.example.baobang.threebird.view.OrderFragmentView;
 
 import java.util.ArrayList;
@@ -23,6 +22,7 @@ public class OrderFragmentPresenterImp implements OrderFragmentPresenter {
 
     @Override
     public void init(View view) {
+        orderFragmentView.addToolBar(view);
         orderFragmentView.addControls(view);
         orderFragmentView.addEvents();
         orderFragmentView.showRecyclerViewOrder(OrderHelper.getAllOrderByStatusInDay());
@@ -67,13 +67,13 @@ public class OrderFragmentPresenterImp implements OrderFragmentPresenter {
     public ArrayList<Order> getOrderListByStatus(int status) {
         ArrayList<Order> list;
         switch (status){
-            case 0:
+            case Constants.COMPLETED :
                 list = OrderHelper.getOrderByStatusInDay(Constants.COMPLETED);
                 break;
-            case 1:
+            case Constants.CANCEL:
                 list = OrderHelper.getOrderByStatusInDay(Constants.CANCEL);
                 break;
-            case 2:
+            case Constants.DELIVERY:
                 list = OrderHelper.getOrderByStatusInDay(Constants.DELIVERY);
                 break;
             default:

@@ -13,14 +13,18 @@ import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.ClientGroup;
 import com.example.baobang.threebird.model.Commune;
 import com.example.baobang.threebird.model.District;
+import com.example.baobang.threebird.model.Payment;
 import com.example.baobang.threebird.model.Province;
+import com.example.baobang.threebird.model.Status;
 import com.example.baobang.threebird.model.helper.BrandHelper;
 import com.example.baobang.threebird.model.helper.CategoryHelper;
 import com.example.baobang.threebird.model.helper.ClientGroupHelper;
 import com.example.baobang.threebird.model.helper.ClientHelper;
 import com.example.baobang.threebird.model.helper.CommuneHelper;
 import com.example.baobang.threebird.model.helper.DistrictHelper;
+import com.example.baobang.threebird.model.helper.PaymentHelper;
 import com.example.baobang.threebird.model.helper.ProvinceHelper;
+import com.example.baobang.threebird.model.helper.StatusHelper;
 import com.example.baobang.threebird.presenter.ClientPresenter;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
@@ -222,7 +226,7 @@ public class ClientPresenterImp implements ClientPresenter {
         if(clientView.getAvatar() != null){
             newClient.setAvatar(Utils.BitMapToString(clientView.getAvatar(), Constants.AVATAR_HEIGHT));
         }else{
-            newClient.setAvatar(null);
+            newClient.setAvatar("");
         }
         return ClientHelper.createClientReturnObject(newClient);
     }
@@ -248,7 +252,7 @@ public class ClientPresenterImp implements ClientPresenter {
         if(clientView.getAvatar() != null){
             client.setAvatar(Utils.BitMapToString(clientView.getAvatar(), Constants.AVATAR_HEIGHT));
         }else{
-            client.setAvatar(null);
+            client.setAvatar("");
         }
 
         return ClientHelper.updateClientReturnObject(client);
@@ -269,45 +273,5 @@ public class ClientPresenterImp implements ClientPresenter {
         return CommuneHelper.getAllCommunes();
     }
 
-    public void initData(){
-        ProvinceHelper.createProvince(new Province(0, "Tỉnh/Thành phố..."));
-        ProvinceHelper.createProvince(new Province(1, "An Giang"));
-        ProvinceHelper.createProvince(new Province(2, "Bình Phước"));
-        ProvinceHelper.createProvince(new Province(3, "Ninh Bình"));
-        ProvinceHelper.createProvince(new Province(4, "Hồ Chí Minh"));
-        ProvinceHelper.createProvince(new Province(5, "Hà Nội"));
-        ProvinceHelper.createProvince(new Province(6, "Đà Nẵng"));
 
-        DistrictHelper.createDistrict(new District(0, "Quận/Huyện", 0));
-        DistrictHelper.createDistrict(new District(1, "Ba Đình", 1));
-        DistrictHelper.createDistrict(new District(2, "Ba Đình", 2));
-        DistrictHelper.createDistrict(new District(3, "Quận 1", 2));
-        DistrictHelper.createDistrict(new District(4, "Quận 9", 1));
-        DistrictHelper.createDistrict(new District(5, "Cầu Giấy", 2));
-        DistrictHelper.createDistrict(new District(6, "Quận Thủ Đức", 3));
-        DistrictHelper.createDistrict(new District(7, "Quận 3", 4));
-
-        CommuneHelper.createCommune(new Commune(-1, "Phường/Xã...", 0));
-        CommuneHelper.createCommune(new Commune(0, "Xã 1", 1));
-        CommuneHelper.createCommune(new Commune(0, "Phường 3", 1));
-        CommuneHelper.createCommune(new Commune(0, "Phường Tăng Nhơn Phú A", 1));
-        CommuneHelper.createCommune(new Commune(0, "Phường 5", 3));
-
-
-        ClientGroupHelper.createClientGroup(new ClientGroup(0, "Nhóm khách hàng..."));
-        ClientGroupHelper.createClientGroup(new ClientGroup(1, "Admin"));
-        ClientGroupHelper.createClientGroup(new ClientGroup(2, "Employee"));
-        ClientGroupHelper.createClientGroup(new ClientGroup(3, "Membber"));
-
-        CategoryHelper.createCategory(new Category(0, "Loại sản phẩm..."));
-        CategoryHelper.createCategory(new Category(0, "Điện thoại"));
-        CategoryHelper.createCategory(new Category(0, "Laptop"));
-        CategoryHelper.createCategory(new Category(0, "Tablet"));
-
-        BrandHelper.createBrand(new Brand(0, "Thương hiệu..."));
-        BrandHelper.createBrand(new Brand(0, "Apple"));
-        BrandHelper.createBrand(new Brand(0, "SamSung"));
-        BrandHelper.createBrand(new Brand(0, "Oppo"));
-
-    }
 }

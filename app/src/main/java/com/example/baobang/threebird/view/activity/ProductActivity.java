@@ -349,32 +349,37 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
 
     @Override
     public void showMessage(String message) {
-
+        Utils.openDialog(this, message);
     }
 
     @Override
     public void showProductNameWarning(String message) {
-
+        txtProductName.setError(message);
+        txtProductName.requestFocus();
     }
 
     @Override
     public void showProductIdWarning(String message) {
-
+        txtProductId.setError(message);
+        txtProductId.requestFocus();
     }
 
     @Override
     public void showProductPriceWarning(String message) {
-
+        txtProductPrice.setError(message);
+        txtProductPrice.requestFocus();
     }
 
     @Override
     public void showProductPriceInventoryWarning(String message) {
-
+        txtProductPriceInventory.setError(message);
+        txtProductPriceInventory.requestFocus();
     }
 
     @Override
     public void showProductInventoryWarning(String message) {
-
+            txtProductInventory.setError(message);
+            txtProductInventory.requestFocus();
     }
 
     @Override

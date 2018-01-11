@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.baobang.threebird.R;
-import com.example.baobang.threebird.utils.Model2;
+import com.example.baobang.threebird.utils.ItemFragmentModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,7 +24,7 @@ public class ItemFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static ItemFragment newInstance(Model2 model2) {
+    public static ItemFragment newInstance(ItemFragmentModel model2) {
 
         Bundle args = new Bundle();
         args.putSerializable("MODEL2", model2);
@@ -37,7 +37,7 @@ public class ItemFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-//        model2 = (Model2) savedInstanceState.getSerializable("MODEL2");
+//        model2 = (ItemFragmentModel) savedInstanceState.getSerializable("MODEL2");
         return inflater.inflate(R.layout.fragment_item, container, false);
     }
 
@@ -50,8 +50,8 @@ public class ItemFragment extends Fragment {
         TextView txtNumber3 = view.findViewById(R.id.txtNumber3);
 
         LinearLayout layout = view.findViewById(R.id.layout);
-        Model2 model2 = (Model2)  getArguments().getSerializable("MODEL2");
-       // Model2 model2  = new Model2(3, "MỚI", 100,20000,30000);
+        ItemFragmentModel model2 = (ItemFragmentModel)  getArguments().getSerializable("MODEL2");
+       // ItemFragmentModel model2  = new ItemFragmentModel(3, "MỚI", 100,20000,30000);
 
         txtResult.setText(model2 == null ? null : model2.getResult());
         txtNumber1.setText(String.valueOf(model2 == null ? null : model2.getNumber1()));

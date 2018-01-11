@@ -12,20 +12,20 @@ import me.relex.circleindicator.CircleIndicator;
  * Created by baobang on 11/28/17.
  */
 
-public class ViewPagerHander {
+public class ViewPagerHandler {
     private Context context;
-    private List<Model> models;
+    private List<SlideModel> models;
     private ViewPager viewPager;
     private int current = 0;
     private int scrollState = 0;
     private CircleIndicator circleIndicator;
-    public ViewPagerHander(Context context, ViewPager viewPager, CircleIndicator circleIndicator,List<Model> models){
+    public ViewPagerHandler(Context context, ViewPager viewPager, CircleIndicator circleIndicator, List<SlideModel> models){
         this.models = models;
         this.viewPager = viewPager;
         this.context = context;
         this.circleIndicator = circleIndicator;
     }
-    public void hander(){
+    public void handler(){
         PagerAdapter pagerAdapter = new PagerAdapter(this.context, models);
         viewPager.setAdapter(pagerAdapter);
 

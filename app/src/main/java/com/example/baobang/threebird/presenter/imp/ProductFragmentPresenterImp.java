@@ -72,7 +72,7 @@ public class ProductFragmentPresenterImp implements ProductFragmentPresenter{
             boolean res = ProductHelper.deleteProduct(product);
             if(res){
                 removeProductFromList(products, product);
-                productFragmentView.updateRecyclerView(products,onItemRecyclerViewClickListener );
+                productFragmentView.updateRecyclerView(products);
                 Toast.makeText(activity, "Xóa thành công", Toast.LENGTH_SHORT).show();
             }else{
                 Utils.openDialog(activity, "Có lỗi xảy ra, vui lòng thử lại");
@@ -94,7 +94,7 @@ public class ProductFragmentPresenterImp implements ProductFragmentPresenter{
             categoryId = category.getId();
         }
         ArrayList<Product> products = ProductHelper.getListSortBy(brandId, categoryId);
-        productFragmentView.showRecyclerViewProduct(products);
+        productFragmentView.updateRecyclerView(products);
     }
 
     @Override
@@ -106,7 +106,7 @@ public class ProductFragmentPresenterImp implements ProductFragmentPresenter{
         }else{
             products.set(indexChange, product);
         }
-        productFragmentView.updateRecyclerView(products, onItemRecyclerViewClickListener);
+        productFragmentView.updateRecyclerView(products);
     }
 
     private void removeProductFromList(ArrayList<Product> products, Product product){

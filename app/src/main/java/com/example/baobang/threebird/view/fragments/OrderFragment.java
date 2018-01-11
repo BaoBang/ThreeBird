@@ -60,10 +60,10 @@ public class OrderFragment extends Fragment implements OrderFragmentView {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_order, container, false);
 
-        setHasOptionsMenu(true);
         orderFragmentPresenterImp = new OrderFragmentPresenterImp(this);
         orderFragmentPresenterImp.init(view);
         // Inflate the layout for this fragment
+        setHasOptionsMenu(true);
 
         return view;
     }
@@ -239,7 +239,7 @@ public class OrderFragment extends Fragment implements OrderFragmentView {
 
     @Override
     public void showRecyclerViewOrder(ArrayList<Order> orders) {
-        orders = OrderHelper.getAllOrderByStatusInDay();
+        this.orders = orders;
         onItemRecyclerViewClickListener = item -> {
             Order order = (Order) item;
             openOptionDialog(order.getId());

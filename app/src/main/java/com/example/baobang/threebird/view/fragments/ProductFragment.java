@@ -228,7 +228,8 @@ public class ProductFragment extends Fragment implements ProductFragmentView {
     }
 
     @Override
-    public void updateRecyclerView(ArrayList<Product> products, OnItemRecyclerViewClickListener onItemRecyclerViewClickListener){
+    public void updateRecyclerView(ArrayList<Product> products){
+        this.products = products;
         productAdapter = new ProductAdapter(products, rcProducts, onItemRecyclerViewClickListener);
         rcProducts.setAdapter(productAdapter);
     }
@@ -274,6 +275,6 @@ public class ProductFragment extends Fragment implements ProductFragmentView {
             openOptionDialog(product.getId());
         };
         rcProducts.setLayoutManager(new VegaLayoutManager());
-        updateRecyclerView(products, onItemRecyclerViewClickListener);
+        updateRecyclerView(products);
     }
 }

@@ -21,6 +21,7 @@ public class Order extends RealmObject implements Serializable {
     private Date liveryDate;
     private int payments;
     private int paymentValue;
+    private boolean isPayment;
 
     public Order(int id, String clientName, Date createdAt, int status, String phone, Address address, RealmList<ProductOrder> products, Date liveryDate, int payments, int paymentValue) {
         this.id = id;
@@ -34,9 +35,18 @@ public class Order extends RealmObject implements Serializable {
         this.payments = payments;
         this.paymentValue = paymentValue;
         clientId = -1;
+        isPayment = false;
     }
 
     public Order() {
+    }
+
+    public boolean isPayment() {
+        return isPayment;
+    }
+
+    public void setPayment(boolean payment) {
+        isPayment = payment;
     }
 
     public int getClientId() {

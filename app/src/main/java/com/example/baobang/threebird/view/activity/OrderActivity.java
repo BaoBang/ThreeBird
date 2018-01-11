@@ -33,9 +33,11 @@ import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.Commune;
 import com.example.baobang.threebird.model.District;
 import com.example.baobang.threebird.model.Order;
+import com.example.baobang.threebird.model.Payment;
 import com.example.baobang.threebird.model.Product;
 import com.example.baobang.threebird.model.ProductOrder;
 import com.example.baobang.threebird.model.Province;
+import com.example.baobang.threebird.model.Status;
 import com.example.baobang.threebird.presenter.imp.OrderPresenterImp;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
@@ -65,6 +67,8 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
     private ArrayList<Province> provinces;
     private ArrayList<District> districts;
     private ArrayList<Commune> communes;
+    private ArrayList<Status> statuses;
+    private ArrayList<Payment> payments;
 
     private ImageButton btnAddClient, btnCreatedAt, btnAddProduct, btnDeliveryDate;
     private LinearLayout layoutProduct;
@@ -178,9 +182,9 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
 
     @Override
     public void setDataForInput(Bitmap bitmap, String name, int orderId,
-                                Date createdAt, int status, String phone,
+                                Date createdAt, int statusPosition, String phone,
                                 int province,int district, int commune,
-                                String address,int amount, Date deliveryDate, int payment) {
+                                String address,int amount, Date deliveryDate, int paymentPosition) {
 
         imgAvatar.setImageBitmap(Utils.getRoundedRectBitmap(bitmap));
         txtName.setText(name);
@@ -189,7 +193,7 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", new Locale("vi","VN"));
         txtCreatedAt.setText(simpleDateFormat.format(createdAt));
 
-        spStatus.setSelection(status + 1);
+        spStatus.setSelection(statusPosition);
 
         txtPhone.setText(phone);
 
@@ -204,7 +208,7 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
 
         txtDeliveryDate.setText(simpleDateFormat.format(deliveryDate));
 
-        orderPresenterImp.setPaymentSelected(payment);
+        spPayment.setSelection(paymentPosition);
     }
 
 
@@ -299,9 +303,10 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
     }
 
     @Override
-    public void showSpinnerPayment(ArrayList<String> payments) {
+    public void showSpinnerPayment(ArrayList<Payment> payments) {
         spPayment = findViewById(R.id.spPayment);
-        ArrayAdapter<String> adapterPayment = new ArrayAdapter<>(
+        this.payments = payments;
+        ArrayAdapter<Payment> adapterPayment = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_list_item_1,
                 payments);
@@ -309,9 +314,10 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
     }
 
     @Override
-    public void showSpinnerStatus(ArrayList<String> statues) {
+    public void showSpinnerStatus(ArrayList<Status> statues) {
         spStatus = findViewById(R.id.spStatus);
-        ArrayAdapter<String> adapterStatus = new ArrayAdapter<>(
+        this.statuses = statues;
+        ArrayAdapter<Status> adapterStatus = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_list_item_1,
                 statues);
@@ -562,6 +568,11 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
     }
 
     @Override
+    public void setSpinnerStatusSelectedPosition(int position) {
+        spStatus.setSelection(position);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.action_bar_menu2, menu);
@@ -577,10 +588,12 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
                 String createdAtStr = txtCreatedAt.getText().toString();
                 Date date = createdAtStr.equals("") ? null : new Date(createdAtStr);
 
-                int status = spStatus.getSelectedItemPosition();
+                int position = spStatus.getSelectedItemPosition();
+                Status status = position == 0 ? null : statuses.get(position);
+
                 String phone = txtPhone.getText().toString();
 
-                int position = spProvince.getSelectedItemPosition();
+                position = spProvince.getSelectedItemPosition();
                 Province province = position > 0 ? provinces.get(position) : null;
 
                 position = spDistrict.getSelectedItemPosition();
@@ -594,7 +607,8 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
                 String deliveryDateStr = txtDeliveryDate.getText().toString();
                 Date deliveryDate = deliveryDateStr.equals("") ? null : new Date(deliveryDateStr);
 
-                int payment = spPayment.getSelectedItemPosition();
+                position = spPayment.getSelectedItemPosition();
+                Payment payment = position == 0 ? null : payments.get(position);
 
                 orderPresenterImp.clickAddOptionMenu(order, option, txtOrderId.getText().toString(), name,
                         date, status, phone,

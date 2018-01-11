@@ -9,8 +9,10 @@ import android.widget.RelativeLayout;
 import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.Commune;
 import com.example.baobang.threebird.model.District;
+import com.example.baobang.threebird.model.Payment;
 import com.example.baobang.threebird.model.Product;
 import com.example.baobang.threebird.model.Province;
+import com.example.baobang.threebird.model.Status;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,9 +33,9 @@ public interface OrderView {
 
     void showSpinnerCommune(ArrayList<Commune> communes);
 
-    void showSpinnerPayment(ArrayList<String> payments);
+    void showSpinnerPayment(ArrayList<Payment> payments);
 
-    void showSpinnerStatus(ArrayList<String> statues);
+    void showSpinnerStatus(ArrayList<Status> statues);
 
     void setDataForInput(Bitmap bitmap, String name, int orderId,
                          Date createdAt, int status, String phone,
@@ -82,4 +84,6 @@ public interface OrderView {
     void showAddressWarning(String message);
 
     void changeActivity(int orderId);
+
+    void setSpinnerStatusSelectedPosition(int position);
 }

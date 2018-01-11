@@ -12,15 +12,19 @@ import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.model.Commune;
 import com.example.baobang.threebird.model.District;
 import com.example.baobang.threebird.model.Order;
+import com.example.baobang.threebird.model.Payment;
 import com.example.baobang.threebird.model.Product;
 import com.example.baobang.threebird.model.ProductOrder;
 import com.example.baobang.threebird.model.Province;
+import com.example.baobang.threebird.model.Status;
 import com.example.baobang.threebird.model.helper.ClientHelper;
 import com.example.baobang.threebird.model.helper.CommuneHelper;
 import com.example.baobang.threebird.model.helper.DistrictHelper;
 import com.example.baobang.threebird.model.helper.OrderHelper;
+import com.example.baobang.threebird.model.helper.PaymentHelper;
 import com.example.baobang.threebird.model.helper.ProductHelper;
 import com.example.baobang.threebird.model.helper.ProvinceHelper;
+import com.example.baobang.threebird.model.helper.StatusHelper;
 import com.example.baobang.threebird.presenter.OrderPresenter;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
@@ -75,10 +79,13 @@ public class OrderPresenterImp implements OrderPresenter {
         List<ProductOrder>productOrders = new ArrayList<>(order.getProducts());
         int amount = getAmountAllProduct(productOrders);
 
+        int statusPostion = getStatusSelectedPosition(StatusHelper.getAllStatus(), order.getStatus());
+        int paymentPosition = getPaymentSelectedPosition(PaymentHelper.getAllPayment(), order.getPayments());
+
         orderView.setDataForInput(bitmap, order.getClientName(), order.getId(), order.getCreatedAt(),
-                order.getStatus(), order.getPhone(), order.getAddress().getProvinceId(),
+                statusPostion, order.getPhone(), order.getAddress().getProvinceId(),
                 order.getAddress().getDistrictId(), order.getAddress().getCommuneId(),
-                order.getAddress().getAddress(), amount, order.getLiveryDate(), order.getPaymentValue());
+                order.getAddress().getAddress(), amount, order.getLiveryDate(), paymentPosition);
     }
 
     @Override
@@ -172,8 +179,27 @@ public class OrderPresenterImp implements OrderPresenter {
     }
 
     @Override
-    public void setPaymentSelected(int position) {
-        orderView.setSpinnerPaymentSelectedPosition(position);
+    public int getStatusSelectedPosition(ArrayList<Status> statuses, int statusId) {
+        int position = 0;
+        for(int i = 0; i < statuses.size(); i++){
+            if(statuses.get(i).getId() == statusId){
+                position = i;
+                break;
+            }
+        }
+        return position;
+    }
+
+    @Override
+    public int getPaymentSelectedPosition(ArrayList<Payment> payments, int paymentId) {
+        int position = 0;
+        for(int i = 0; i < payments.size(); i++){
+            if(payments.get(i).getId() == paymentId){
+                position = i;
+                break;
+            }
+        }
+       return position;
     }
 
     @Override
@@ -222,16 +248,16 @@ public class OrderPresenterImp implements OrderPresenter {
 
     @Override
     public int addOrder(int clientId, String name, Date date,
-                        int status, String phone, Province province,
+                        Status status, String phone, Province province,
                         District district, Commune commune, String address,
-                        List<ProductOrder> products, Date deliveryDate, int payment) {
+                        List<ProductOrder> products, Date deliveryDate, Payment payment) {
 
         RealmList<ProductOrder> productList = new RealmList<>();
         productList.addAll(products);
         Order order = new Order(0, name, date,
-                status, phone, new Address(
+                status.getId(), phone, new Address(
                         province.getId(), district.getId(), commune.getId(), address),
-                productList, deliveryDate, payment, 0);
+                productList, deliveryDate, payment.getId(), 0);
         order.setClientId(clientId);
 
         return OrderHelper.createOrder(order);
@@ -239,26 +265,28 @@ public class OrderPresenterImp implements OrderPresenter {
 
     @Override
     public int updateOrder(Order order, int clientId, String name,
-                           Date date, int status, String phone,
+                           Date date, Status status, String phone,
                            Province province, District district, Commune commune,
                            String address, List<ProductOrder> products,
-                           Date deliveryDate, int payment) {
+                           Date deliveryDate, Payment payment) {
         RealmList<ProductOrder> productList = new RealmList<>();
         productList.addAll(products);
-         order = new Order(order.getId(), name, date,
-                status, phone, new Address(
+        boolean isPayment = order.isPayment();
+        order = new Order(order.getId(), name, date,
+                status.getId(), phone, new Address(
                 province.getId(), district.getId(), commune.getId(), address),
-                productList, deliveryDate, payment, 0);
+                productList, deliveryDate, payment.getId(), 0);
         order.setClientId(clientId);
+        order.setPayment(isPayment);
         return OrderHelper.updateOrder(order);
     }
 
     @Override
     public void clickAddOptionMenu(Order order,int option, String clientIdStr, String name,
-                                   Date date, int status, String phone,
+                                   Date date, Status status, String phone,
                                    Province province, District district, Commune commune,
                                    String address, List<ProductOrder> products,
-                                   Date deliveryDate, int payment) {
+                                   Date deliveryDate, Payment payment) {
         try {
 
             if(Utils.checkInput(name)){
@@ -279,7 +307,7 @@ public class OrderPresenterImp implements OrderPresenter {
                 return;
             }
 
-            if(status == 0){
+            if(status == null){
                 orderView.showMessage("Vui lòng chọn trạng thái của hóa đơn");
                 return;
             }
@@ -322,7 +350,7 @@ public class OrderPresenterImp implements OrderPresenter {
                 orderView.showMessage("Ngày giao hàng không hợp lệ");
                 return;
             }
-            if(payment == 0){
+            if(payment == null){
                 orderView.showMessage("Vui lòng chọn hình thức thanh toán");
                 return;
             }
@@ -332,17 +360,22 @@ public class OrderPresenterImp implements OrderPresenter {
             int result = -1;
             if(option == Constants.ADD_OPTION){
                 result = addOrder(Integer.parseInt(clientIdStr), name,date,
-                        status - 1, phone, province, district,
+                        status, phone, province, district,
                         commune, address, products, deliveryDate, payment);
             }else if(option == Constants.EDIT_OPTION){
                 result = updateOrder(order, Integer.parseInt(clientIdStr), name, date,
-                        status - 1, phone, province, district,
+                        status, phone, province, district,
                         commune, address, products, deliveryDate, payment);
             }
 
             if(result != -1){
-                if(status - 1 == Constants.COMPLETED){
-                    orderCompetition(products);
+                Order orderCompleted = OrderHelper.getOrder(result);
+                if(order != null && !order.isPayment() && order.getStatus() == Constants.COMPLETED){
+                    if(!orderCompleted.isPayment()){
+                        orderCompetition(products);
+                        orderCompleted.setPayment(true);
+                        OrderHelper.updateOrder(orderCompleted);
+                    }
                 }
                 orderView.changeActivity(result);
 
@@ -362,6 +395,7 @@ public class OrderPresenterImp implements OrderPresenter {
         Bitmap  bitmap;
         if(client == null){
             bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.noimage);
+            bitmap = Utils.getRoundedRectBitmap(bitmap);
         }else{
             bitmap = Utils.StringToBitMap(client.getAvatar());
         }
@@ -393,20 +427,13 @@ public class OrderPresenterImp implements OrderPresenter {
     private ArrayList<Commune> getCommunes(){
         return CommuneHelper.getAllCommunes();
     }
-    private ArrayList<String> getStatuses(){
-        ArrayList<String> list = new ArrayList<>();
-        list.add("Trạng thái");
-        list.add("Hoàn thành");
-        list.add("Hủy");
-        list.add("Đang giao hàng");
-        return list;
+
+    private ArrayList<Status> getStatuses(){
+
+        return StatusHelper.getAllStatus();
     }
-    private ArrayList<String> getPayments(){
-        ArrayList<String> list = new ArrayList<>();
-        list.add("Hình thức thanh toán");
-        list.add("Tiền mặt");
-        list.add("Chuyển khoản");
-        list.add("Trả góp");
-        return list;
+    private ArrayList<Payment> getPayments(){
+
+        return PaymentHelper.getAllPayment();
     }
 }

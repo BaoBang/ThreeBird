@@ -9,15 +9,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.example.baobang.threebird.R;
-import com.example.baobang.threebird.utils.Model;
+import com.example.baobang.threebird.utils.SlideModel;
 import java.util.List;
 
 
 public class PagerAdapter extends android.support.v4.view.PagerAdapter {
-    private List<Model> models;
+    private List<SlideModel> models;
     private Context context;
 
-    public PagerAdapter(Context context, List<Model> models){
+    public PagerAdapter(Context context, List<SlideModel> models){
         this.context = context;
         this.models = models;
     }
@@ -45,7 +45,7 @@ public class PagerAdapter extends android.support.v4.view.PagerAdapter {
         if(layoutInflater != null){
            view = layoutInflater.inflate(R.layout.item, container, false);
         }
-        Model model = this.models.get(position);
+        SlideModel model = this.models.get(position);
         ImageView img = view == null ? null : (ImageView) view.findViewById(R.id.img);
         TextView txtTitle = view == null ? null : (TextView) view.findViewById(R.id.txtTitle);
         TextView txtAmount = view == null ? null : (TextView) view.findViewById(R.id.txtAmount);
