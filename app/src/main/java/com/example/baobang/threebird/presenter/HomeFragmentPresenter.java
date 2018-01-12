@@ -9,4 +9,5 @@ public interface HomeFragmentPresenter {
     void init(View view);
     void addLineChart(View view);
     void addSlide(View view);
+    void addStaticalOrder(View view);
 }

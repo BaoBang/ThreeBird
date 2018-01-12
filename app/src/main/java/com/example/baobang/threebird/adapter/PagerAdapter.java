@@ -61,7 +61,7 @@ public class PagerAdapter extends android.support.v4.view.PagerAdapter {
         return view == null ? new View(context) : view;
     }
 
-    private class ViewHolder{
+    public class ViewHolder{
         @BindView(R.id.img)
         ImageView imageView;
 

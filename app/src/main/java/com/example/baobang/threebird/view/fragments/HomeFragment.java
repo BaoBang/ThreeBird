@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,8 @@ import com.github.mikephil.charting.data.Entry;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import me.relex.circleindicator.CircleIndicator;
 
 
@@ -31,6 +34,8 @@ import me.relex.circleindicator.CircleIndicator;
  */
 public class HomeFragment extends Fragment implements HomeFragmentView{
 
+    @BindView(R.id.layoutStaticalOrder)
+    LinearLayout layoutStaticalOrder;
     private HomeFragmentPresenterImp homeFragmentPresenterImp;
     private  List<SlideModel> models;
     ArrayList<Entry> entries;
@@ -50,8 +55,12 @@ public class HomeFragment extends Fragment implements HomeFragmentView{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+
+        View view =  inflater.inflate(R.layout.fragment_home, container, false);
+
+        ButterKnife.bind(this, view);
+
+        return view;
     }
 
     @Override
@@ -85,25 +94,30 @@ public class HomeFragment extends Fragment implements HomeFragmentView{
     }
 
     @Override
-    public void showItemFragment(View view) {
+    public void showItemFragment(View view, ArrayList<ItemFragment> itemFragments) {
 
-        ItemFragmentModel model21  = new ItemFragmentModel(1, "HOÀN THÀNH", 100,20000,30000);
-        ItemFragmentModel model22  = new ItemFragmentModel(2, "HỦY", 100,20000,30000);
-        ItemFragmentModel model23  = new ItemFragmentModel(3, "MỚI", 100,20000,30000);
+        ArrayList<LinearLayout> linearLayouts = new ArrayList<>();
 
-        ItemFragment fragment1 = ItemFragment.newInstance(model21);
-        ItemFragment fragment2 = ItemFragment.newInstance(model22);
-        ItemFragment fragment3 = ItemFragment.newInstance(model23);
-
-        LinearLayout fragmentSuccess  =  view.findViewById(R.id.fragment_complete);
-        LinearLayout fragmentCanCel  =  view.findViewById(R.id.fragment_cancel);
-        LinearLayout fragmentNew =  view.findViewById(R.id.fragment_new);
-
+        for(int i = 0; i < itemFragments.size(); i++){
+            LinearLayout layout = createLinearLayout(i);
+            linearLayouts.add(layout);
+        }
         FragmentManager fragmentManager = getFragmentManager();
         if(fragmentManager != null){
-            getFragmentManager().beginTransaction().add(fragmentSuccess.getId(),fragment1, "tag1").commit();
-            getFragmentManager().beginTransaction().add(fragmentCanCel.getId(),fragment2, "tag2").commit();
-            getFragmentManager().beginTransaction().add(fragmentNew.getId(),fragment3, "tag3").commit();
+            for(int i = 1; i < itemFragments.size(); i++){
+                getFragmentManager().beginTransaction().add(linearLayouts.get(i).getId(),itemFragments.get(i), "tag" + i).commit();
+            }
         }
+    }
+
+    private LinearLayout createLinearLayout(int id){
+        LinearLayout layout = new LinearLayout(getContext());
+        layout.setId(id);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.topMargin = R.dimen.margin_vertical;
+        layoutStaticalOrder.addView(layout);
+        return layout;
     }
 }

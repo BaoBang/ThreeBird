@@ -1,19 +1,27 @@
 package com.example.baobang.threebird.presenter.imp;
 
+import android.util.Log;
 import android.view.View;
 
 import com.example.baobang.threebird.model.Order;
+import com.example.baobang.threebird.model.Product;
+import com.example.baobang.threebird.model.ProductOrder;
 import com.example.baobang.threebird.model.Status;
 import com.example.baobang.threebird.model.helper.OrderHelper;
 import com.example.baobang.threebird.model.helper.StatusHelper;
 import com.example.baobang.threebird.presenter.HomeFragmentPresenter;
+import com.example.baobang.threebird.utils.ItemFragmentModel;
 import com.example.baobang.threebird.utils.SlideModel;
 import com.example.baobang.threebird.view.HomeFragmentView;
+import com.example.baobang.threebird.view.fragments.ItemFragment;
 import com.github.mikephil.charting.data.Entry;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import io.realm.RealmList;
 
 /**
  * Created by baobang on 1/11/18.
@@ -30,6 +38,7 @@ public class HomeFragmentPresenterImp implements HomeFragmentPresenter {
     public void init(View view) {
         addSlide(view);
         addLineChart(view);
+        addStaticalOrder(view);
     }
 
     @Override
@@ -68,14 +77,60 @@ public class HomeFragmentPresenterImp implements HomeFragmentPresenter {
         List<SlideModel> slideModels = new ArrayList<>();
 
         List<Status> statuses = StatusHelper.getAllStatus();
-
+        Calendar calendar = Calendar.getInstance();
         for(Status status : statuses){
            if(status.getId() != 0){
-               ArrayList<Order> orders = OrderHelper.getOrderByStatusInDay(status.getId());
+               ArrayList<Order> orders = OrderHelper.getOrderByStatusInMonth(status.getId(), calendar.get(Calendar.MONTH));
                SlideModel slideModel = new SlideModel(status.getImage(), status.getDescription(), orders.size());
                slideModels.add(slideModel);
            }
         }
         homeFragmentView.showSlide(view, slideModels);
+    }
+
+    @Override
+    public void addStaticalOrder(View view) {
+
+        ArrayList<ItemFragment> itemFragments = new ArrayList<>();
+
+        ArrayList<Status> statuses = StatusHelper.getAllStatus();
+        Calendar calendar = Calendar.getInstance();
+        for(Status status : statuses){
+                ArrayList<Order> orders = OrderHelper.getOrderByStatusInMonth(status.getId(),calendar.get(Calendar.MONTH));
+                ItemFragmentModel itemFragmentModel =
+                        new ItemFragmentModel(status.getId(),
+                                   status.getDescription(),orders.size(),
+                                getAllPriceProductInventory(orders),
+                                getAllPriceProduct(orders));
+                ItemFragment itemFragment = ItemFragment.newInstance(itemFragmentModel);
+                itemFragments.add(itemFragment);
+        }
+        homeFragmentView.showItemFragment(view, itemFragments);
+    }
+
+
+    private long getAllPriceProductInventory(ArrayList<Order> orders){
+        long total = 0;
+
+        for(Order order : orders){
+           RealmList<ProductOrder> productOrders =  order.getProducts();
+           for(ProductOrder productOrder : productOrders){
+               total += productOrder.getToTalInventoryPrice();
+           }
+        }
+
+        return total;
+    }
+
+    private long getAllPriceProduct(ArrayList<Order> orders){
+        long total = 0;
+
+        for(Order order : orders){
+            RealmList<ProductOrder> productOrders =  order.getProducts();
+            for(ProductOrder productOrder : productOrders){
+                total += productOrder.getTotalPrice();
+            }
+        }
+        return total;
     }
 }

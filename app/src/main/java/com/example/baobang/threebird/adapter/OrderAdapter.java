@@ -54,11 +54,11 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
 
     @Override
     public void onBindViewHolder(final OrderHolder holder, int position) {
-        holder.setPostion(position);
+        holder.setPositionSelected(position);
         Order order = this.orders.get(position);
         holder.txtId.setText(String.valueOf(order.getId()));
         holder.txtClientName.setText(order.getClientName());
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyyy", new Locale("vi", "VN"));
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", new Locale("vi", "VN"));
         holder.txtCreatedAt.setText(simpleDateFormat.format(order.getCreatedAt()));
         holder.txtPayment.setText(String.valueOf(order.getToal()));
         if(order.getStatus() == Constants.COMPLETED){
@@ -72,7 +72,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
             holder.txtStatus.setTextColor(this.context.getResources().getColor(R.color.blue));
         }
 
-        holder.itemView.setOnClickListener(view -> onItemRecyclerViewClickListener.onItemClick(orders.get(holder.getPostion())));
+        holder.itemView.setOnClickListener(view -> onItemRecyclerViewClickListener.onItemClick(orders.get(holder.getPositionSelected())));
 
         mAnimator.onBindViewHolder(holder.layoutItem, position);
     }
@@ -100,14 +100,14 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
 
         @BindView(R.id.layoutItem)
         LinearLayout layoutItem;
-        int postion = -1;
+        int positionSelected = -1;
 
-        private int getPostion() {
-            return postion;
+        public int getPositionSelected() {
+            return positionSelected;
         }
 
-        private void setPostion(int postion) {
-            this.postion = postion;
+        public void setPositionSelected(int positionSelected) {
+            this.positionSelected = positionSelected;
         }
 
         private OrderHolder(View itemView) {

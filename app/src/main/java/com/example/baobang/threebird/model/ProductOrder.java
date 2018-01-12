@@ -44,4 +44,13 @@ public  class ProductOrder extends RealmObject implements Serializable{
         }
         return total;
     }
+
+    public long getToTalInventoryPrice(){
+        Product product = ProductHelper.getProduct(productId);
+        int total = 0;
+        if(product != null){
+            total = product.getPriceInventory() * amount;
+        }
+        return total;
+    }
 }

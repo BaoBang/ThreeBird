@@ -1,7 +1,6 @@
 package com.example.baobang.threebird.presenter.imp;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -38,9 +37,6 @@ import java.util.Locale;
 
 import io.realm.RealmList;
 
-/**
- * Created by baobang on 1/8/18.
- */
 
 public class OrderPresenterImp implements OrderPresenter {
 
@@ -79,11 +75,11 @@ public class OrderPresenterImp implements OrderPresenter {
         List<ProductOrder>productOrders = new ArrayList<>(order.getProducts());
         int amount = getAmountAllProduct(productOrders);
 
-        int statusPostion = getStatusSelectedPosition(StatusHelper.getAllStatus(), order.getStatus());
+        int statusPosition = getStatusSelectedPosition(StatusHelper.getAllStatus(), order.getStatus());
         int paymentPosition = getPaymentSelectedPosition(PaymentHelper.getAllPayment(), order.getPayments());
 
         orderView.setDataForInput(bitmap, order.getClientName(), order.getId(), order.getCreatedAt(),
-                statusPostion, order.getPhone(), order.getAddress().getProvinceId(),
+                statusPosition, order.getPhone(), order.getAddress().getProvinceId(),
                 order.getAddress().getDistrictId(), order.getAddress().getCommuneId(),
                 order.getAddress().getAddress(), amount, order.getLiveryDate(), paymentPosition);
     }
@@ -98,7 +94,9 @@ public class OrderPresenterImp implements OrderPresenter {
 
     @Override
     public int getOptionFromBundle(Bundle bundle) {
+
         return bundle == null ? 0 : bundle.getInt(Constants.OPTION);
+
     }
 
     @Override
@@ -359,7 +357,7 @@ public class OrderPresenterImp implements OrderPresenter {
 
             int result = -1;
             if(option == Constants.ADD_OPTION){
-                result = addOrder(Integer.parseInt(clientIdStr), name,date,
+                result = addOrder(Integer.parseInt(clientIdStr), name, date,
                         status, phone, province, district,
                         commune, address, products, deliveryDate, payment);
             }else if(option == Constants.EDIT_OPTION){
@@ -370,7 +368,7 @@ public class OrderPresenterImp implements OrderPresenter {
 
             if(result != -1){
                 Order orderCompleted = OrderHelper.getOrder(result);
-                if(order != null && !order.isPayment() && order.getStatus() == Constants.COMPLETED){
+                if(orderCompleted != null && !orderCompleted.isPayment() && orderCompleted.getStatus() == Constants.COMPLETED){
                     if(!orderCompleted.isPayment()){
                         orderCompetition(products);
                         orderCompleted.setPayment(true);
@@ -410,31 +408,44 @@ public class OrderPresenterImp implements OrderPresenter {
 
     @Override
     public void showDialogClient() {
+
         orderView.showDialogClient(ClientHelper.getAllClient());
     }
 
+
     @Override
     public void showDialogProduct() {
+
         orderView.showDialogProduct(ProductHelper.getAllProduct());
+
     }
 
     private ArrayList<Province> getProvinces(){
+
         return ProvinceHelper.getAllProvinces();
+
     }
 
     private ArrayList<District> getDistricts(){
+
         return DistrictHelper.getAllDistricts();
+
     }
+
     private ArrayList<Commune> getCommunes(){
+
         return CommuneHelper.getAllCommunes();
+
     }
 
     private ArrayList<Status> getStatuses(){
 
         return StatusHelper.getAllStatus();
     }
+
     private ArrayList<Payment> getPayments(){
 
         return PaymentHelper.getAllPayment();
+
     }
 }

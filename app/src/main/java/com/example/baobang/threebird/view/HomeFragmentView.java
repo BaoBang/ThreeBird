@@ -3,6 +3,7 @@ package com.example.baobang.threebird.view;
 import android.view.View;
 
 import com.example.baobang.threebird.utils.SlideModel;
+import com.example.baobang.threebird.view.fragments.ItemFragment;
 import com.github.mikephil.charting.data.Entry;
 
 import java.util.ArrayList;
@@ -16,5 +17,5 @@ public interface HomeFragmentView {
 
     void showSlide(View view, List<SlideModel> models);
     void showLineChart(View view, ArrayList<Entry> entries , ArrayList<String> lables);
-    void showItemFragment(View view);
+    void showItemFragment(View view, ArrayList<ItemFragment> itemFragments);
 }

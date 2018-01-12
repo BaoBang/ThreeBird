@@ -53,23 +53,31 @@ public class ItemFragment extends Fragment {
         ItemFragmentModel model2 = (ItemFragmentModel)  getArguments().getSerializable("MODEL2");
        // ItemFragmentModel model2  = new ItemFragmentModel(3, "MỚI", 100,20000,30000);
 
-        txtResult.setText(model2 == null ? null : model2.getResult());
+        txtResult.setText(model2 == null ? null : model2.getResult().toUpperCase());
         txtNumber1.setText(String.valueOf(model2 == null ? null : model2.getNumber1()));
         txtNumber2.setText(new StringBuilder(model2 == null ? null : model2.getNumber2() + "đ"));
         txtNumber3.setText(new StringBuilder(model2 == null ? null : model2.getNumber3() + "đ"));
+
         switch (model2 == null ? Color.BLUE : model2.getColor()){
             case 1:
                 txtNumber3.setTextColor(Color.GREEN);
+                txtResult.setTextColor(Color.GREEN);
                 layout.setBackgroundResource(R.drawable.background_border_left_green);
                 break;
             case 2:
                 txtNumber3.setTextColor(Color.RED);
+                txtResult.setTextColor(Color.RED);
                 layout.setBackgroundResource(R.drawable.background_border_left_red);
                 break;
             case 3:
                 txtNumber3.setTextColor(Color.BLUE);
+                txtResult.setTextColor(Color.BLUE);
                 layout.setBackgroundResource(R.drawable.background_border_left_blue);
                 break;
+            default:
+                txtNumber3.setTextColor(Color.BLUE);
+                txtResult.setTextColor(Color.BLUE);
+                layout.setBackgroundResource(R.drawable.background_border_left_blue);
         }
     }
 }

@@ -4,8 +4,10 @@ import android.util.Log;
 import com.example.baobang.threebird.model.Order;
 import com.example.baobang.threebird.model.ProductOrder;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -33,13 +35,27 @@ public class OrderHelper {
         return -1;
     }
 
+    public static ArrayList<Order> getAllOrder(int status){
+        List<Order> list;
+        ArrayList<Order> orders = new ArrayList<>();
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<Order> results = realm.where(Order.class).equalTo("status", status).findAll();
+        list = realm.copyFromRealm(results);
+        orders.addAll(list);
+        realm.close();
+        return orders;
+    }
+
     public static ArrayList<Order> getAllOrderByStatusInDay(){
         List<Order> list;
         ArrayList<Order> orders = new ArrayList<>();
         Realm realm = Realm.getDefaultInstance();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", new Locale("vi", "VN"));
-        Date date = simpleDateFormat.getCalendar().getTime();
-        RealmResults<Order> results = realm.where(Order.class).greaterThanOrEqualTo("createdAt", date).findAll();
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, -1);
+        Date dateBefore = calendar.getTime();
+        calendar.add(Calendar.DATE, 2);
+        Date dateAfter = calendar.getTime();
+        RealmResults<Order> results = realm.where(Order.class).lessThan("createdAt", dateAfter).greaterThan("createdAt", dateBefore).findAll();
         list = realm.copyFromRealm(results);
         orders.addAll(list);
         realm.close();
@@ -49,10 +65,49 @@ public class OrderHelper {
     public static ArrayList<Order> getOrderByStatusInDay(int status){
         List<Order> list;
         ArrayList<Order> orders = new ArrayList<>();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", new Locale("vi", "VN"));
-        Date date = simpleDateFormat.getCalendar().getTime();
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, -1);
+        Date dateBefore = calendar.getTime();
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<Order> results = realm.where(Order.class).greaterThanOrEqualTo("createdAt", date).equalTo("status", status).findAll();
+        RealmResults<Order> results = realm.where(Order.class).greaterThanOrEqualTo("createdAt", dateBefore).equalTo("status", status).findAll();
+        list = realm.copyFromRealm(results);
+        orders.addAll(list);
+        realm.close();
+        return orders;
+    }
+
+    public static ArrayList<Order> getOrderByStatusInMonth(int status, int month){
+        List<Order> list;
+        ArrayList<Order> orders = new ArrayList<>();
+
+        Calendar calendar = Calendar.getInstance();
+
+        SimpleDateFormat simpleDateFormat =
+                new SimpleDateFormat("dd/MM/yyyy",
+                        new Locale("vi", "VN"));
+
+        calendar.set(Calendar.MONTH, month);
+
+        calendar.set(Calendar.DATE, 1);
+        Date firstDayInMonth = calendar.getTime();
+
+        try {
+            firstDayInMonth = simpleDateFormat.parse(simpleDateFormat.format(firstDayInMonth));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        calendar.add(Calendar.MONTH, 1);
+        Date firstDayInNextMonth = calendar.getTime();
+
+        try {
+            firstDayInNextMonth = simpleDateFormat.parse(simpleDateFormat.format(firstDayInNextMonth));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<Order> results = realm.where(Order.class).greaterThanOrEqualTo("createdAt", firstDayInMonth).lessThan("createdAt",firstDayInNextMonth).equalTo("status", status).findAll();
         list = realm.copyFromRealm(results);
         orders.addAll(list);
         realm.close();

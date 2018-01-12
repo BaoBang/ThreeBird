@@ -43,7 +43,7 @@
                 android:textSize="@dimen/text_size_title"
                 android:textColor="@color/bold_word"
                 android:textAllCaps="true"
-                />
+                android:text="@string/order_in_day"/>
             <LinearLayout
 
                 android:orientation="horizontal"

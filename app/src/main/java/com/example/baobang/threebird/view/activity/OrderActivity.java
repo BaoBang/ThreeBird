@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,13 +39,16 @@ import com.example.baobang.threebird.model.Product;
 import com.example.baobang.threebird.model.ProductOrder;
 import com.example.baobang.threebird.model.Province;
 import com.example.baobang.threebird.model.Status;
+import com.example.baobang.threebird.model.helper.OrderHelper;
 import com.example.baobang.threebird.presenter.imp.OrderPresenterImp;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
 import com.example.baobang.threebird.view.OrderView;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -151,6 +155,25 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
         Bundle bundle = getIntent().getExtras();
         order = orderPresenterImp.getOrderFromBundle(bundle);
         option = orderPresenterImp.getOptionFromBundle(bundle);
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", new Locale("vi", "VN"));
+        Date date = new Date();
+        try {
+            date   = simpleDateFormat.parse("11/1/2018");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Calendar calendar = Calendar.getInstance();
+
+        Order order = OrderHelper.getOrder(0);
+        order.setCreatedAt(date);
+        OrderHelper.updateOrder(order);
+
+        order = OrderHelper.getOrder(3);
+        calendar.add(Calendar.MONTH, 2);
+        order.setCreatedAt(calendar.getTime());
+        OrderHelper.updateOrder(order);
 
         orderPresenterImp.init();
     }
@@ -603,10 +626,18 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.actionBar_add){
             if(option != Constants.DETAIL_OPTION){
+
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", new Locale("vi", "VN"));
+
                 String name = txtName.getText().toString();
 
                 String createdAtStr = txtCreatedAt.getText().toString();
-                Date date = createdAtStr.equals("") ? null : new Date(createdAtStr);
+                Date date = null;
+                try {
+                    date = createdAtStr.equals("") ? null : simpleDateFormat.parse(createdAtStr);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
 
                 int position = spStatus.getSelectedItemPosition();
                 Status status = position == 0 ? null : statuses.get(position);
@@ -625,7 +656,12 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
                 String address = txtAddress.getText().toString();
 
                 String deliveryDateStr = txtDeliveryDate.getText().toString();
-                Date deliveryDate = deliveryDateStr.equals("") ? null : new Date(deliveryDateStr);
+                Date deliveryDate = null;
+                try {
+                    deliveryDate = deliveryDateStr.equals("") ? null : simpleDateFormat.parse(deliveryDateStr);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
 
                 position = spPayment.getSelectedItemPosition();
                 Payment payment = position == 0 ? null : payments.get(position);

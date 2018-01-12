@@ -38,7 +38,7 @@
     <!-- Order status -->
     <string name="delivery">ĐANG GIAO HÀNG</string>
     <!--Order-->
-
+    <string name="order_in_day">SỐ ĐƠN HÀNG TRONG NGÀY</string>
     <string name="commune">Phường/xã</string>
     <string name="address">Địa chỉ</string>
     <string name="product">Sản phẩm</string>

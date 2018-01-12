@@ -31,7 +31,7 @@
         <LinearLayout
             android:id="@+id/slide"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             >
 
@@ -60,6 +60,7 @@
 
                 </me.relex.circleindicator.CircleIndicator>
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -77,25 +78,13 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/layoutStaticalOrder"
                 android:orientation="vertical"
-                android:id="@+id/fragment_complete"
-                android:layout_marginTop="@dimen/margin"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin">
 
-            <LinearLayout
-                android:orientation="vertical"
-                android:id="@+id/fragment_cancel"
-                android:layout_marginTop="@dimen/margin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:id="@+id/fragment_new"
-                android:layout_marginTop="@dimen/margin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+            </LinearLayout>
         </LinearLayout>
 
     </ScrollView>

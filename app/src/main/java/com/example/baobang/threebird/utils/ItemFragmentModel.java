@@ -6,11 +6,11 @@ import java.io.Serializable;
 public class ItemFragmentModel implements Serializable {
     private int color;
     private String result;
-    private int number1;
-    private int number2;
-    private int number3;
+    private long number1;
+    private long number2;
+    private long number3;
 
-    public ItemFragmentModel(int color, String result, int number1, int number2, int number3) {
+    public ItemFragmentModel(int color, String result, long number1, long number2, long number3) {
         this.color = color;
         this.result = result;
         this.number1 = number1;
@@ -34,27 +34,32 @@ public class ItemFragmentModel implements Serializable {
         this.result = result;
     }
 
-    public int getNumber1() {
+    public long getNumber1() {
         return number1;
     }
 
-    public void setNumber1(int number1) {
+    public void setNumber1(long number1) {
         this.number1 = number1;
     }
 
-    public int getNumber2() {
+    public long getNumber2() {
         return number2;
     }
 
-    public void setNumber2(int number2) {
+    public void setNumber2(long number2) {
         this.number2 = number2;
     }
 
-    public int getNumber3() {
+    public long getNumber3() {
         return number3;
     }
 
-    public void setNumber3(int number3) {
+    public void setNumber3(long number3) {
         this.number3 = number3;
+    }
+
+    @Override
+    public String toString() {
+        return color + "-" + result + "-" + number1 + "-" + number2 + "-" + number3;
     }
 }
