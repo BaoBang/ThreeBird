@@ -6,10 +6,6 @@ package com.example.baobang.threebird.view;
 
 public interface RegisterView {
 
-    void addControls();
-
-    void addEvents();
-
     void finishActivity();
 
     void showMessage(String message);

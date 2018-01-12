@@ -12,6 +12,9 @@ import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.utils.SlideModel;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 public class PagerAdapter extends android.support.v4.view.PagerAdapter {
     private List<SlideModel> models;
@@ -46,23 +49,30 @@ public class PagerAdapter extends android.support.v4.view.PagerAdapter {
            view = layoutInflater.inflate(R.layout.item, container, false);
         }
         SlideModel model = this.models.get(position);
-        ImageView img = view == null ? null : (ImageView) view.findViewById(R.id.img);
-        TextView txtTitle = view == null ? null : (TextView) view.findViewById(R.id.txtTitle);
-        TextView txtAmount = view == null ? null : (TextView) view.findViewById(R.id.txtAmount);
-        if(img != null){
-            img.setImageResource(model.getImage());
-        }
-        if(txtTitle != null){
-            txtTitle.setText(model.getTitle());
-        }
 
-        if(txtAmount != null){
-            txtAmount.setText(String.valueOf(model.getAmount()));
-        }
+        ViewHolder holder = new ViewHolder(view);
 
+        holder.imageView.setImageResource(model.getImage());
+        holder.txtTitle.setText(model.getTitle());
+            holder.txtAmount.setText(String.valueOf(model.getAmount()));
         // add view to Viewpager
         container.addView(view);
 
         return view == null ? new View(context) : view;
+    }
+
+    private class ViewHolder{
+        @BindView(R.id.img)
+        ImageView imageView;
+
+        @BindView(R.id.txtTitle)
+        TextView txtTitle;
+
+        @BindView(R.id.txtAmount)
+        TextView txtAmount;
+
+        public ViewHolder(View view) {
+            ButterKnife.bind(this, view);
+        }
     }
 }

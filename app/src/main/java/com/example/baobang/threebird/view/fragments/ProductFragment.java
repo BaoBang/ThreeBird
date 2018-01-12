@@ -28,7 +28,6 @@ import com.example.baobang.threebird.listener.OnItemRecyclerViewClickListener;
 import com.example.baobang.threebird.model.Brand;
 import com.example.baobang.threebird.model.Category;
 import com.example.baobang.threebird.model.Product;
-import com.example.baobang.threebird.model.helper.ProductHelper;
 import com.example.baobang.threebird.presenter.imp.ProductFragmentPresenterImp;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
@@ -38,19 +37,36 @@ import com.example.baobang.threebird.view.activity.ProductActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 public class ProductFragment extends Fragment implements ProductFragmentView {
 
-    private Toolbar toolbar;
     private ProductFragmentPresenterImp productFragmentPresenterImp;
 
-    private Spinner spCategory, spBrand;
+    @BindView(R.id.toolBarProduct)
+    Toolbar toolbar;
+
+    @BindView(R.id.rcProduct)
+    RecyclerView rcProducts;
+
+    @BindView(R.id.spCategory)
+    Spinner spCategory;
+
+    @BindView(R.id.spBrand)
+    Spinner spBrand;
+
+    @BindView(R.id.layoutRoot)
+    FrameLayout layoutRoot;
+
     private ArrayList<Product> products;
     private ProductAdapter productAdapter;
     private ArrayList<Category> categories;
     private ArrayList<Brand> brands;
-    private RecyclerView rcProducts;
+
     private OnItemRecyclerViewClickListener onItemRecyclerViewClickListener;
+
     public ProductFragment() {
         // Required empty public constructor
     }
@@ -60,7 +76,7 @@ public class ProductFragment extends Fragment implements ProductFragmentView {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_product, container, false);
-
+        ButterKnife.bind(this, view);
         setHasOptionsMenu(true);
         // Inflate the layout for this fragment
         productFragmentPresenterImp = new ProductFragmentPresenterImp(this);
@@ -119,7 +135,6 @@ public class ProductFragment extends Fragment implements ProductFragmentView {
 
     @Override
     public void addSpinnerCategory(View view, ArrayList<Category> categories) {
-        spCategory = view.findViewById(R.id.spCategory);
         this.categories = categories;
         ArrayAdapter<Category> categoryArrayAdapter =
                 new ArrayAdapter<>(
@@ -147,7 +162,6 @@ public class ProductFragment extends Fragment implements ProductFragmentView {
 
     @Override
     public void addSpinnerBrand(View view, ArrayList<Brand> brands) {
-        spBrand = view.findViewById(R.id.spBrand);
         this.brands = brands;
         ArrayAdapter<Brand> brandArrayAdapter =
                 new ArrayAdapter<>(
@@ -244,22 +258,17 @@ public class ProductFragment extends Fragment implements ProductFragmentView {
 
     @Override
     public void addControls(View view) {
-        FrameLayout layoutRoot =  view.findViewById(R.id.layoutRoot);
         Utils.hideKeyboardOutside(layoutRoot, getActivity());
 
-        rcProducts = view.findViewById(R.id.rcProduct);
     }
 
     @Override
     public void addToolBar(View view) {
-        toolbar = view.findViewById(R.id.toolBarProduct);
-        if (toolbar != null) {
             AppCompatActivity appCompatActivity = (AppCompatActivity) getActivity();
             if(appCompatActivity != null ){
                 appCompatActivity.setSupportActionBar(toolbar);
             }
             toolbar.setTitle(null);
-        }
     }
 
     @Override

@@ -6,10 +6,6 @@ package com.example.baobang.threebird.view;
 
 public interface LoginView {
 
-    void addControls();
-
-    void addEvents();
-
     void showMessage(String message);
 
     void startMainActivity();

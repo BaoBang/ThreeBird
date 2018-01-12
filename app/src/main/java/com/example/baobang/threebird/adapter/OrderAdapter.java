@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder> implements Filterable {
     private List<Order> orders;
@@ -80,11 +83,22 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
     }
 
     class OrderHolder extends RecyclerView.ViewHolder{
+        @BindView(R.id.txtOrderId)
         TextView txtId;
+
+        @BindView(R.id.txtClientName)
         TextView txtClientName;
+
+        @BindView(R.id.txtCreatedAt)
         TextView txtCreatedAt;
+
+        @BindView(R.id.txtPayment)
         TextView txtPayment;
+
+        @BindView(R.id.txtStatus)
         TextView txtStatus;
+
+        @BindView(R.id.layoutItem)
         LinearLayout layoutItem;
         int postion = -1;
 
@@ -98,12 +112,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
 
         private OrderHolder(View itemView) {
             super(itemView);
-            txtId = itemView.findViewById(R.id.txtOrderId);
-            txtClientName = itemView.findViewById(R.id.txtClientName);
-            txtCreatedAt = itemView.findViewById(R.id.txtCreatedAt);
-            txtPayment = itemView.findViewById(R.id.txtPayment);
-            txtStatus =  itemView.findViewById(R.id.txtStatus);
-            layoutItem =  itemView.findViewById(R.id.layoutItem);
+            ButterKnife.bind(this, itemView);
         }
     }
 

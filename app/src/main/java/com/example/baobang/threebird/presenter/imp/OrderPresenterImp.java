@@ -392,17 +392,18 @@ public class OrderPresenterImp implements OrderPresenter {
     @Override
     public int setClientData(Activity activity, Client client) {
 
-        Bitmap  bitmap;
-        if(client == null){
-            bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.noimage);
-            bitmap = Utils.getRoundedRectBitmap(bitmap);
-        }else{
-            bitmap = Utils.StringToBitMap(client.getAvatar());
+        if(client != null){
+            Bitmap  bitmap;
+            if(client.getAvatar() != null && client.getAvatar().length() == 0){
+                bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.noimage);
+                bitmap = Utils.getRoundedRectBitmap(bitmap);
+            }else{
+                bitmap = Utils.StringToBitMap(client.getAvatar());
+            }
+            orderView.addClientInfoFromListToView(bitmap, client.getName(), client.getPhone(),
+                    client.getAddress().getProvinceId(), client.getAddress().getDistrictId(),
+                    client.getAddress().getCommuneId(), client.getAddress().getAddress());
         }
-        if(client != null)
-        orderView.addClientInfoFromListToView(bitmap, client.getName(), client.getPhone(),
-                client.getAddress().getProvinceId(), client.getAddress().getDistrictId(),
-                client.getAddress().getCommuneId(), client.getAddress().getAddress());
 
         return client == null ? -1 : client.getId();
     }

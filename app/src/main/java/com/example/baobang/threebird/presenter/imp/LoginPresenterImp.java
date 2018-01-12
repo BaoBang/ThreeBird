@@ -35,12 +35,6 @@ public class LoginPresenterImp implements LoginPresenter {
     }
 
     @Override
-    public void init() {
-        loginView.addControls();
-        loginView.addEvents();
-    }
-
-    @Override
     public void clickLogin(String username, String password) {
         if(username.equals("")){
             loginView.showMessage("Nhập vào tài khoản.");

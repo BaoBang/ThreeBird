@@ -49,6 +49,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
 import studio.carbonylgroup.textfieldboxes.TextFieldBoxes;
 
@@ -56,22 +60,77 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
 
     private OrderPresenterImp orderPresenterImp;
 
-    private Toolbar toolbar;
-    private ImageView imgAvatar;
-    private ExtendedEditText txtName, txtOrderId, txtPhone, txtAddress, txtCreatedAt, txtDeliveryDate;
-    private TextView txtAmount;
+    @BindView(R.id.toolBarCreateOrder)
+    Toolbar toolbar;
 
-    private Spinner spStatus, spProvince,
-            spDistrict, spCommune,  spPayment;
+    @BindView(R.id.imgAvatar)
+    ImageView imgAvatar;
+
+    @BindView(R.id.txtName)
+    ExtendedEditText txtName;
+
+    @BindView(R.id.txtOrderId)
+    ExtendedEditText txtOrderId;
+
+    @BindView(R.id.txtPhone)
+    ExtendedEditText txtPhone;
+
+    @BindView(R.id.txtAddress)
+    ExtendedEditText txtAddress;
+
+    @BindView(R.id.txtCreatedAt)
+    ExtendedEditText txtCreatedAt;
+
+    @BindView(R.id.txtDeliveryDate)
+    ExtendedEditText txtDeliveryDate;
+
+    @BindView(R.id.txtAmount)
+    TextView txtAmount;
+
+    @BindView(R.id.btnAddClient)
+    ImageButton btnAddClient;
+
+    @BindView(R.id.btnCreatedAt)
+    ImageButton btnCreatedAt;
+
+    @BindView(R.id.btnAddProduct)
+    ImageButton btnAddProduct;
+
+    @BindView(R.id.btnDeliveryDate)
+    ImageButton btnDeliveryDate;
+
+    @BindView(R.id.layoutProduct)
+    LinearLayout layoutProduct;
+
+    @BindView(R.id.spStatus)
+    Spinner spStatus;
+
+    @BindView(R.id.spProvince)
+    Spinner spProvince;
+
+    @BindView(R.id.spDistrict)
+    Spinner spDistrict;
+
+    @BindView(R.id.spCommune)
+    Spinner spCommune;
+
+    @BindView(R.id.spPayment)
+    Spinner spPayment;
+
+    @BindView(R.id.tfbDeliveryDate)
+    TextFieldBoxes tfbDeliveryDate;
+
+    @BindView(R.id.tfbCreateAt)
+    TextFieldBoxes tfbCreatedAt;
+
+    @BindView(R.id.layoutRoot)
+    LinearLayout layoutRoot;
 
     private ArrayList<Province> provinces;
     private ArrayList<District> districts;
     private ArrayList<Commune> communes;
     private ArrayList<Status> statuses;
     private ArrayList<Payment> payments;
-
-    private ImageButton btnAddClient, btnCreatedAt, btnAddProduct, btnDeliveryDate;
-    private LinearLayout layoutProduct;
 
     private Order order = null;
     private List<ProductOrder> productList = new ArrayList<>();
@@ -83,7 +142,8 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activy_order);
 
-        LinearLayout layoutRoot = findViewById(R.id.layoutRoot);
+        ButterKnife.bind(this);
+
         Utils.hideKeyboardOutside(layoutRoot, this);
 
         orderPresenterImp = new OrderPresenterImp(this);
@@ -97,40 +157,20 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
 
     @Override
     public void addControls() {
-        toolbar = findViewById(R.id.toolBarCreateOrder);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-        //
-        imgAvatar = findViewById(R.id.imgAvatar);
 
-        txtName = findViewById(R.id.txtName);
-        txtOrderId = findViewById(R.id.txtOrderId);
-        txtPhone = findViewById(R.id.txtPhone);
-        txtAddress = findViewById(R.id.txtAddress);
-
-        TextFieldBoxes tfbCreatedAt = findViewById(R.id.tfbCreateAt);
         tfbCreatedAt.setEnabled(false);
-        txtCreatedAt = findViewById(R.id.txtCreatedAt);
         txtCreatedAt.setEnabled(false);
 
-        TextFieldBoxes tfbDeliveryDate = findViewById(R.id.tfbDeliveryDate);
         tfbDeliveryDate.setEnabled(false);
-        txtDeliveryDate = findViewById(R.id.txtDeliveryDate);
         txtDeliveryDate.setEnabled(false);
 
-        txtAmount = findViewById(R.id.txtAmount);
         txtAmount.setText(String.valueOf(orderPresenterImp.getAmountAllProduct(productList)));
-
-        btnCreatedAt = findViewById(R.id.btnCreatedAt);
-        btnAddProduct = findViewById(R.id.btnAddProduct);
-        btnDeliveryDate = findViewById(R.id.btnDeliveryDate);
-        btnAddClient = findViewById(R.id.btnAddClient);
-
-        layoutProduct = findViewById(R.id.layoutProduct);
 
         orderPresenterImp.loadSpinnerData();
 
@@ -211,67 +251,56 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
         spPayment.setSelection(paymentPosition);
     }
 
+    @OnClick({R.id.btnCreatedAt,R.id.btnAddProduct,
+            R.id.btnDeliveryDate,R.id.btnAddClient})
+    public void onClick(View view){
+        switch (view.getId()){
+            case R.id.btnCreatedAt:
+                Utils.getDate(this, txtCreatedAt);
+                break;
+            case R.id.btnAddProduct:
+                orderPresenterImp.showDialogProduct();
+                break;
+            case R.id.btnDeliveryDate:
+                Utils.getDate(this, txtDeliveryDate);
+                break;
+            case R.id.btnAddClient:
+                orderPresenterImp.showDialogClient();
+                break;
+        }
+    }
+
+    @OnTextChanged(value = {R.id.txtOrderId, R.id.txtPhone},
+            callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
+    public void onTextChanged(Editable editable){
+
+        View view = getCurrentFocus();
+
+        if(view == null) return;
+
+        switch (view.getId()){
+
+            case R.id.txtOrderId:
+                if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
+                    showOrderIdWarning("Nhập vào kí tự số!");
+                }
+                break;
+            case R.id.txtPhone:
+                if(!editable.toString().matches(Constants.PHONE_REGULAR)){
+                    showPhoneWarning("Số điện thoại bắt đầu với +84/0 và tiếp theo từ 9-10 kí tự số");
+                }
+                break;
+        }
+    }
 
     @Override
     public void addEvents() {
         toolbar.setNavigationOnClickListener(view -> onBackPressed());
-
-        btnCreatedAt.setOnClickListener(view -> Utils.getDate(OrderActivity.this, txtCreatedAt));
-
-        btnAddProduct.setOnClickListener(view -> {
-
-        });
-
-        btnDeliveryDate.setOnClickListener(view -> Utils.getDate(OrderActivity.this, txtDeliveryDate));
-
-        btnAddClient.setOnClickListener(view -> orderPresenterImp.showDialogClient());
-
-        btnAddProduct.setOnClickListener(view -> orderPresenterImp.showDialogProduct());
-
-        txtOrderId.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                    if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
-                        txtOrderId.setError("Nhập vào kí tự số!");
-                        txtOrderId.requestFocus();
-                    }
-            }
-        });
-
-        txtPhone.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                    if(!editable.toString().matches(Constants.PHONE_REGULAR)){
-                        txtPhone.setError("Số điện thoại bắt đầu với +84/0 và tiếp theo từ 9-10 kí tự số");
-                        txtPhone.requestFocus();
-                    }
-            }
-        });
     }
 
     @Override
     public void showSpinnerDistrict(ArrayList<District> districts) {
-        spDistrict = findViewById(R.id.spDistrict);
+
         this.districts = districts;
         ArrayAdapter<District> adapterDistrict = new ArrayAdapter<>(
                 this,
@@ -282,7 +311,7 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
 
     @Override
     public void showSpinnerProvince(ArrayList<Province> provinces) {
-        spProvince = findViewById(R.id.spProvince);
+
         this.provinces = provinces;
         ArrayAdapter<Province> adapterProvince = new ArrayAdapter<>(
                 this,
@@ -293,7 +322,7 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
 
     @Override
     public void showSpinnerCommune(ArrayList<Commune> communes) {
-        spCommune = findViewById(R.id.spCommune);
+
         this.communes = communes;
         ArrayAdapter<Commune> adapterCommune = new ArrayAdapter<>(
                 this,
@@ -304,7 +333,7 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
 
     @Override
     public void showSpinnerPayment(ArrayList<Payment> payments) {
-        spPayment = findViewById(R.id.spPayment);
+
         this.payments = payments;
         ArrayAdapter<Payment> adapterPayment = new ArrayAdapter<>(
                 this,
@@ -315,7 +344,6 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
 
     @Override
     public void showSpinnerStatus(ArrayList<Status> statues) {
-        spStatus = findViewById(R.id.spStatus);
         this.statuses = statues;
         ArrayAdapter<Status> adapterStatus = new ArrayAdapter<>(
                 this,
@@ -342,15 +370,6 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
         });
         rcProudcts.setLayoutManager(new VegaLayoutManager());
         rcProudcts.setAdapter(adapter);
-//        lv.setOnItemClickListener(new AdapterView.OnItemRecyclerViewClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                getProductFromList(products.get(i));
-//                txtAmount.setText(String.valueOf(getAmountAllProduct()));
-//                addProductToLayout(products.get(i));
-//                dialog.dismiss();
-//            }
-//        });
     }
 
     @Override
@@ -371,6 +390,7 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
         String text = "Số lượng: " + orderPresenterImp.getAmountProduct(productList, productId);
         textView.setText(text);
     }
+
     @Override
     public LinearLayout createLinearLayout(int id){
         LinearLayout layout = new LinearLayout(this);

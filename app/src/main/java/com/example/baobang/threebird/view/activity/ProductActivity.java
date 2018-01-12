@@ -16,6 +16,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
@@ -38,6 +39,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
 import studio.carbonylgroup.textfieldboxes.TextFieldBoxes;
 
@@ -45,19 +50,45 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
 
     ProductPresenterImp productPresenterImp;
 
-    private ImageView btnCamera, btnPhoto;
-    private LinearLayout layoutImage;
-    private ExtendedEditText txtProductName, txtProductId,
-            txtProductInventory, txtProductPriceInventory,
-            txtProductPrice, txtDetail;
+
+    @BindView(R.id.toolBarAddProduct)
+    Toolbar toolbar;
+
+    @BindView(R.id.layoutRoot)
+    LinearLayout layoutRoot;
+
+    @BindView(R.id.layoutImage)
+    LinearLayout layoutImage;
+
+    @BindView(R.id.btnCamera)
+    ImageView btnCamera;
+
+    @BindView(R.id.btnPhoto)
+    ImageView btnPhoto;
+
+    @BindView(R.id.txtProductName)
+    ExtendedEditText txtProductName;
+
+    @BindView(R.id.txtProductId)
+    ExtendedEditText txtProductId;
+
+    @BindView(R.id.txtProductInventory)
+    ExtendedEditText txtProductInventory;
+
+    @BindView(R.id.txtProductPriceInventory)
+    ExtendedEditText txtProductPriceInventory;
+
+    @BindView(R.id.txtProductPrice)
+    ExtendedEditText txtProductPrice;
+
+    @BindView(R.id.txtDetail)
+    ExtendedEditText txtDetail;
 
     private Spinner spBrand, spCategory;
     private List<Category> categories;
     private List<Brand> brands;
 
-
     private Product product = null;
-    private Toolbar toolbar;
     private HashMap<Integer,Bitmap> bitmaps = new HashMap<>();
     private int option;
     @Override
@@ -65,7 +96,8 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product);
 
-        LinearLayout layoutRoot = findViewById(R.id.layoutRoot);
+        ButterKnife.bind(this);
+
         Utils.hideKeyboardOutside(layoutRoot, this);
 
         productPresenterImp = new ProductPresenterImp(this);
@@ -75,6 +107,82 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
         option = productPresenterImp.getOptionFromBundle(bundle);
 
         productPresenterImp.init();
+    }
+
+    @OnClick({R.id.btnPhoto, R.id.btnCamera})
+    public void onClick(View view){
+
+        switch (view.getId()){
+            case R.id.btnPhoto:
+                Utils.galleryIntent(this);
+                break;
+            case R.id.btnCamera:
+                Utils.cameraIntent(this);
+                break;
+        }
+    }
+
+    @OnTextChanged(value = {R.id.txtProductId,
+            R.id.txtProductPrice,
+            R.id.txtProductPriceInventory,
+            R.id.txtProductInventory},
+            callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
+    public void onTextChanged(Editable editable){
+
+        View view = getCurrentFocus();
+        if(view == null) return;
+        switch (view.getId()){
+            case R.id.txtProductId:
+                if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
+                    showProductIdWarning("Định dạng không đúng");
+                }
+                break;
+            case R.id.txtProductPrice:
+                if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
+                    showProductPriceWarning("Định dạng không đúng");
+                }
+                break;
+            case R.id.txtProductPriceInventory:
+                if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
+                    showProductPriceInventoryWarning("Định dạng không đúng");
+                }
+                break;
+            case R.id.txtProductInventory:
+                if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
+                    showProductInventoryWarning("Định dạng không đúng");
+                }
+                break;
+
+        }
+
+    }
+
+    @Override
+    public void addEvents() {
+        toolbar.setNavigationOnClickListener(view -> onBackPressed());
+    }
+
+    @Override
+    public void addControls() {
+
+        setSupportActionBar(toolbar);
+        ActionBar actionBar =  getSupportActionBar();
+        if (actionBar != null){
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setDisplayShowHomeEnabled(true);
+        }
+        // add tool bar
+
+        productPresenterImp.loadSpinnerData();
+        // to save list product images
+
+        if(product != null){
+            productPresenterImp.setData(product);
+        }
+
+        if(option == Constants.DETAIL_OPTION){
+            setDisableInput();
+        }
     }
 
     @Override
@@ -133,8 +241,6 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
         spBrand.setAdapter(brandArrayAdapter);
     }
 
-
-
     @Override
     public void setDataForInput(int id, int priceInventory, int price, int inventory,
                                 String productName, String detail, int brandId,
@@ -155,126 +261,6 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
             Bitmap bitmap = bitmaps.get(key);
             layoutImage.addView(createImageViewAndImageButtonRemove(productPresenterImp.getNextKey(), bitmap));
         }
-    }
-
-    @Override
-    public void addControls() {
-
-        // add tool bar
-        toolbar = findViewById(R.id.toolBarAddProduct);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar =  getSupportActionBar();
-        if (actionBar != null){
-            actionBar.setDisplayShowTitleEnabled(false);
-            actionBar.setDisplayShowHomeEnabled(true);
-        }
-        // add views
-        layoutImage = findViewById(R.id.layoutImage);
-        txtDetail = findViewById(R.id.txtDetail);
-        txtProductId = findViewById(R.id.txtProductId);
-        txtProductInventory = findViewById(R.id.txtProductInventory);
-        txtProductName = findViewById(R.id.txtProductName);
-        txtProductPrice = findViewById(R.id.txtProductPrice);
-        txtProductPriceInventory = findViewById(R.id.txtProductPriceInventory);
-        // image button Camera and Photo
-        btnCamera = findViewById(R.id.btnCamera);
-        btnPhoto = findViewById(R.id.btnPhoto);
-        // spinner brand and categoty
-        productPresenterImp.loadSpinnerData();
-        // to save list product images
-
-        if(product != null){
-            productPresenterImp.setData(product);
-        }
-
-        if(option == Constants.DETAIL_OPTION){
-            setDisableInput();
-        }
-    }
-
-    @Override
-    public void addEvents() {
-        toolbar.setNavigationOnClickListener(view -> onBackPressed());
-
-        btnPhoto.setOnClickListener(view -> Utils.galleryIntent(ProductActivity.this));
-
-        btnCamera.setOnClickListener(view -> Utils.cameraIntent(ProductActivity.this));
-
-        txtProductId.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                   if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
-                       showProductIdWarning("Định dạng không đúng");
-               }
-            }
-        });
-
-        txtProductPrice.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                    if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
-                        showProductPriceWarning("Định dạng không đúng");
-                }
-            }
-        });
-
-        txtProductPriceInventory.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                    if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
-                        showProductPriceInventoryWarning("Định dạng không đúng");
-                    }
-            }
-        });
-
-        txtProductInventory.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                   if(!editable.toString().matches(Constants.NUMBER_REGUAR)){
-                       showProductInventoryWarning("Định dạng không đúng");
-                   }
-            }
-        });
     }
 
     @Override

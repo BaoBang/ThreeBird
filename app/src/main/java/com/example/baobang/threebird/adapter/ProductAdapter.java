@@ -21,17 +21,20 @@ import com.example.baobang.threebird.utils.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductHolder> implements Filterable{
 
     private List<Product> products;
-    private List<Product> temproducts;
+    private List<Product> tempproducts;
     private RecyclerViewAnimator mAnimator;
     private RecyclerView recyclerView;
     private OnItemRecyclerViewClickListener onItemRecyclerViewClickListener;
 
     public ProductAdapter(List<Product> products, RecyclerView recyclerView,OnItemRecyclerViewClickListener onItemRecyclerViewClickListener) {
         this.products = products;
-        this.temproducts = new ArrayList<>(this.products);
+        this.tempproducts = new ArrayList<>(this.products);
         this.recyclerView = recyclerView;
         mAnimator = new RecyclerViewAnimator(recyclerView);
         this.onItemRecyclerViewClickListener = onItemRecyclerViewClickListener;
@@ -85,7 +88,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductH
             FilterResults result = new FilterResults();
             if (filterSeq.length() > 0) {
                 ArrayList<Product> filter = new ArrayList<>();
-                for (Product product : temproducts) {
+                for (Product product : tempproducts) {
                     // the filtering itself:
                     if (product.toString().toLowerCase().contains(filterSeq))
                         filter.add(product);
@@ -95,9 +98,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductH
                 products = filter;
             } else {
                 // add all objects
-                result.values = temproducts;
-                result.count = temproducts.size();
-                products = temproducts;
+                result.values = tempproducts;
+                result.count = tempproducts.size();
+                products = tempproducts;
             }
             return result;
         }
@@ -112,18 +115,23 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductH
     }
 
     public class ProductHolder extends RecyclerView.ViewHolder{
+        @BindView(R.id.imgProduct)
         ImageView imgProduct;
+
+        @BindView(R.id.txtProductName)
         TextView txtProductName;
+
+        @BindView(R.id.txtPrice)
         TextView txtPrice;
+
+        @BindView(R.id.txtAmount)
         TextView txtAmount;
+
+        @BindView(R.id.layoutItem)
         LinearLayout layoutItem;
         private ProductHolder(View itemView) {
             super(itemView);
-            imgProduct = itemView.findViewById(R.id.imgProduct);
-            txtProductName = itemView.findViewById(R.id.txtProductName);
-            txtPrice = itemView.findViewById(R.id.txtPrice);
-            txtAmount = itemView.findViewById(R.id.txtAmount);
-            layoutItem = itemView.findViewById(R.id.layoutItem);
+            ButterKnife.bind(this, itemView);
         }
     }
 }

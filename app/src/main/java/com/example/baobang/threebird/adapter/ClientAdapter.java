@@ -21,6 +21,9 @@ import com.example.baobang.threebird.utils.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientHolder> implements Filterable{
 
 
@@ -123,9 +126,17 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientHold
     }
 
     class ClientHolder extends RecyclerView.ViewHolder{
+
+        @BindView(R.id.txtName)
         TextView txtName;
+
+        @BindView(R.id.txtAddress)
         TextView txtAddress;
+
+        @BindView(R.id.imgAvatar)
         ImageView imgAvatar;
+
+        @BindView(R.id.layoutItem)
         LinearLayout layoutItem;
         int postion = -1;
 
@@ -139,10 +150,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientHold
 
         private ClientHolder(View itemView) {
             super(itemView);
-            layoutItem = itemView.findViewById(R.id.layoutItem);
-            txtName = itemView.findViewById(R.id.txtName);
-            txtAddress = itemView.findViewById(R.id.txtAddress);
-            imgAvatar = itemView.findViewById(R.id.imgAvatar);
+            ButterKnife.bind(this, itemView);
         }
     }
 }

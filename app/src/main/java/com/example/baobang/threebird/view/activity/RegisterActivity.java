@@ -2,6 +2,7 @@ package com.example.baobang.threebird.view.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -14,13 +15,22 @@ import com.example.baobang.threebird.presenter.imp.RegisterPresenterIml;
 import com.example.baobang.threebird.utils.Utils;
 import com.example.baobang.threebird.view.RegisterView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class RegisterActivity extends AppCompatActivity implements RegisterView{
 
     private RegisterPresenterIml registerPresenterIml;
 
-    private EditText txtUserName, txtPassword, txtPasswordConfirm;
-    private Button btnSignUp;
-    private TextView txtCancel;
+    @BindView(R.id.txtUserName)
+    EditText txtUserName;
+
+    @BindView(R.id.txtPassword)
+    EditText txtPassword;
+
+    @BindView(R.id.txtPasswordConfirm)
+    EditText txtPasswordConfirm;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,30 +39,27 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView{
                 WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
         setContentView(R.layout.activity_register);
 
+        ButterKnife.bind(this);
+
         LinearLayout layoutRoot = findViewById(R.id.layoutRoot);
         Utils.hideKeyboardOutside(layoutRoot, this);
-
         registerPresenterIml = new RegisterPresenterIml(this);
-        registerPresenterIml.init();
     }
 
-    @Override
-    public void addControls() {
-        txtUserName = findViewById(R.id.txtUserName);
-        txtPassword=  findViewById(R.id.txtPassword);
-        txtPasswordConfirm = findViewById(R.id.txtPasswordConfirm);
-        btnSignUp = findViewById(R.id.btnSignUp);
-        txtCancel = findViewById(R.id.txtCancel);
-    }
-
-    @Override
-    public void addEvents() {
-        btnSignUp.setOnClickListener(view ->
+    @OnClick({R.id.btnSignUp, R.id.txtCancel})
+    public void onClick(View view){
+        switch (view.getId()){
+            case R.id.btnSignUp:
                 registerPresenterIml.clickSignUp(txtUserName.getText().toString(),
                         txtPassword.getText().toString(),
-                        txtPasswordConfirm.getText().toString()));
-        txtCancel.setOnClickListener(view -> registerPresenterIml.clickCancel());
+                        txtPasswordConfirm.getText().toString());
+                break;
+            case R.id.txtCancel:
+                registerPresenterIml.clickCancel();
+                break;
+        }
     }
+
 
     @Override
     public void finishActivity() {

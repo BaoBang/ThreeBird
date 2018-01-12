@@ -6,7 +6,6 @@ package com.example.baobang.threebird.presenter;
 
 public interface LoginPresenter {
 
-    void init();
     void clickLogin(String username, String password);
     void clickRegister();
     void clickForgetPassword();

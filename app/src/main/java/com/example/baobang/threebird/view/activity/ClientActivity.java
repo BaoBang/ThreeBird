@@ -15,7 +15,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -37,35 +39,82 @@ import com.kyleduo.switchbutton.SwitchButton;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
 import studio.carbonylgroup.textfieldboxes.TextFieldBoxes;
 
 public class ClientActivity extends AppCompatActivity implements ClientView{
 
+
+    @BindView(R.id.toolBarUserDetail)
+    Toolbar toolbar;
+
+    @BindView(R.id.groupUserInfo)
+    LinearLayout groupUserInfo;
+
+    @BindView(R.id.groupAddressInfo)
+    LinearLayout groupAddressInfo;
+
+    @BindView(R.id.swbUserInfo)
+    SwitchButton swbUserInfo;
+
+    @BindView(R.id.swbAddressInfo)
+    SwitchButton swbAddressInfo;
+
+    @BindView(R.id.imgAvatar)
+    ImageView imgAvatar;
+
+    @BindView(R.id.txtName)
+    ExtendedEditText txtName;
+
+    @BindView(R.id.txtPhone)
+    ExtendedEditText txtPhone;
+
+    @BindView(R.id.txtFax)
+    ExtendedEditText txtFax;
+
+    @BindView(R.id.txtWebsite)
+    ExtendedEditText txtWebsite;
+
+    @BindView(R.id.txtEmail)
+    ExtendedEditText txtEmail;
+
+    @BindView(R.id.txtAddress)
+    ExtendedEditText txtAddress;
+
+    @BindView(R.id.spGroupClient)
+    Spinner spGroupClient;
+
+    @BindView(R.id.spProvince)
+    Spinner spProvince;
+
+    @BindView(R.id.spDistrict)
+    Spinner spDistrict;
+
+    @BindView(R.id.spCommune)
+    Spinner spCommune;
+
     private ClientPresenterImp clientPresenterImp;
 
-    private Toolbar toolbar;
-    private LinearLayout groupUserInfo, groupAddressInfo;
-    private SwitchButton swbUserInfo, swbAddressInfo;
-
-    private ImageView imgAvatar;
-    private ExtendedEditText txtName, txtPhone, txtFax,
-            txtWebsite, txtEmail, txtAddress;
-
-    private Spinner spGroupClient, spProvince, spDistrict, spCommune;
     private ArrayList<Province> provinces;
     private ArrayList<District> districts;
     private ArrayList<Commune> communes;
-
     private ArrayList<ClientGroup> groups;
 
     private Bitmap avatar = null;
     private Client client = null;
     private int option;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
+
+        ButterKnife.bind(this);
 
         LinearLayout layoutRoot = findViewById(R.id.layoutRoot);
         Utils.hideKeyboardOutside(layoutRoot, this);
@@ -82,28 +131,12 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
     }
     @Override
     public void addControls() {
-        // start setting toolbar
-        toolbar = findViewById(R.id.toolBarUserDetail);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null){
             actionBar.setDisplayShowTitleEnabled(false);
             actionBar.setDisplayShowHomeEnabled(true);
         }
-        // end setting toolbar
-        groupAddressInfo = findViewById(R.id.groupAddressInfo);
-        groupUserInfo = findViewById(R.id.groupUserInfo);
-        swbAddressInfo = findViewById(R.id.swbAddressInfo);
-        swbUserInfo = findViewById(R.id.swbUserInfo);
-        imgAvatar = findViewById(R.id.imgAvatar);
-        // input
-        txtName = findViewById(R.id.txtName);
-        txtPhone = findViewById(R.id.txtPhone);
-        txtFax = findViewById(R.id.txtFax);
-        txtWebsite = findViewById(R.id.txtWebsite);
-        txtEmail = findViewById(R.id.txtEmail);
-        txtAddress = findViewById(R.id.txtAddress);
-        // spinner
         clientPresenterImp.loadSpinnerData();
 
         if(client != null){
@@ -114,65 +147,58 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
             setDisableInput();
         }
     }
-    @Override
-    public void addEvents() {
-//
-        swbUserInfo.setOnCheckedChangeListener(
-                (compoundButton,  isChecked) ->{
-                    if(isChecked){SlideView.expand(groupUserInfo);}
-                         else{SlideView.collapse(groupUserInfo);}});
 
-        swbAddressInfo.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            if(isChecked){
-                SlideView.expand(groupAddressInfo);
-            }else{
-                SlideView.collapse(groupAddressInfo);
+    @OnCheckedChanged({R.id.swbUserInfo, R.id.swbAddressInfo})
+    public void onCheckedChange(CompoundButton button, boolean isChecked){
+            View view = null;
+            switch (button.getId()){
+                case R.id.swbUserInfo:
+                    view = groupUserInfo;
+                    break;
+                case R.id.swbAddressInfo:
+                    view = groupAddressInfo;
+                    break;
             }
-        });
+        if(isChecked){
+                SlideView.expand(view);
+        }else{
+            SlideView.collapse(view);
+        }
+    }
 
-        toolbar.setNavigationOnClickListener(view -> onBackPressed());
+    @OnClick(R.id.imgAvatar)
+    public void clickAvatar(View view){
+        Utils.openDialogChosseImage(this);
+    }
 
-        imgAvatar.setOnClickListener(view -> Utils.openDialogChosseImage(ClientActivity.this));
+    @OnTextChanged(value = {R.id.txtPhone, R.id.txtEmail}, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
+    public void onTextChanged(Editable editable){
 
-        txtPhone.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                  Log.e("s", "s" + editable.toString() + "s");
-                  if(!editable.toString().matches(Constants.PHONE_REGULAR)){
-                      showPhoneWarning("Số điện thoại bắt đầu với +84/0 và tiếp theo từ 9-10 kí tự số");
-                  }
-            }
-        });
-
-        txtEmail.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                    if(!editable.toString().matches(Constants.EMAIL_REGULAR)){
+        View view = getCurrentFocus();
+        if(view != null){
+            switch (view.getId()){
+                case R.id.txtPhone:
+                    if(!editable.toString().matches(Constants.PHONE_REGULAR)){
+                        showPhoneWarning("Số điện thoại bắt đầu với +84/0 và tiếp theo từ 9-10 kí tự số");
+                    }
+                    break;
+                case R.id.txtEmail:
+                    Log.e("s", editable.length() + "-" + editable + "-");
+                    if(editable.length() > 1
+                            && !editable.toString().matches(Constants.EMAIL_REGULAR)){
                         showEmailWarning("Email định dạng không đúng");
                     }
+                    break;
             }
-        });
+        }
     }
+
+    @Override
+    public void addEvents() {
+        toolbar.setNavigationOnClickListener(view -> onBackPressed());
+
+    }
+
     @Override
     public void setDataForInput(Bitmap bitmap, String name, String phone,
                                 String fax, String website, String email,
@@ -186,7 +212,6 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
         txtWebsite.setText(website);
         txtEmail.setText(email);
         txtAddress.setText(address);
-        //
 
         clientPresenterImp.setGroupClientSelected(groups, groupId);
         clientPresenterImp.setProvinceSelected(provinces, provinceId);
@@ -229,15 +254,18 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
         spProvince.setEnabled(false);
         spDistrict.setEnabled(false);
     }
+
     @Override
     public void startCamera() {
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraIntent, Constants.CAMERA_PIC_REQUEST);
     }
+
     @Override
     public Bitmap getAvatar() {
         return avatar;
     }
+
     @Override
     public void setAvatar(Bitmap avatar) {
         this.avatar = avatar;
@@ -324,12 +352,14 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
         }
 
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.action_bar_menu2, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.actionBar_add){
@@ -363,9 +393,9 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
 
         return super.onOptionsItemSelected(item);
     }
+
     @Override
     public void showSpinnerDistrict(ArrayList<District> districts) {
-            spDistrict = findViewById(R.id.spDistrict);
             this.districts = districts;
             ArrayAdapter<District> districtAdapter = new ArrayAdapter<>(
                     this,
@@ -373,9 +403,10 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
                     districts );
             spDistrict.setAdapter(districtAdapter);
     }
+
     @Override
     public void showSpinnerProvince(ArrayList<Province> provinces) {
-            spProvince = findViewById(R.id.spProvince);
+
             this.provinces = provinces;
             ArrayAdapter<Province> provinceAdapter = new ArrayAdapter<>(
                     this,
@@ -383,9 +414,10 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
                     provinces);
             spProvince.setAdapter(provinceAdapter);
     }
+
     @Override
     public void showSpinnerCommune(ArrayList<Commune> communes) {
-            spCommune = findViewById(R.id.spCommune);
+
             this.communes = communes;
 
             ArrayAdapter<Commune> communeAdapter = new ArrayAdapter<>(
@@ -394,9 +426,10 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
                     communes);
             spCommune.setAdapter(communeAdapter);
     }
+
     @Override
     public void showSpinnerClientGroup(ArrayList<ClientGroup> clientGroups) {
-            spGroupClient = findViewById(R.id.spGroupClient);
+
             this.groups = clientGroups;
             ArrayAdapter<ClientGroup> groupAdapter = new ArrayAdapter<>(
                     this,

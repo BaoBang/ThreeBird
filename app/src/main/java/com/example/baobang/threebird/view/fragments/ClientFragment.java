@@ -28,16 +28,30 @@ import com.example.baobang.threebird.view.activity.ClientActivity;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ClientFragment extends Fragment implements ClientFragmentView{
 
     ClientFragmentPresenterImp clientFragmentPresenterImp;
+
+    private Unbinder unbinder;
+
+    @BindView(R.id.toolBarClient)
     Toolbar toolbar;
+
+    @BindView(R.id.layoutRoot)
+    FrameLayout layoutRoot;
+
+    @BindView(R.id.rcClients)
+    RecyclerView rcClients;
+
     private ArrayList<Client> clients;
     private ClientAdapter clientAdapter;
-    private RecyclerView rcClients;
     public ClientFragment() {
         // Required empty public constructor
     }
@@ -50,6 +64,9 @@ public class ClientFragment extends Fragment implements ClientFragmentView{
     private View addControls(LayoutInflater inflater, ViewGroup container) {
         View view = inflater.inflate(R.layout.fragment_client, container, false);
         // add toolbar
+
+        unbinder = ButterKnife.bind(this, view);
+
         clientFragmentPresenterImp = new ClientFragmentPresenterImp(this);
         setHasOptionsMenu(true);
         // add views
@@ -136,16 +153,12 @@ public class ClientFragment extends Fragment implements ClientFragmentView{
 
     @Override
     public void addControls(View view) {
-        FrameLayout layoutRoot =  view.findViewById(R.id.layoutRoot);
         Utils.hideKeyboardOutside(layoutRoot, getActivity());
-
-        rcClients = view.findViewById(R.id.rcClients);
 
     }
 
     @Override
     public void addToolBar(View view) {
-        toolbar = view.findViewById(R.id.toolBarClient);
         if (toolbar != null) {
             AppCompatActivity appCompatActivity = (AppCompatActivity) getActivity();
             if(appCompatActivity != null){
@@ -168,5 +181,11 @@ public class ClientFragment extends Fragment implements ClientFragmentView{
                 item -> openOptionDialog((Client)item));
         rcClients.setLayoutManager(new VegaLayoutManager());
         rcClients.setAdapter(clientAdapter);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
     }
 }

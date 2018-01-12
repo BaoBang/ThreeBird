@@ -19,12 +19,6 @@ public class RegisterPresenterIml implements RegisterPresenter {
     }
 
     @Override
-    public void init() {
-        registerView.addControls();
-        registerView.addEvents();
-    }
-
-    @Override
     public void clickSignUp(String username, String password, String passwordConfirm) {
 
         if(Utils.checkInput(username)){
