@@ -11,7 +11,6 @@ import com.example.baobang.threebird.model.Category;
 import com.example.baobang.threebird.model.Product;
 import com.example.baobang.threebird.model.helper.BrandHelper;
 import com.example.baobang.threebird.model.helper.CategoryHelper;
-import com.example.baobang.threebird.model.helper.ClientHelper;
 import com.example.baobang.threebird.model.helper.OrderHelper;
 import com.example.baobang.threebird.model.helper.ProductHelper;
 import com.example.baobang.threebird.presenter.ProductFragmentPresenter;
@@ -22,7 +21,7 @@ import java.util.ArrayList;
 
 public class ProductFragmentPresenterImp implements ProductFragmentPresenter{
 
-    ProductFragmentView productFragmentView;
+    private ProductFragmentView productFragmentView;
 
     public ProductFragmentPresenterImp(ProductFragmentView productFragmentView) {
         this.productFragmentView = productFragmentView;

@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.presenter.imp.HomeFragmentPresenterImp;
-import com.example.baobang.threebird.utils.ItemFragmentModel;
 import com.example.baobang.threebird.view.HomeFragmentView;
 import com.example.baobang.threebird.utils.SlideModel;
 import com.example.baobang.threebird.utils.Utils;
@@ -37,9 +35,9 @@ public class HomeFragment extends Fragment implements HomeFragmentView{
     @BindView(R.id.layoutStaticalOrder)
     LinearLayout layoutStaticalOrder;
     private HomeFragmentPresenterImp homeFragmentPresenterImp;
-    private  List<SlideModel> models;
+    private  List<SlideModel> modles;
     ArrayList<Entry> entries;
-    ArrayList<String> lables;
+    ArrayList<String> labels;
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -76,7 +74,7 @@ public class HomeFragment extends Fragment implements HomeFragmentView{
         FrameLayout layoutRoot =  view.findViewById(R.id.layoutRoot);
         Utils.hideKeyboardOutside(layoutRoot, getActivity());
         CircleIndicator circleIndicator = view.findViewById(R.id.indicator);
-        this.models = models;
+        this.modles = models;
         ViewPagerHandler viewPagerHandler = new ViewPagerHandler(getContext(), viewPager, circleIndicator, models);
         viewPagerHandler.handler();
 
@@ -87,9 +85,9 @@ public class HomeFragment extends Fragment implements HomeFragmentView{
 
         LineChart mChart = view.findViewById(R.id.chart);
         this.entries = entries;
-        this.lables = lables;
+        this.labels = lables;
         com.example.baobang.threebird.utils.LineChart chart =
-                new com.example.baobang.threebird.utils.LineChart("This is a line chart",mChart, this.entries, this.lables);
+                new com.example.baobang.threebird.utils.LineChart("Biểu đồ doanh thu của các ngày trong tháng",mChart, this.entries, this.labels);
         chart.drawLineChart();
     }
 

@@ -19,11 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import io.realm.RealmList;
-import io.realm.RealmResults;
-
-/**
- * Created by baobang on 1/8/18.
- */
 
 public class ProductPresenterImp implements ProductPresenter {
 
@@ -47,7 +42,7 @@ public class ProductPresenterImp implements ProductPresenter {
     public int addProduct(String name, int categoryId, int brandId,
                               int inventory, int priceInventory,int price,String detail,
                             HashMap<Integer,Bitmap> bitmaps) {
-        RealmList<String> list = new RealmList<String>();
+        RealmList<String> list = new RealmList<>();
         for(Integer key : bitmaps.keySet()){
             Bitmap bitmap = bitmaps.get(key);
             list.add(Utils.BitMapToString(bitmap));
@@ -62,7 +57,7 @@ public class ProductPresenterImp implements ProductPresenter {
     public int updateProduct(Product product,String name, int categoryId, int brandId,
                                  int inventory, int priceInventory,int price,String detail
                  , HashMap<Integer,Bitmap> bitmaps) {
-        RealmList<String> list = new RealmList<String>();
+        RealmList<String> list = new RealmList<>();
         for(Integer key : bitmaps.keySet()){
             Bitmap bitmap = bitmaps.get(key);
             list.add(Utils.BitMapToString(bitmap));
@@ -91,7 +86,7 @@ public class ProductPresenterImp implements ProductPresenter {
     public void setData(Product product) {
         productView.setDataForInput(product.getId(), product.getPriceInventory(), product.getPrice(),
                 product.getInvetory(), product.getName(), product.getDetail(),
-                product.getBrand(), product.getCategory(), new ArrayList<String>( product.getImages()));
+                product.getBrand(), product.getCategory(), new ArrayList<>( product.getImages()));
     }
 
     @Override
@@ -167,9 +162,9 @@ public class ProductPresenterImp implements ProductPresenter {
             productView.showProductPriceWarning("Vui lòng nhập vào đơn giá sản phẩm");
             return;
         }
-        int id, inventory, inventoryPrice, price;
+        int inventory, inventoryPrice, price;
         try{
-            id = Integer.parseInt(productId);
+           Integer.parseInt(productId);
         }catch (Exception e){
             productView.showProductIdWarning("Định dạng không đúng");
             return;
@@ -200,16 +195,16 @@ public class ProductPresenterImp implements ProductPresenter {
         if(option == Constants.ADD_OPTION){
             result = addProduct(name,category.getId(),
                     brand.getId(),
-                    Integer.parseInt(inventoryStr),
-                    Integer.parseInt(priceInventoryStr),
-                    Integer.parseInt(priceStr),
+                    inventory,
+                    inventoryPrice,
+                    price,
                     detail, bitmaps);
         }else if(option == Constants.EDIT_OPTION){
             result = updateProduct(product,name,category.getId(),
                     brand.getId(),
-                    Integer.parseInt(inventoryStr),
-                    Integer.parseInt(priceInventoryStr),
-                    Integer.parseInt(priceStr),
+                    inventory,
+                    inventoryPrice,
+                    price,
                     detail, bitmaps);
         }
         if(result != -1){

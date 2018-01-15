@@ -2,7 +2,6 @@ package com.example.baobang.threebird.adapter;
 
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +37,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientHold
         this.clients = clients;
         this.tempClients = new ArrayList<>(this.clients);
         this.recyclerView = recyclerView;
-        mAnimator = new RecyclerViewAnimator(recyclerView);
+        this.mAnimator = new RecyclerViewAnimator(recyclerView);
         this.onItemClickListener = onItemClickListener;
     }
 
@@ -92,7 +91,6 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientHold
 
         @Override
         protected FilterResults performFiltering(CharSequence charSequence) {
-            Log.e("charSequence", charSequence.toString());
             String filterSeq = charSequence.toString().toLowerCase();
             FilterResults result = new FilterResults();
             if (filterSeq.length() > 0) {
@@ -112,7 +110,6 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientHold
                 result.count = tempClients.size();
                 clients = tempClients;
             }
-            Log.e("result", result.count + "");
             return result;
         }
 

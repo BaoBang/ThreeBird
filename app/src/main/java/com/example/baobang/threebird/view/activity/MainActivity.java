@@ -15,6 +15,9 @@ import com.example.baobang.threebird.view.fragments.ClientFragment;
 import com.example.baobang.threebird.view.fragments.HomeFragment;
 import com.example.baobang.threebird.view.fragments.OrderFragment;
 import com.example.baobang.threebird.view.fragments.ProductFragment;
+import com.gw.swipeback.SwipeBackLayout;
+import com.gw.swipeback.WxSwipeBackLayout;
+import com.gw.swipeback.tools.WxSwipeBackActivityManager;
 
 import io.realm.Realm;
 
@@ -26,7 +29,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        WxSwipeBackActivityManager.getInstance().init(getApplication());
+
         Realm.init(this);
+
 
         LinearLayout layoutRoot = findViewById(R.id.container);
         Utils.hideKeyboardOutside(layoutRoot, this);

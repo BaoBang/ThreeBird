@@ -1,7 +1,5 @@
 package com.example.baobang.threebird.model.helper;
 
-import android.util.Log;
-
 import com.example.baobang.threebird.model.Client;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -12,22 +10,21 @@ import io.realm.RealmResults;
 
 public class ClientHelper {
 
-    public static boolean createClient(Client client){
-        try (Realm realm = Realm.getDefaultInstance()) {
-            int nextID = 0;
-            Number number = realm.where(Client.class).max("id");
-            if (number != null)
-                nextID = number.intValue() + 1;
-            realm.beginTransaction();
-            client.setId(nextID);
-            realm.copyToRealm(client);
-            realm.commitTransaction();
-            return true;
-        } catch (Exception e) {
-            Log.e("Lỗi: ", e.getMessage());
-        }
-        return false;
-    }
+//    public static boolean createClient(Client client){
+//        try (Realm realm = Realm.getDefaultInstance()) {
+//            int nextID = 0;
+//            Number number = realm.where(Client.class).max("id");
+//            if (number != null)
+//                nextID = number.intValue() + 1;
+//            realm.beginTransaction();
+//            client.setId(nextID);
+//            realm.copyToRealm(client);
+//            realm.commitTransaction();
+//            return true;
+//        } catch (Exception ignored) {
+//        }
+//        return false;
+//    }
 
     public static Client createClientReturnObject(Client client){
         try (Realm realm = Realm.getDefaultInstance()) {
@@ -40,20 +37,9 @@ public class ClientHelper {
             realm.copyToRealm(client);
             realm.commitTransaction();
             return client;
-        } catch (Exception e) {
-            Log.e("Lỗi: ", e.getMessage());
+        } catch (Exception ignored) {
         }
         return null;
-    }
-
-    public static boolean checkClient(Client client){
-        Realm realm = Realm.getDefaultInstance();
-        RealmResults<Client> results = realm.where(Client.class)
-                .equalTo("userName", client.getId())
-                .findAll();
-        int size = results.size();
-        realm.close();
-        return  size > 0;
     }
 
     public static ArrayList<Client> getAllClient(){
@@ -94,28 +80,28 @@ public class ClientHelper {
         return  client;
     }
 
-    public static ArrayList<Client> getClientByName(String name){
-        List<Client> list;
-        ArrayList<Client> clients = new ArrayList<>();
-        Realm realm = Realm.getDefaultInstance();
-        RealmResults<Client> results = realm.where(Client.class).contains("name", name).findAll();
-        list = realm.copyFromRealm(results);
-        clients.addAll(list);
-        realm.close();
-        return  clients;
-    }
-
-    public static boolean updateClient(Client client){
-        try (Realm realm = Realm.getDefaultInstance()) {
-            realm.beginTransaction();
-            realm.copyToRealmOrUpdate(client);
-            realm.commitTransaction();
-
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
+//    public static ArrayList<Client> getClientByName(String name){
+//        List<Client> list;
+//        ArrayList<Client> clients = new ArrayList<>();
+//        Realm realm = Realm.getDefaultInstance();
+//        RealmResults<Client> results = realm.where(Client.class).contains("name", name).findAll();
+//        list = realm.copyFromRealm(results);
+//        clients.addAll(list);
+//        realm.close();
+//        return  clients;
+//    }
+//
+//    public static boolean updateClient(Client client){
+//        try (Realm realm = Realm.getDefaultInstance()) {
+//            realm.beginTransaction();
+//            realm.copyToRealmOrUpdate(client);
+//            realm.commitTransaction();
+//
+//            return true;
+//        } catch (Exception e) {
+//            return false;
+//        }
+//    }
 
     public static Client updateClientReturnObject(Client client){
         try (Realm realm = Realm.getDefaultInstance()) {
@@ -123,7 +109,7 @@ public class ClientHelper {
             realm.copyToRealmOrUpdate(client);
             realm.commitTransaction();
             return client;
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         return null;
 

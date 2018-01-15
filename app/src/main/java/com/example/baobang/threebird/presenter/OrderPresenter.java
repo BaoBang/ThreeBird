@@ -31,7 +31,7 @@ public interface OrderPresenter {
     Bitmap getImageFromProduct(Activity activity, Product product);
     int getAmountProduct(List<ProductOrder> productList, int id);
     int getAmountAllProduct(List<ProductOrder> productList);
-    List<ProductOrder> getProductFromList(List<ProductOrder> productList, Product product);
+    List<ProductOrder> getProductFromList(List<ProductOrder> productList, Product product, int amount);
 
     int checkProduct(List<ProductOrder> productList,Product product);
     Product checkInventory(List<ProductOrder> productList);

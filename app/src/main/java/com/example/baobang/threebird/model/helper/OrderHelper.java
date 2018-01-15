@@ -1,6 +1,5 @@
 package com.example.baobang.threebird.model.helper;
 
-import android.util.Log;
 import com.example.baobang.threebird.model.Order;
 import com.example.baobang.threebird.model.ProductOrder;
 
@@ -29,30 +28,70 @@ public class OrderHelper {
             realm.copyToRealm(order);
             realm.commitTransaction();
             return nextID;
-        } catch (Exception e) {
-            Log.e("Lỗi: ", e.getMessage());
+        } catch (Exception ignored) {
         }
         return -1;
     }
 
-    public static ArrayList<Order> getAllOrder(int status){
+//    public static ArrayList<Order> getAllOrder(int status){
+//        List<Order> list;
+//        ArrayList<Order> orders = new ArrayList<>();
+//        Realm realm = Realm.getDefaultInstance();
+//        RealmResults<Order> results = realm.where(Order.class).equalTo("status", status).findAll();
+//        list = realm.copyFromRealm(results);
+//        orders.addAll(list);
+//        realm.close();
+//        return orders;
+//    }
+
+    public static ArrayList<Order> getOrderByStatusOnWeekOfMonth(int status, int month, int week){
         List<Order> list;
         ArrayList<Order> orders = new ArrayList<>();
+
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat =
+                new SimpleDateFormat("dd/MM/yyyy",
+                        new Locale("vi", "VN"));
+
+        calendar.set(Calendar.MONTH, month);
+
+        calendar.set(Calendar.DATE, 1);
+        // the first day in month
+        Date firstDayInMonth = calendar.getTime();
+
+        try {
+            firstDayInMonth = simpleDateFormat.parse(simpleDateFormat.format(firstDayInMonth));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        // the first the in next month
+        calendar.add(Calendar.MONTH, 1);
+        Date firstDayInNextMonth = calendar.getTime();
+
+        try {
+            firstDayInNextMonth = simpleDateFormat.parse(simpleDateFormat.format(firstDayInNextMonth));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<Order> results = realm.where(Order.class).equalTo("status", status).findAll();
+        RealmResults<Order> results = realm.where(Order.class).greaterThanOrEqualTo("createdAt", firstDayInMonth).lessThan("createdAt",firstDayInNextMonth).equalTo("status", status).findAll();
         list = realm.copyFromRealm(results);
         orders.addAll(list);
         realm.close();
         return orders;
     }
 
-    public static ArrayList<Order> getAllOrderByStatusInDay(){
+    public static ArrayList<Order> getAllOrderInDay(){
         List<Order> list;
         ArrayList<Order> orders = new ArrayList<>();
         Realm realm = Realm.getDefaultInstance();
         Calendar calendar = Calendar.getInstance();
+        // the day before
         calendar.add(Calendar.DATE, -1);
         Date dateBefore = calendar.getTime();
+        // the day after
         calendar.add(Calendar.DATE, 2);
         Date dateAfter = calendar.getTime();
         RealmResults<Order> results = realm.where(Order.class).lessThan("createdAt", dateAfter).greaterThan("createdAt", dateBefore).findAll();
@@ -66,10 +105,35 @@ public class OrderHelper {
         List<Order> list;
         ArrayList<Order> orders = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
+        // the day before
         calendar.add(Calendar.DATE, -1);
         Date dateBefore = calendar.getTime();
+        calendar.add(Calendar.DATE, 2);
+        Date dateAfter = calendar.getTime();
+
+
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<Order> results = realm.where(Order.class).greaterThanOrEqualTo("createdAt", dateBefore).equalTo("status", status).findAll();
+        RealmResults<Order> results = realm.where(Order.class).greaterThan("createdAt", dateBefore).lessThan("createdAt", dateAfter).equalTo("status", status).findAll();
+        list = realm.copyFromRealm(results);
+        orders.addAll(list);
+        realm.close();
+        return orders;
+    }
+
+    public static ArrayList<Order> getOrderByStatusInDay(int status, Date date){
+        List<Order> list;
+        ArrayList<Order> orders = new ArrayList<>();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        // the day before
+        calendar.add(Calendar.DATE, -1);
+        Date dateBefore = calendar.getTime();
+        calendar.add(Calendar.DATE, 2);
+        Date dateAfter = calendar.getTime();
+
+
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<Order> results = realm.where(Order.class).greaterThan("createdAt", dateBefore).lessThan("createdAt", dateAfter).equalTo("status", status).findAll();
         list = realm.copyFromRealm(results);
         orders.addAll(list);
         realm.close();
@@ -87,8 +151,8 @@ public class OrderHelper {
                         new Locale("vi", "VN"));
 
         calendar.set(Calendar.MONTH, month);
-
         calendar.set(Calendar.DATE, 1);
+        // the first day in month
         Date firstDayInMonth = calendar.getTime();
 
         try {
@@ -97,6 +161,7 @@ public class OrderHelper {
             e.printStackTrace();
         }
 
+        // the first the in next month
         calendar.add(Calendar.MONTH, 1);
         Date firstDayInNextMonth = calendar.getTime();
 

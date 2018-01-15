@@ -1,16 +1,15 @@
 package com.example.baobang.threebird.presenter.imp;
 
-import android.util.Log;
 import android.view.View;
 
 import com.example.baobang.threebird.model.Order;
-import com.example.baobang.threebird.model.Product;
 import com.example.baobang.threebird.model.ProductOrder;
 import com.example.baobang.threebird.model.Status;
 import com.example.baobang.threebird.model.helper.OrderHelper;
 import com.example.baobang.threebird.model.helper.StatusHelper;
 import com.example.baobang.threebird.presenter.HomeFragmentPresenter;
-import com.example.baobang.threebird.utils.ItemFragmentModel;
+import com.example.baobang.threebird.utils.Constants;
+import com.example.baobang.threebird.utils.LineChartModel;
 import com.example.baobang.threebird.utils.SlideModel;
 import com.example.baobang.threebird.view.HomeFragmentView;
 import com.example.baobang.threebird.view.fragments.ItemFragment;
@@ -18,14 +17,10 @@ import com.github.mikephil.charting.data.Entry;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import io.realm.RealmList;
 
-/**
- * Created by baobang on 1/11/18.
- */
 
 public class HomeFragmentPresenterImp implements HomeFragmentPresenter {
     private HomeFragmentView homeFragmentView;
@@ -44,31 +39,26 @@ public class HomeFragmentPresenterImp implements HomeFragmentPresenter {
     @Override
     public void addLineChart(View view) {
 
-        Date date = new Date();
-        int month = date.getMonth();
         ArrayList<Entry> entries = new ArrayList<>();
-        ArrayList<String> lables = new ArrayList<>();
+        ArrayList<String> labels = new ArrayList<>();
 
-        for(int i = 1; i <= month; i++){
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DATE, 1);
 
+        for(int i = 0; i <  calendar.get(Calendar.DAY_OF_MONTH); i++){
+
+            ArrayList<Order> orders = OrderHelper.getOrderByStatusInDay(
+                    Constants.COMPLETED,
+                    calendar.getTime());
+            long total = 0;
+            for(Order order : orders)
+                total += order.getToal();
+            entries.add(new Entry(total, i));
+            labels.add(i, (i+1)+"");
+
+            calendar.add(Calendar.DATE, 1);
         }
-
-        entries.add(new Entry(10f, 0));
-        entries.add(new Entry(50f, 1));
-        entries.add(new Entry(10f, 2));
-        entries.add(new Entry(10f, 3));
-        entries.add(new Entry(15f, 4));
-        entries.add(new Entry(60f, 5));
-        entries.add(new Entry(-10f, 6));
-        lables.add("A");
-        lables.add("B");
-        lables.add("C");
-        lables.add("D");
-        lables.add("A");
-        lables.add("B");
-        lables.add("C");
-        lables.add("D");
-        homeFragmentView.showLineChart(view, entries, lables);
+        homeFragmentView.showLineChart(view, entries, labels);
 
     }
 
@@ -97,8 +87,8 @@ public class HomeFragmentPresenterImp implements HomeFragmentPresenter {
         Calendar calendar = Calendar.getInstance();
         for(Status status : statuses){
                 ArrayList<Order> orders = OrderHelper.getOrderByStatusInMonth(status.getId(),calendar.get(Calendar.MONTH));
-                ItemFragmentModel itemFragmentModel =
-                        new ItemFragmentModel(status.getId(),
+                LineChartModel itemFragmentModel =
+                        new LineChartModel(status.getId(),
                                    status.getDescription(),orders.size(),
                                 getAllPriceProductInventory(orders),
                                 getAllPriceProduct(orders));

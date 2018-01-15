@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class OrderFragmentPresenterImp implements OrderFragmentPresenter {
 
-    OrderFragmentView orderFragmentView;
+    private OrderFragmentView orderFragmentView;
 
     public OrderFragmentPresenterImp(OrderFragmentView orderFragmentView) {
         this.orderFragmentView = orderFragmentView;
@@ -25,7 +25,7 @@ public class OrderFragmentPresenterImp implements OrderFragmentPresenter {
         orderFragmentView.addToolBar(view);
         orderFragmentView.addControls(view);
         orderFragmentView.addEvents();
-        orderFragmentView.showRecyclerViewOrder(OrderHelper.getAllOrderByStatusInDay());
+        orderFragmentView.showRecyclerViewOrder(OrderHelper.getAllOrderInDay());
         orderFragmentView.setupOrderInDay(getOrderListByStatus(-1).size(),getOrderListByStatus(Constants.DELIVERY).size(),
                 getOrderListByStatus(Constants.CANCEL).size(),getOrderListByStatus(Constants.COMPLETED).size());
     }
@@ -77,7 +77,7 @@ public class OrderFragmentPresenterImp implements OrderFragmentPresenter {
                 list = OrderHelper.getOrderByStatusInDay(Constants.DELIVERY);
                 break;
             default:
-                list = OrderHelper.getAllOrderByStatusInDay();
+                list = OrderHelper.getAllOrderInDay();
         }
         return list;
     }

@@ -22,10 +22,6 @@ import com.example.baobang.threebird.model.helper.UserHelper;
 import com.example.baobang.threebird.presenter.LoginPresenter;
 import com.example.baobang.threebird.view.LoginView;
 
-/**
- * Created by baobang on 1/9/18.
- */
-
 public class LoginPresenterImp implements LoginPresenter {
 
     private LoginView loginView;

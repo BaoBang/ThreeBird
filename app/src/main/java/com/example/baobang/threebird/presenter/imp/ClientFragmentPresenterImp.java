@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class ClientFragmentPresenterImp implements ClientFragmentPresenter {
 
-    ClientFragmentView clientFragmentView;
+    private ClientFragmentView clientFragmentView;
 
     public ClientFragmentPresenterImp(ClientFragmentView clientFragmentView) {
         this.clientFragmentView = clientFragmentView;

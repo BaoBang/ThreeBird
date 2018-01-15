@@ -39,6 +39,7 @@ public class LineChart implements Serializable {
 
         // no description text
         mChart.setNoDataTextDescription("You need to provide data for the chart.");
+        mChart.setDescription("");
         // enable touch gestures
         mChart.setTouchEnabled(true);
         // enable scaling and dragging
@@ -46,13 +47,13 @@ public class LineChart implements Serializable {
         mChart.setScaleEnabled(true);
         mChart.setDrawBorders(false);
 
-        LimitLine lower_limit = new LimitLine(getMinValue(yValues), "");
-        lower_limit.setLineWidth(2f);
+        LimitLine lower_limit = new LimitLine(getMinValue(yValues), "Doanh thu thấp nhất");
+        lower_limit.setLineWidth(5f);
 
         XAxis xAxis = mChart.getXAxis();
         xAxis.setEnabled(false);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setDrawLimitLinesBehindData(true);
+        xAxis.setDrawLimitLinesBehindData(false);
 
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.setEnabled(true);

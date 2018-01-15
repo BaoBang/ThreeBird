@@ -5,14 +5,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,6 +25,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.example.baobang.threebird.R;
 import com.example.baobang.threebird.adapter.ClientAdapter;
 import com.example.baobang.threebird.adapter.ProductAdapter;
@@ -39,7 +40,7 @@ import com.example.baobang.threebird.model.Product;
 import com.example.baobang.threebird.model.ProductOrder;
 import com.example.baobang.threebird.model.Province;
 import com.example.baobang.threebird.model.Status;
-import com.example.baobang.threebird.model.helper.OrderHelper;
+import com.example.baobang.threebird.model.helper.ClientHelper;
 import com.example.baobang.threebird.presenter.imp.OrderPresenterImp;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
@@ -48,7 +49,6 @@ import com.example.baobang.threebird.view.OrderView;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -57,6 +57,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import nl.dionsegijn.steppertouch.StepperTouch;
 import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
 import studio.carbonylgroup.textfieldboxes.TextFieldBoxes;
 
@@ -155,26 +156,6 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
         Bundle bundle = getIntent().getExtras();
         order = orderPresenterImp.getOrderFromBundle(bundle);
         option = orderPresenterImp.getOptionFromBundle(bundle);
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", new Locale("vi", "VN"));
-        Date date = new Date();
-        try {
-            date   = simpleDateFormat.parse("11/1/2018");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        Calendar calendar = Calendar.getInstance();
-
-        Order order = OrderHelper.getOrder(0);
-        order.setCreatedAt(date);
-        OrderHelper.updateOrder(order);
-
-        order = OrderHelper.getOrder(3);
-        calendar.add(Calendar.MONTH, 2);
-        order.setCreatedAt(calendar.getTime());
-        OrderHelper.updateOrder(order);
-
         orderPresenterImp.init();
     }
 
@@ -386,14 +367,61 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
         final AlertDialog dialog = alertDialog.show();
         ProductAdapter adapter = new ProductAdapter(products, rcProudcts, item -> {
             Product product = (Product) item;
-            productList = orderPresenterImp.getProductFromList(productList, product);
-            txtAmount.setText(String.valueOf(orderPresenterImp.getAmountAllProduct(productList)));
-            addProductToLayout(product);
             dialog.dismiss();
+            showDialogProductOrder(product);
+//            addProductToLayout(product);
         });
         rcProudcts.setLayoutManager(new VegaLayoutManager());
         rcProudcts.setAdapter(adapter);
     }
+
+    public void showDialogProductOrder(Product product){
+
+        LayoutInflater inflater = getLayoutInflater();
+        @SuppressLint("InflateParams")
+        View convertView = inflater.inflate(R.layout.enter_amount_product, null);
+
+        TextView txtProductName = convertView.findViewById(R.id.txtProductName);
+        ImageView imgProductImage = convertView.findViewById(R.id.imgProduct);
+        StepperTouch stepperTouch = convertView.findViewById(R.id.stepperTouch);
+
+        ProductOrder productOrder = new ProductOrder();
+        productOrder.setProductId(product.getId());
+        productOrder.setAmount(1);
+
+        String bitmapStr = product.getImages().size() > 0 ? product.getImages().first() : "";
+        Bitmap bitmap ;
+
+        if(bitmapStr.length() == 0){
+            bitmap = Utils.getRoundedRectBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.noimage));
+        }else{
+            bitmap = Utils.getRoundedRectBitmap(Utils.StringToBitMap(bitmapStr));
+        }
+
+        txtProductName.setText(product.getName());
+        imgProductImage.setImageBitmap(bitmap);
+        stepperTouch.stepper.setMin(1);
+        stepperTouch.stepper.setMax(product.getInvetory());
+        stepperTouch.getStepper().setValue(1);
+
+
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(OrderActivity.this);
+        final boolean[] isClose = {false};
+        dialog.setView(convertView);
+        dialog.setTitle("Số lượng sản phẩm");
+
+        dialog.setPositiveButton("Đồng ý", (dialog1, id) -> {
+            productList = orderPresenterImp.getProductFromList(productList, product, stepperTouch.getStepper().getValue());
+            txtAmount.setText(String.valueOf(orderPresenterImp.getAmountAllProduct(productList)));
+            isClose[0] = true;
+        }).setNegativeButton("Hủy ", (dialog12, which) -> {
+            isClose[0] = false;
+        });
+        AlertDialog alertDialog = dialog.create();
+        alertDialog.show();
+        if(isClose[0]) alertDialog.dismiss();
+    }
+
 
     @Override
     public int checkLayoutProduct(int id){

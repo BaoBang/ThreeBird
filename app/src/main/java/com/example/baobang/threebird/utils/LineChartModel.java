@@ -3,14 +3,14 @@ package com.example.baobang.threebird.utils;
 import java.io.Serializable;
 
 
-public class ItemFragmentModel implements Serializable {
+public class LineChartModel implements Serializable {
     private int color;
     private String result;
     private long number1;
     private long number2;
     private long number3;
 
-    public ItemFragmentModel(int color, String result, long number1, long number2, long number3) {
+    public LineChartModel(int color, String result, long number1, long number2, long number3) {
         this.color = color;
         this.result = result;
         this.number1 = number1;

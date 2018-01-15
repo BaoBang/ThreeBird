@@ -13,7 +13,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.baobang.threebird.R;
-import com.example.baobang.threebird.utils.ItemFragmentModel;
+import com.example.baobang.threebird.utils.Constants;
+import com.example.baobang.threebird.utils.LineChartModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,10 +25,10 @@ public class ItemFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static ItemFragment newInstance(ItemFragmentModel model2) {
+    public static ItemFragment newInstance(LineChartModel model2) {
 
         Bundle args = new Bundle();
-        args.putSerializable("MODEL2", model2);
+        args.putSerializable(Constants.LINE_CHART_MODEL, model2);
         ItemFragment fragment = new ItemFragment();
         fragment.setArguments(args);
         return fragment;
@@ -37,12 +38,12 @@ public class ItemFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-//        model2 = (ItemFragmentModel) savedInstanceState.getSerializable("MODEL2");
+//        model2 = (LineChartModel) savedInstanceState.getSerializable("MODEL2");
         return inflater.inflate(R.layout.fragment_item, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         TextView txtResult  = view.findViewById(R.id.txtResult);
         TextView txtNumber1 = view.findViewById(R.id.txtNumber1);
@@ -50,8 +51,10 @@ public class ItemFragment extends Fragment {
         TextView txtNumber3 = view.findViewById(R.id.txtNumber3);
 
         LinearLayout layout = view.findViewById(R.id.layout);
-        ItemFragmentModel model2 = (ItemFragmentModel)  getArguments().getSerializable("MODEL2");
-       // ItemFragmentModel model2  = new ItemFragmentModel(3, "MỚI", 100,20000,30000);
+        Bundle bundle = getArguments();
+
+        LineChartModel model2 = bundle == null ? null : (LineChartModel) bundle.getSerializable(Constants.LINE_CHART_MODEL);
+       // LineChartModel model2  = new LineChartModel(3, "MỚI", 100,20000,30000);
 
         txtResult.setText(model2 == null ? null : model2.getResult().toUpperCase());
         txtNumber1.setText(String.valueOf(model2 == null ? null : model2.getNumber1()));

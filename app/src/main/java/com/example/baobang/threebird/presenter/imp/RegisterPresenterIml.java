@@ -6,10 +6,6 @@ import com.example.baobang.threebird.presenter.RegisterPresenter;
 import com.example.baobang.threebird.utils.Utils;
 import com.example.baobang.threebird.view.RegisterView;
 
-/**
- * Created by baobang on 1/9/18.
- */
-
 public class RegisterPresenterIml implements RegisterPresenter {
 
     private RegisterView registerView;

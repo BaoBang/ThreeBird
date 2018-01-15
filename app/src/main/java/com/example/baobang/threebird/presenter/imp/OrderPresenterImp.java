@@ -121,10 +121,13 @@ public class OrderPresenterImp implements OrderPresenter {
         for(ProductOrder productOrder : productList){
             if(productOrder.getProductId() == id){
                 total = productOrder.getAmount();
+                break;
             }
         }
         return total;
     }
+
+
 
     @Override
     public int getAmountAllProduct(List<ProductOrder> productList) {
@@ -136,12 +139,12 @@ public class OrderPresenterImp implements OrderPresenter {
     }
 
     @Override
-    public List<ProductOrder> getProductFromList(List<ProductOrder> productList, Product product) {
+    public List<ProductOrder> getProductFromList(List<ProductOrder> productList, Product product, int amount) {
         int index = checkProduct(productList, product);
         if(index != -1){
-            productList.get(index).setAmount(productList.get(index).getAmount() + 1);
+            productList.get(index).setAmount(productList.get(index).getAmount() + amount);
         }else{
-            productList.add(new ProductOrder(product.getId(), 1));
+            productList.add(new ProductOrder(product.getId(), amount));
         }
         return  productList;
     }

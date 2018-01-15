@@ -10,8 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,7 +26,6 @@ import com.example.baobang.threebird.model.ClientGroup;
 import com.example.baobang.threebird.model.Commune;
 import com.example.baobang.threebird.model.District;
 import com.example.baobang.threebird.model.Province;
-import com.example.baobang.threebird.model.helper.ProvinceHelper;
 import com.example.baobang.threebird.presenter.imp.ClientPresenterImp;
 import com.example.baobang.threebird.utils.Constants;
 import com.example.baobang.threebird.utils.Utils;
@@ -183,7 +180,6 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
                     }
                     break;
                 case R.id.txtEmail:
-                    Log.e("s", editable.length() + "-" + editable + "-");
                     if(editable.length() > 1
                             && !editable.toString().matches(Constants.EMAIL_REGULAR)){
                         showEmailWarning("Email định dạng không đúng");

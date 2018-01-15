@@ -10,8 +10,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -223,9 +221,7 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
     public void showSpinnerCategory(ArrayList<Category> categories) {
         spCategory = findViewById(R.id.spProductCategory);
         this.categories = categories;
-        for(Category category : categories){
-            Log.e("cate: ",category.getId() + "-"+ category.getName());
-        }
+
         ArrayAdapter<Category> categoryArrayAdapter =
                 new ArrayAdapter<>(this,
                         android.R.layout.simple_list_item_1,
@@ -405,14 +401,27 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
             if(option != Constants.DETAIL_OPTION){
                 String productId = txtProductId.getText().toString();
                 String name = txtProductName.getText().toString();
-                int category = spCategory.getSelectedItemPosition();
-                int brand = spBrand.getSelectedItemPosition();
-                String inventoryStr = txtProductInventory.getText().toString();
-                String priceInventoryStr = txtProductPriceInventory.getText().toString();
-                String priceStr = txtProductPrice.getText().toString();
+                int position = spCategory.getSelectedItemPosition();
+                Category category = position == 0 ? null : categories.get(position);
+                position = spBrand.getSelectedItemPosition();
+                Brand brand = position == 0 ? null : brands.get(position);
+
+                String inventoryStr = txtProductInventory.
+                        getText().toString();
+
+                String priceInventoryStr = txtProductPriceInventory.
+                        getText().toString();
+
+                String priceStr = txtProductPrice.
+                        getText().toString();
+
                 String detail = txtDetail.getText().toString();
-                productPresenterImp.clickAdd(product, option, name, categories.get(category),
-                        brands.get(brand), productId, inventoryStr, priceInventoryStr, priceStr, detail, bitmaps);
+
+                productPresenterImp.
+                        clickAdd(product, option,
+                                name, category,brand,
+                                productId, inventoryStr, priceInventoryStr,
+                                priceStr, detail, bitmaps);
             }else{
                 finish();
             }
