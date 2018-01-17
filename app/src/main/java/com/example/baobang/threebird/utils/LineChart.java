@@ -48,7 +48,7 @@ public class LineChart implements Serializable {
         mChart.setDrawBorders(false);
 
         LimitLine lower_limit = new LimitLine(getMinValue(yValues), "Doanh thu thấp nhất");
-        lower_limit.setLineWidth(5f);
+        lower_limit.setLineWidth(2f);
 
         XAxis xAxis = mChart.getXAxis();
         xAxis.setEnabled(false);
@@ -59,8 +59,8 @@ public class LineChart implements Serializable {
         leftAxis.setEnabled(true);
         leftAxis.removeAllLimitLines();
         leftAxis.addLimitLine(lower_limit);
-        leftAxis.setAxisMinValue(getMinValue(yValues) - 5f);
-        leftAxis.setDrawLimitLinesBehindData(true);
+        leftAxis.setAxisMinValue(getMinValue(yValues));
+        leftAxis.setDrawLimitLinesBehindData(false);
 
         mChart.getAxisRight().setEnabled(false);
 

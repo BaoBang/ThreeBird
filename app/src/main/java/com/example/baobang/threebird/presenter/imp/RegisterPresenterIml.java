@@ -14,6 +14,14 @@ public class RegisterPresenterIml implements RegisterPresenter {
         this.registerView = registerView;
     }
 
+    /**
+     *      When user click button Sign up, this method check input data and create a user
+     *          - Empty input data.
+     *          - Password and password confirm
+     *          - User existed
+     *
+    **/
+
     @Override
     public void clickSignUp(String username, String password, String passwordConfirm) {
 
@@ -46,6 +54,10 @@ public class RegisterPresenterIml implements RegisterPresenter {
             registerView.showMessage("Tạo tài khoản thành công");
         }
     }
+
+    /**
+     *     finish active activity
+    **/
 
     @Override
     public void clickCancel() {

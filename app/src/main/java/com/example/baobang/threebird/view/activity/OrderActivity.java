@@ -230,7 +230,7 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
                                 int province,int district, int commune,
                                 String address,int amount, Date deliveryDate, int paymentPosition) {
 
-        imgAvatar.setImageBitmap(Utils.getRoundedRectBitmap(bitmap));
+        imgAvatar.setImageBitmap(bitmap);
         txtName.setText(name);
         txtOrderId.setText(String.valueOf(orderId));
 
@@ -368,6 +368,7 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
         ProductAdapter adapter = new ProductAdapter(products, rcProudcts, item -> {
             Product product = (Product) item;
             dialog.dismiss();
+
             showDialogProductOrder(product);
 //            addProductToLayout(product);
         });
@@ -385,24 +386,20 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
         ImageView imgProductImage = convertView.findViewById(R.id.imgProduct);
         StepperTouch stepperTouch = convertView.findViewById(R.id.stepperTouch);
 
-        ProductOrder productOrder = new ProductOrder();
-        productOrder.setProductId(product.getId());
-        productOrder.setAmount(1);
 
         String bitmapStr = product.getImages().size() > 0 ? product.getImages().first() : "";
         Bitmap bitmap ;
 
         if(bitmapStr.length() == 0){
-            bitmap = Utils.getRoundedRectBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.noimage));
+            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.noimage);
         }else{
             bitmap = Utils.getRoundedRectBitmap(Utils.StringToBitMap(bitmapStr));
         }
-
         txtProductName.setText(product.getName());
         imgProductImage.setImageBitmap(bitmap);
         stepperTouch.stepper.setMin(1);
         stepperTouch.stepper.setMax(product.getInvetory());
-        stepperTouch.getStepper().setValue(1);
+        stepperTouch.getStepper().setValue(orderPresenterImp.getAmountProduct(productList, product));
 
 
         final AlertDialog.Builder dialog = new AlertDialog.Builder(OrderActivity.this);
@@ -413,6 +410,7 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
         dialog.setPositiveButton("Đồng ý", (dialog1, id) -> {
             productList = orderPresenterImp.getProductFromList(productList, product, stepperTouch.getStepper().getValue());
             txtAmount.setText(String.valueOf(orderPresenterImp.getAmountAllProduct(productList)));
+            showProductToLayout(product, stepperTouch.getStepper().getValue());
             isClose[0] = true;
         }).setNegativeButton("Hủy ", (dialog12, which) -> {
             isClose[0] = false;
@@ -435,10 +433,10 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
     }
 
     @Override
-    public void updateAmountOfProductInCard(int index, int productId){
+    public void updateAmountOfProductInCard(int index, int amount){
         LinearLayout layout = (LinearLayout) layoutProduct.getChildAt(index);
         TextView textView = (TextView) layout.getChildAt(2);
-        String text = "Số lượng: " + orderPresenterImp.getAmountProduct(productList, productId);
+        String text = "Số lượng: " + amount;
         textView.setText(text);
     }
 
@@ -480,7 +478,7 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
         imageButtonParams.setMargins(0, 10, 0, 0);
         imageButtonParams.addRule(RelativeLayout.END_OF, imgView.getId());
         ImageButton btnRemove = new ImageButton(imgView.getContext());
-        btnRemove.setImageResource(R.drawable.ic_close_red);
+        btnRemove.setBackgroundResource(R.drawable.ic_close_red);
         btnRemove.setLayoutParams(imageButtonParams);
         return  btnRemove;
     }
@@ -491,13 +489,18 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
     }
 
     @Override
-    public void addProductToLayout(final Product product) {
+    public void showProductToLayout(final Product product, int amount) {
         int index = checkLayoutProduct(product.getId());
         if(index != -1){
-            updateAmountOfProductInCard(index, product.getId());
+            updateAmountOfProductInCard(index, orderPresenterImp.getAmountProduct(productList, product));
         }else{
 
             final LinearLayout layout =createLinearLayout(product.getId());
+
+            layout.setOnClickListener((view -> {
+                showDialogProductOrder(product);
+            }));
+
             //layout contain image product and button remove
             RelativeLayout relativeLayout = createRelativeLayout();
             // image product
@@ -509,14 +512,10 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
             relativeLayout.addView(imageView);
             relativeLayout.addView(imageButtonRemove);
             imageButtonRemove.setOnClickListener(view -> {
-                for(ProductOrder productOrder : productList){
-                    if(productOrder.getProductId() == product.getId()){
-                        productList.remove(productOrder);
-                        break;
-                    }
+                if(orderPresenterImp.removeProductOrder(productList, product)){
+                    layoutProduct.removeView(layout);
+                    updateProductAmount();
                 }
-                layoutProduct.removeView(layout);
-                updateProductAmount();
             });
 
             layout.addView(relativeLayout);
@@ -531,7 +530,7 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
             // add amount
             TextView txtAmount = new TextView(this);
             txtAmount.setLayoutParams(params);
-            text = "Số lượng: "+orderPresenterImp.getAmountProduct(productList, product.getId());
+            text = "Số lượng: " + orderPresenterImp.getAmountProduct(productList, product);
             txtAmount.setText(text);
             layout.addView(txtAmount);
             // add price
@@ -564,10 +563,10 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
     }
 
     @Override
-    public void addClientInfoFromListToView(Bitmap bitmap, String name, String phone,
+    public void showClientInfoFromListToView(Bitmap bitmap, String name, String phone,
                                             int province, int district, int commune,
                                             String address) {
-        imgAvatar.setImageBitmap(Utils.getRoundedRectBitmap(bitmap));
+        imgAvatar.setImageBitmap(bitmap);
 
 
         txtName.setText(name);
@@ -694,7 +693,7 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
                 position = spPayment.getSelectedItemPosition();
                 Payment payment = position == 0 ? null : payments.get(position);
 
-                orderPresenterImp.clickAddOptionMenu(order, option, txtOrderId.getText().toString(), name,
+                orderPresenterImp.clickAddOptionMenu(order, option, clientSelectedId, name,
                         date, status, phone,
                         province, district, commune,
                         address, productList, deliveryDate, payment);

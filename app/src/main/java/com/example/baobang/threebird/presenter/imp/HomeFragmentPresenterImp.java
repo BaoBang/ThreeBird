@@ -43,19 +43,16 @@ public class HomeFragmentPresenterImp implements HomeFragmentPresenter {
         ArrayList<String> labels = new ArrayList<>();
 
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DATE, 1);
+        calendar.add(Calendar.DATE, -6);
+        for(int i = 0; i <  7 ; i++){
 
-        for(int i = 0; i <  calendar.get(Calendar.DAY_OF_MONTH); i++){
-
-            ArrayList<Order> orders = OrderHelper.getOrderByStatusInDay(
-                    Constants.COMPLETED,
-                    calendar.getTime());
+            ArrayList<Order> orders = OrderHelper
+                    .getOrderByStatusInDay(Constants.COMPLETED, calendar.getTime());
             long total = 0;
             for(Order order : orders)
                 total += order.getToal();
             entries.add(new Entry(total, i));
-            labels.add(i, (i+1)+"");
-
+            labels.add(i, calendar.getTime().toString());
             calendar.add(Calendar.DATE, 1);
         }
         homeFragmentView.showLineChart(view, entries, labels);

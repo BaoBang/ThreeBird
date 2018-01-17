@@ -116,18 +116,16 @@ public class OrderPresenterImp implements OrderPresenter {
     }
 
     @Override
-    public int getAmountProduct(List<ProductOrder> productList, int id) {
+    public int getAmountProduct(List<ProductOrder> productList, Product product) {
         int total = 1;
         for(ProductOrder productOrder : productList){
-            if(productOrder.getProductId() == id){
+            if(productOrder.getProductId() == product.getId()){
                 total = productOrder.getAmount();
                 break;
             }
         }
         return total;
     }
-
-
 
     @Override
     public int getAmountAllProduct(List<ProductOrder> productList) {
@@ -142,7 +140,7 @@ public class OrderPresenterImp implements OrderPresenter {
     public List<ProductOrder> getProductFromList(List<ProductOrder> productList, Product product, int amount) {
         int index = checkProduct(productList, product);
         if(index != -1){
-            productList.get(index).setAmount(productList.get(index).getAmount() + amount);
+            productList.get(index).setAmount(amount);
         }else{
             productList.add(new ProductOrder(product.getId(), amount));
         }
@@ -157,17 +155,6 @@ public class OrderPresenterImp implements OrderPresenter {
             }
         }
         return -1;
-    }
-
-    @Override
-    public Product checkInventory(List<ProductOrder> productList) {
-        for(ProductOrder productOrder : productList){
-            Product product = ProductHelper.getProduct(productOrder.getProductId());
-            if(product.getInvetory()  < productOrder.getAmount()){
-                return product;
-            }
-        }
-        return null;
     }
 
     @Override
@@ -243,7 +230,7 @@ public class OrderPresenterImp implements OrderPresenter {
     public void addProductToLayout(List<ProductOrder> productList) {
         for(ProductOrder productOrder : productList){
             Product product = ProductHelper.getProduct(productOrder.getProductId());
-            orderView.addProductToLayout(product);
+            orderView.showProductToLayout(product, productOrder.getAmount());
         }
     }
 
@@ -283,7 +270,7 @@ public class OrderPresenterImp implements OrderPresenter {
     }
 
     @Override
-    public void clickAddOptionMenu(Order order,int option, String clientIdStr, String name,
+    public void clickAddOptionMenu(Order order,int option, int clientId, String name,
                                    Date date, Status status, String phone,
                                    Province province, District district, Commune commune,
                                    String address, List<ProductOrder> products,
@@ -294,10 +281,10 @@ public class OrderPresenterImp implements OrderPresenter {
                 orderView.showClientNameWarning("Vui lòng nhập vào tên khách hàng");
                 return;
             }
-            if(Utils.checkInput(clientIdStr)){
-                orderView.showOrderIdWarning("Vui lòng nhập vào số hóa đơn");
-                return;
-            }
+//            if(Utils.checkInput(clientIdStr)){
+//                orderView.showOrderIdWarning("Vui lòng nhập vào số hóa đơn");
+//                return;
+//            }
             if(date == null){
                 orderView.showMessage("Vui lòng chọn ngày lập hóa đơn");
                 return;
@@ -360,11 +347,11 @@ public class OrderPresenterImp implements OrderPresenter {
 
             int result = -1;
             if(option == Constants.ADD_OPTION){
-                result = addOrder(Integer.parseInt(clientIdStr), name, date,
+                result = addOrder(clientId, name, date,
                         status, phone, province, district,
                         commune, address, products, deliveryDate, payment);
             }else if(option == Constants.EDIT_OPTION){
-                result = updateOrder(order, Integer.parseInt(clientIdStr), name, date,
+                result = updateOrder(order,clientId, name, date,
                         status, phone, province, district,
                         commune, address, products, deliveryDate, payment);
             }
@@ -397,11 +384,10 @@ public class OrderPresenterImp implements OrderPresenter {
             Bitmap  bitmap;
             if(client.getAvatar() != null && client.getAvatar().length() == 0){
                 bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.noimage);
-                bitmap = Utils.getRoundedRectBitmap(bitmap);
             }else{
                 bitmap = Utils.StringToBitMap(client.getAvatar());
             }
-            orderView.addClientInfoFromListToView(bitmap, client.getName(), client.getPhone(),
+            orderView.showClientInfoFromListToView(bitmap, client.getName(), client.getPhone(),
                     client.getAddress().getProvinceId(), client.getAddress().getDistrictId(),
                     client.getAddress().getCommuneId(), client.getAddress().getAddress());
         }
@@ -421,6 +407,17 @@ public class OrderPresenterImp implements OrderPresenter {
 
         orderView.showDialogProduct(ProductHelper.getAllProduct());
 
+    }
+
+    @Override
+    public boolean removeProductOrder(List<ProductOrder> productOrders, Product product) {
+        for(ProductOrder productOrder : productOrders){
+            if(productOrder.getProductId() == product.getId()){
+                productOrders.remove(productOrder);
+                return true;
+            }
+        }
+        return false;
     }
 
     private ArrayList<Province> getProvinces(){

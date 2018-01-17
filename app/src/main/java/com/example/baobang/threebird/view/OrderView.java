@@ -59,9 +59,9 @@ public interface OrderView {
 
     void updateProductAmount();
 
-    void addProductToLayout(final Product product);
+    void showProductToLayout(final Product product, int amount);
 
-    void addClientInfoFromListToView(Bitmap bitmap, String name, String phone,
+    void showClientInfoFromListToView(Bitmap bitmap, String name, String phone,
                                      int province, int district, int commune,
                                      String address);
 

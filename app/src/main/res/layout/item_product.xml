@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@color/gradient_color">
+    android:background="@color/gradient_color"
+    android:translationZ="2dp">
 
     <LinearLayout
         android:id="@+id/layoutItem"
@@ -15,7 +16,7 @@
         android:layout_marginTop="@dimen/margin_vertical"
         android:paddingTop="@dimen/padding"
         android:paddingBottom="@dimen/padding"
-        android:background="@drawable/background_color"
+        android:background="@drawable/background_item_recyclerview"
         android:baselineAligned="false">
         <LinearLayout
             android:layout_weight="80"

@@ -11,8 +11,8 @@
     <color name="green">#7000FF00</color>
     <!--<color name="main">#e6eded</color>-->
     <color name="main">#fff</color>
-    <color name="gray">#708b8a8a</color>
-    <color name="gray_light">#cbced3</color>
+    <color name="gray">#70292929</color>
+    <color name="gray_light">#dbe2ed</color>
     <color name="bold_word_80">#80000000</color>
     <color name="bold_word">#000</color>
 

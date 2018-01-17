@@ -23,10 +23,13 @@ import io.realm.RealmList;
 public class ProductPresenterImp implements ProductPresenter {
 
     private ProductView productView;
+
     private int key = 0;
+
     public ProductPresenterImp(ProductView productView) {
         this.productView = productView;
     }
+
     public void init(){
         productView.addControls();
         productView.addEvents();
@@ -40,8 +43,8 @@ public class ProductPresenterImp implements ProductPresenter {
 
     @Override
     public int addProduct(String name, int categoryId, int brandId,
-                              int inventory, int priceInventory,int price,String detail,
-                            HashMap<Integer,Bitmap> bitmaps) {
+                          int inventory, int priceInventory,int price,
+                          String detail,  HashMap<Integer,Bitmap> bitmaps) {
         RealmList<String> list = new RealmList<>();
         for(Integer key : bitmaps.keySet()){
             Bitmap bitmap = bitmaps.get(key);
@@ -144,11 +147,11 @@ public class ProductPresenterImp implements ProductPresenter {
             productView.showMessage("Vui lòng chọn hãng sản phẩm");
             return;
         }
-
-        if(Utils.checkInput(productId)){
-            productView.showProductIdWarning("Vui lòng nhập vào mã sản phẩm");
-            return;
-        }
+//
+//        if(Utils.checkInput(productId)){
+//            productView.showProductIdWarning("Vui lòng nhập vào mã sản phẩm");
+//            return;
+//        }
 
         if(Utils.checkInput(inventoryStr)){
             productView.showProductInventoryWarning("Vui lòng nhập vào số lượng tồn kho");
@@ -163,12 +166,12 @@ public class ProductPresenterImp implements ProductPresenter {
             return;
         }
         int inventory, inventoryPrice, price;
-        try{
-           Integer.parseInt(productId);
-        }catch (Exception e){
-            productView.showProductIdWarning("Định dạng không đúng");
-            return;
-        }
+//        try{
+//           Integer.parseInt(productId);
+//        }catch (Exception e){
+//            productView.showProductIdWarning("Định dạng không đúng");
+//            return;
+//        }
 
         try{
             inventory = Integer.parseInt(inventoryStr);

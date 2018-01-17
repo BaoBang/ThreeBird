@@ -109,7 +109,7 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/color_white"
+                android:background="@drawable/background_spinner"
                 android:layout_marginLeft="@dimen/margin"
                 android:layout_marginRight="@dimen/margin"
                 android:layout_marginTop="@dimen/padding">
@@ -122,7 +122,7 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/color_white"
+                android:background="@drawable/background_spinner"
                 android:layout_marginLeft="@dimen/margin"
                 android:layout_marginRight="@dimen/margin"
                 android:layout_marginTop="@dimen/padding">
@@ -147,7 +147,8 @@
                     android:layout_marginRight="@dimen/margin"
                     app:primaryColor="@color/colorAccent"
                     app:panelBackgroundColor="@color/color_white"
-                    app:errorColor="@color/A400red">
+                    app:errorColor="@color/A400red"
+                    app:enabled="false">
                 <studio.carbonylgroup.textfieldboxes.ExtendedEditText
                     android:id="@+id/txtProductId"
                     android:layout_width="match_parent"
@@ -157,7 +158,8 @@
                     android:maxLines="1"
                     android:singleLine="true"
                     android:inputType="numberDecimal"
-                    android:background="@color/color_white"/>
+                    android:background="@color/color_white"
+                    android:enabled="false"/>
                 </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
             </LinearLayout>
             <LinearLayout

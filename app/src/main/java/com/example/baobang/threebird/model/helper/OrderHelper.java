@@ -1,5 +1,7 @@
 package com.example.baobang.threebird.model.helper;
 
+import android.util.Log;
+
 import com.example.baobang.threebird.model.Order;
 import com.example.baobang.threebird.model.ProductOrder;
 
@@ -128,12 +130,15 @@ public class OrderHelper {
         // the day before
         calendar.add(Calendar.DATE, -1);
         Date dateBefore = calendar.getTime();
-        calendar.add(Calendar.DATE, 2);
+        calendar.add(Calendar.DATE, 1);
         Date dateAfter = calendar.getTime();
 
-
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<Order> results = realm.where(Order.class).greaterThan("createdAt", dateBefore).lessThan("createdAt", dateAfter).equalTo("status", status).findAll();
+        RealmResults<Order> results = realm.where(Order.class)
+                .lessThan("createdAt", dateAfter)
+                .greaterThan("createdAt", dateBefore)
+                .equalTo("status", status)
+                .findAll();
         list = realm.copyFromRealm(results);
         orders.addAll(list);
         realm.close();

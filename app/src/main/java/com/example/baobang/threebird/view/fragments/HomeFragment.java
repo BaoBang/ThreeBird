@@ -75,7 +75,7 @@ public class HomeFragment extends Fragment implements HomeFragmentView{
         Utils.hideKeyboardOutside(layoutRoot, getActivity());
         CircleIndicator circleIndicator = view.findViewById(R.id.indicator);
         this.modles = models;
-        ViewPagerHandler viewPagerHandler = new ViewPagerHandler(getContext(), viewPager, circleIndicator, models);
+        ViewPagerHandler viewPagerHandler = new ViewPagerHandler(getContext(), viewPager, circleIndicator, this.modles);
         viewPagerHandler.handler();
 
     }
@@ -87,7 +87,7 @@ public class HomeFragment extends Fragment implements HomeFragmentView{
         this.entries = entries;
         this.labels = lables;
         com.example.baobang.threebird.utils.LineChart chart =
-                new com.example.baobang.threebird.utils.LineChart("Biểu đồ doanh thu của các ngày trong tháng",mChart, this.entries, this.labels);
+                new com.example.baobang.threebird.utils.LineChart("Biểu đồ doanh thu trong 7 ngày gần nhất",mChart, this.entries, this.labels);
         chart.drawLineChart();
     }
 
