@@ -16,6 +16,7 @@ import com.example.baobang.threebird.annimator.VegaLayoutManager;
 import com.example.baobang.threebird.listener.OnItemRecyclerViewClickListener;
 import com.example.baobang.threebird.model.Client;
 import com.example.baobang.threebird.utils.Utils;
+import com.nightonke.boommenu.BoomMenuButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,14 +32,17 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientHold
     private RecyclerViewAnimator mAnimator;
     private RecyclerView recyclerView;
 
+    private boolean isVisibleBoomMenu = true;
+
     private OnItemRecyclerViewClickListener onItemClickListener;
 
-    public ClientAdapter(List<Client> clients, RecyclerView recyclerView, OnItemRecyclerViewClickListener onItemClickListener) {
+    public ClientAdapter(List<Client> clients, RecyclerView recyclerView, OnItemRecyclerViewClickListener onItemClickListener, boolean isVisibleBoomMenu) {
         this.clients = clients;
         this.tempClients = new ArrayList<>(this.clients);
         this.recyclerView = recyclerView;
         this.mAnimator = new RecyclerViewAnimator(recyclerView);
         this.onItemClickListener = onItemClickListener;
+        this.isVisibleBoomMenu = isVisibleBoomMenu;
     }
 
 
@@ -64,7 +68,25 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientHold
             holder.imgAvatar.setImageResource(R.drawable.noimage);
         }
 
-        holder.itemView.setOnClickListener(view -> onItemClickListener.onItemClick(clients.get(holder.getPostion())));
+            holder.boomMenuButton.clearBuilders();
+            for (int i = 0; i < holder.boomMenuButton.getPiecePlaceEnum().pieceNumber(); i++){
+                holder.boomMenuButton.addBuilder(
+                        BuilderManager
+                                .getSimpleCircleButtonBuilder()
+                                .listener(
+                                        index -> onItemClickListener.onItemClick(index, clients.get(holder.getPostion()))
+                                )
+                );
+            }
+
+            if(!isVisibleBoomMenu){
+                holder.boomMenuButton.setEnabled(false);
+                holder.itemView.setOnClickListener(view ->
+                        onItemClickListener
+                                .onItemClick(
+                                        -1,
+                                        clients.get(holder.getPostion())));
+            }
 
         mAnimator.onBindViewHolder(holder.layoutItem, position);
     }
@@ -115,7 +137,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientHold
 
         @Override
         protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-            clientAdapter = new ClientAdapter(clients, recyclerView, onItemClickListener);
+            clientAdapter = new ClientAdapter(clients, recyclerView, onItemClickListener, isVisibleBoomMenu);
             VegaLayoutManager vegaLayoutManager = (VegaLayoutManager) recyclerView.getLayoutManager();
             vegaLayoutManager.setDeafaut();
             notifyDataSetChanged();
@@ -135,7 +157,12 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientHold
 
         @BindView(R.id.layoutItem)
         LinearLayout layoutItem;
+
+        @BindView(R.id.bmb1)
+        BoomMenuButton boomMenuButton;
+
         int postion = -1;
+
 
         private int getPostion() {
             return postion;

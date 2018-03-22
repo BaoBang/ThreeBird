@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@color/gradient_color"
     android:translationZ="2dp">
@@ -20,7 +21,7 @@
         android:background="@drawable/background_item_recyclerview"
         android:baselineAligned="false">
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_weight="50">
@@ -42,10 +43,10 @@
                 android:textSize="@dimen/text_size_small"/>
         </LinearLayout>
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_weight="50"
+            android:layout_weight="35"
             android:layout_gravity="center_vertical">
             <TextView
                 android:id="@+id/txtStatus"
@@ -59,6 +60,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="textEnd"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="15"
+            android:layout_gravity="center_vertical">
+
+            <com.nightonke.boommenu.BoomMenuButton
+                android:id="@+id/bmb1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:bmb_buttonEnum="simpleCircle"
+                app:bmb_piecePlaceEnum="piecePlace_dot_3_1"
+                app:bmb_buttonPlaceEnum="buttonPlace_sc_3_1"
+                app:bmb_inList="true"/>
+
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

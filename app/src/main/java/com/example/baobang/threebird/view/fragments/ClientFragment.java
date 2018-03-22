@@ -122,24 +122,21 @@ public class ClientFragment extends Fragment implements ClientFragmentView{
         }
     }
 
-    private void openOptionDialog(final Client client){
-        final CharSequence[] items = { "Thêm", "Sửa", "Xem chi tiết", "Xóa"};
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Lựa chọn");
-        builder.setItems(items, (dialog, item) -> {
+    private void openOptionDialog(int option, final Client client){
 
-            if (items[item].equals("Thêm")) {
+         if (option == Constants.ADD_OPTION) {
                 goToUserDetailActivity(null, Constants.ADD_OPTION);
-            } else if (items[item].equals("Sửa")) {
+         } else if (option == Constants.EDIT_OPTION) {
                 goToUserDetailActivity(client,Constants.EDIT_OPTION);
-            }else if(items[item].equals("Xem chi tiết")){
+         }else if(option == Constants.DETAIL_OPTION){
                 goToUserDetailActivity(client, Constants.DETAIL_OPTION);
-            }
-            else{
-                clientFragmentPresenterImp.deleteClient(getActivity(),clients,client);
-            }
-        });
-        builder.show();
+         }else{
+                clientFragmentPresenterImp
+                        .deleteClient(
+                                getActivity(),
+                                clients,
+                                client);
+         }
     }
 
     private void goToUserDetailActivity(Client client, int option) {
@@ -178,7 +175,8 @@ public class ClientFragment extends Fragment implements ClientFragmentView{
         this.clients = clients;
         clientAdapter = new ClientAdapter(clients,
                 rcClients,
-                item -> openOptionDialog((Client)item));
+                (option, item) -> openOptionDialog(option, (Client)item),
+                true);
         rcClients.setLayoutManager(new VegaLayoutManager());
         rcClients.setAdapter(clientAdapter);
     }

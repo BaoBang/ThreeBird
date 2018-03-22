@@ -65,6 +65,11 @@ public class LoginPresenterImp implements LoginPresenter {
         return UserHelper.checkUser( user);
     }
 
+    @Override
+    public void addUserToView(User user) {
+        loginView.showUserToView(user.getUserName(), user.getPassWord());
+    }
+
     public void initData(){
         ProvinceHelper.createProvince(new Province(0, "Tỉnh/Thành phố..."));
         ProvinceHelper.createProvince(new Province(1, "An Giang"));

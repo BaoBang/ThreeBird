@@ -17,6 +17,7 @@ import com.example.baobang.threebird.annimator.VegaLayoutManager;
 import com.example.baobang.threebird.listener.OnItemRecyclerViewClickListener;
 import com.example.baobang.threebird.model.Product;
 import com.example.baobang.threebird.utils.Utils;
+import com.nightonke.boommenu.BoomMenuButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,13 +32,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductH
     private RecyclerViewAnimator mAnimator;
     private RecyclerView recyclerView;
     private OnItemRecyclerViewClickListener onItemRecyclerViewClickListener;
-
-    public ProductAdapter(List<Product> products, RecyclerView recyclerView,OnItemRecyclerViewClickListener onItemRecyclerViewClickListener) {
+    private boolean isVisibleBoomMenu = true;
+    public ProductAdapter(List<Product> products, RecyclerView recyclerView,OnItemRecyclerViewClickListener onItemRecyclerViewClickListener, boolean isVisibleBoomMenu ) {
         this.products = products;
         this.tempproducts = new ArrayList<>(this.products);
         this.recyclerView = recyclerView;
         mAnimator = new RecyclerViewAnimator(recyclerView);
         this.onItemRecyclerViewClickListener = onItemRecyclerViewClickListener;
+        this.isVisibleBoomMenu = isVisibleBoomMenu;
     }
 
     @Override
@@ -51,6 +53,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductH
 
     @Override
     public void onBindViewHolder(ProductAdapter.ProductHolder holder, final int position) {
+
+        holder.setPositionSelected(position);
+
         Product product = this.products.get(position);
         if(product.getImages().size() > 0){
             holder.imgProduct.setImageBitmap(Utils.getRoundedRectBitmap(Utils.StringToBitMap(product.getImages().first())));
@@ -60,7 +65,28 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductH
         holder.txtPrice.setText(text);
         text = "Số lượng: " + String.valueOf(product.getInvetory());
         holder.txtAmount.setText(text);
-        holder.itemView.setOnClickListener(view -> onItemRecyclerViewClickListener.onItemClick(products.get(position)));
+
+            holder.boomMenuButton.clearBuilders();
+            for (int i = 0; i < holder.boomMenuButton.getPiecePlaceEnum().pieceNumber(); i++){
+                holder.boomMenuButton.addBuilder(
+                        BuilderManager
+                                .getSimpleCircleButtonBuilder()
+                                .listener(
+                                        index ->
+                                                onItemRecyclerViewClickListener.onItemClick(index, products.get(holder.getPositionSelected()))
+                                )
+                );
+            }
+            if(!isVisibleBoomMenu){
+                holder.boomMenuButton.setEnabled(false);
+                holder.itemView.setOnClickListener(view ->
+                        onItemRecyclerViewClickListener
+                                .onItemClick(
+                                        -1,
+                                        products.get(position)));
+
+            }
+
 
         mAnimator.onBindViewHolder(holder.layoutItem, position);
     }
@@ -107,7 +133,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductH
 
         @Override
         protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-            productAdapter = new ProductAdapter(products, recyclerView, onItemRecyclerViewClickListener);
+            productAdapter =
+                    new ProductAdapter(
+                            products,
+                            recyclerView,
+                            onItemRecyclerViewClickListener,
+                            isVisibleBoomMenu);
             VegaLayoutManager vegaLayoutManager = (VegaLayoutManager) recyclerView.getLayoutManager();
             vegaLayoutManager.setDeafaut();
             notifyDataSetChanged();
@@ -129,6 +160,20 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductH
 
         @BindView(R.id.layoutItem)
         LinearLayout layoutItem;
+
+        @BindView(R.id.bmb1)
+        BoomMenuButton boomMenuButton;
+
+        int positionSelected = -1;
+
+        public int getPositionSelected() {
+            return positionSelected;
+        }
+
+        public void setPositionSelected(int positionSelected) {
+            this.positionSelected = positionSelected;
+        }
+
         private ProductHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);

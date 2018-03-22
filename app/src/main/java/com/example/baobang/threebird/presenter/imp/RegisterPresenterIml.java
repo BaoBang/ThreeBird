@@ -6,6 +6,8 @@ import com.example.baobang.threebird.presenter.RegisterPresenter;
 import com.example.baobang.threebird.utils.Utils;
 import com.example.baobang.threebird.view.RegisterView;
 
+import org.greenrobot.eventbus.EventBus;
+
 public class RegisterPresenterIml implements RegisterPresenter {
 
     private RegisterView registerView;
@@ -48,10 +50,16 @@ public class RegisterPresenterIml implements RegisterPresenter {
         User user = new User();
         user.setUserName(username);
         user.setPassWord(password);
+        boolean isCreated;
         if(!UserHelper.createUser(user)){
             registerView.showMessage("Không thể tạo tài khoản");
+            isCreated = false;
         }else{
-            registerView.showMessage("Tạo tài khoản thành công");
+            EventBus.getDefault().postSticky(user);
+            isCreated = true;
+        }
+        if (isCreated){
+            registerView.finishActivity();
         }
     }
 

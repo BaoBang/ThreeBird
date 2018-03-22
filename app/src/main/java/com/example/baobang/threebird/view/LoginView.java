@@ -13,4 +13,6 @@ public interface LoginView {
     void startRegisterActivity();
 
     void startForgetPasswordInActivity();
+
+    void showUserToView(String userName, String passWord);
 }

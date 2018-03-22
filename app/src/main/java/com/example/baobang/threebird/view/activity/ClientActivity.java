@@ -339,7 +339,6 @@ public class ClientActivity extends AppCompatActivity implements ClientView{
                 Uri selectedImageUri = data.getData();
                 try {
                     avatar = Utils.getBitmapFromUri(this,selectedImageUri);
-                    avatar = Utils.getResizedBitmap(avatar, Constants.IMAGE_WIDTH, Constants.IMAGE_HEIGHT);
                 } catch (IOException e) {
                     avatar = BitmapFactory.decodeResource(getResources(), R.drawable.noimage);
                 }

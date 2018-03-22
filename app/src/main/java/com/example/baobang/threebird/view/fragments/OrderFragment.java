@@ -136,23 +136,21 @@ public class OrderFragment extends Fragment implements OrderFragmentView {
         this.layoutSelected = layoutSelected;
     }
 
-    private void openOptionDialog(final int orderId){
-        final CharSequence[] items = { "Thêm", "Sửa", "Xem chi tiết", "Xóa"};
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Lựa chọn");
-        builder.setItems(items, (dialog, item) -> {
+    private void openOptionDialog(int option, final int orderId){
 
-            if (items[item].equals("Thêm")) {
-                goToCreateOrderActivity(-1, Constants.ADD_OPTION);
-            } else if (items[item].equals("Sửa")) {
-                goToCreateOrderActivity(orderId,Constants.EDIT_OPTION);
-            }else if(items[item].equals("Xem chi tiết")){
-                goToCreateOrderActivity(orderId, Constants.DETAIL_OPTION);
-            }else{
-                orderFragmentPresenterImp.deleteOrder(getActivity(), orders, orderId);
-            }
-        });
-        builder.show();
+        if(option == Constants.ADD_OPTION) {
+             goToCreateOrderActivity(-1, Constants.ADD_OPTION);
+        }else if(option == Constants.EDIT_OPTION) {
+             goToCreateOrderActivity(orderId, Constants.EDIT_OPTION);
+        } else if(option == Constants.DETAIL_OPTION){
+             goToCreateOrderActivity(orderId, Constants.DETAIL_OPTION);
+        }else{
+              orderFragmentPresenterImp
+                      .deleteOrder(
+                              getActivity(),
+                              orders,
+                              orderId);
+        }
     }
 
     @Override
@@ -240,9 +238,9 @@ public class OrderFragment extends Fragment implements OrderFragmentView {
     @Override
     public void showRecyclerViewOrder(ArrayList<Order> orders) {
         this.orders = orders;
-        onItemRecyclerViewClickListener = item -> {
+        onItemRecyclerViewClickListener = (option, item) -> {
             Order order = (Order) item;
-            openOptionDialog(order.getId());
+            openOptionDialog(option, order.getId());
         };
         orderAdapter = new OrderAdapter(getActivity(), orders, rcOrders, onItemRecyclerViewClickListener);
         rcOrders.setLayoutManager(new VegaLayoutManager());

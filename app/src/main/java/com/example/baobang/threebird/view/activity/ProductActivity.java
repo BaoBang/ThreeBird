@@ -268,7 +268,6 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
                 Bundle bundle = data.getExtras();
                 if(bundle != null){
                     Bitmap bitmap = (Bitmap) bundle.get("data");
-                    bitmap = Utils.getResizedBitmap(bitmap, Constants.IMAGE_WIDTH, Constants.IMAGE_HEIGHT);
                     bitmaps.put(productPresenterImp.getNextKey(), bitmap);
                     layoutImage.addView(createImageViewAndImageButtonRemove(productPresenterImp.getNextKey(), bitmap));
                 }
@@ -278,7 +277,6 @@ public class ProductActivity extends AppCompatActivity implements ProductView{
                 Bitmap bitmap;
                 try {
                     bitmap = Utils.getBitmapFromUri(this,selectedImageUri);
-                    bitmap = Utils.getResizedBitmap(bitmap, Constants.IMAGE_WIDTH, Constants.IMAGE_HEIGHT);
                 } catch (IOException e) {
                     bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.noimage);
                 }

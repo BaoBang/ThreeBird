@@ -16,6 +16,8 @@ import com.example.baobang.threebird.annimator.VegaLayoutManager;
 import com.example.baobang.threebird.listener.OnItemRecyclerViewClickListener;
 import com.example.baobang.threebird.model.Order;
 import com.example.baobang.threebird.utils.Constants;
+import com.nightonke.boommenu.BoomMenuButton;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,8 +73,23 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
             holder.txtStatus.setText(R.string.delivery);
             holder.txtStatus.setTextColor(this.context.getResources().getColor(R.color.blue));
         }
+        holder.boomMenuButton.clearBuilders();
 
-        holder.itemView.setOnClickListener(view -> onItemRecyclerViewClickListener.onItemClick(orders.get(holder.getPositionSelected())));
+        for (int i = 0; i < holder.boomMenuButton.getPiecePlaceEnum().pieceNumber(); i++){
+            holder.boomMenuButton.addBuilder(
+                    BuilderManager
+                            .getSimpleCircleButtonBuilder()
+                            .listener(
+                                    index ->
+                                    onItemRecyclerViewClickListener.onItemClick(index, orders.get(holder.getPositionSelected()))
+                            )
+            );
+        }
+//        holder.itemView.setOnClickListener(
+//             view ->
+//                onItemRecyclerViewClickListener
+//                .onItemClick(
+//                orders.get(holder.getPositionSelected())));
 
         mAnimator.onBindViewHolder(holder.layoutItem, position);
     }
@@ -100,6 +117,10 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
 
         @BindView(R.id.layoutItem)
         LinearLayout layoutItem;
+
+        @BindView(R.id.bmb1)
+        BoomMenuButton boomMenuButton;
+
         int positionSelected = -1;
 
         public int getPositionSelected() {

@@ -386,6 +386,7 @@ public class OrderPresenterImp implements OrderPresenter {
                 bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.noimage);
             }else{
                 bitmap = Utils.StringToBitMap(client.getAvatar());
+                bitmap = Utils.getRoundedRectBitmap(bitmap);
             }
             orderView.showClientInfoFromListToView(bitmap, client.getName(), client.getPhone(),
                     client.getAddress().getProvinceId(), client.getAddress().getDistrictId(),

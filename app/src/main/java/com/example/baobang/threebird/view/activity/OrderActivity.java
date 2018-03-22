@@ -365,13 +365,17 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
         alertDialog.setTitle("Danh sách sản phẩm");
         RecyclerView rcProudcts =  convertView.findViewById(R.id.recyclerView);
         final AlertDialog dialog = alertDialog.show();
-        ProductAdapter adapter = new ProductAdapter(products, rcProudcts, item -> {
-            Product product = (Product) item;
-            dialog.dismiss();
 
-            showDialogProductOrder(product);
-//            addProductToLayout(product);
-        });
+        ProductAdapter adapter =
+                new ProductAdapter(
+                        products,
+                        rcProudcts,
+                        (option, item) -> {
+                            Product product = (Product) item;
+                            dialog.dismiss();
+                            showDialogProductOrder(product);
+                         },
+                        false);
         rcProudcts.setLayoutManager(new VegaLayoutManager());
         rcProudcts.setAdapter(adapter);
     }
@@ -551,13 +555,23 @@ public class OrderActivity extends AppCompatActivity implements OrderView{
         @SuppressLint("InflateParams") View convertView = inflater.inflate(R.layout.recycleview_dialog, null);
         alertDialog.setView(convertView);
         alertDialog.setTitle("Danh sách khách hàng");
+
         RecyclerView rcClients =  convertView.findViewById(R.id.recyclerView);
+
+
         final AlertDialog dialog = alertDialog.show();
-        ClientAdapter adapter = new ClientAdapter(clients, rcClients, item -> {
-            Client client = (Client) item;
-            dialog.dismiss();
-            clientSelectedId = orderPresenterImp.setClientData(this, client);
-        });
+        ClientAdapter adapter =
+                new ClientAdapter(
+                        clients,
+                        rcClients,
+                        (option, item) -> {
+                            Client client = (Client) item;
+                            dialog.dismiss();
+                            clientSelectedId = orderPresenterImp.setClientData(this, client);
+                        },
+                        false
+                );
+
         rcClients.setLayoutManager(new VegaLayoutManager());
         rcClients.setAdapter(adapter);
     }

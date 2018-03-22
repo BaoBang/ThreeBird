@@ -84,24 +84,20 @@ public class ProductFragment extends Fragment implements ProductFragmentView {
         return view;
     }
 
-    private void openOptionDialog(final int productId) {
-        final CharSequence[] items = { "Thêm", "Sửa", "Xem chi tiết", "Xóa"};
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Lựa chọn");
-        builder.setItems(items, (dialog, item) -> {
+    private void openOptionDialog(int option, final int productId) {
 
-            if (items[item].equals("Thêm")) {
-                goToAddProductActivity(-1, Constants.ADD_OPTION);
-            } else if (items[item].equals("Sửa")) {
-                goToAddProductActivity(productId,Constants.EDIT_OPTION);
-            }else if(items[item].equals("Xem chi tiết")){
-                goToAddProductActivity(productId, Constants.DETAIL_OPTION);
-            }
-            else{
-                productFragmentPresenterImp.deleteProduct(getActivity(), products, productId, onItemRecyclerViewClickListener);
-            }
-        });
-        builder.show();
+         if(option == Constants.ADD_OPTION) {
+             goToAddProductActivity(-1, Constants.ADD_OPTION);
+         }
+         else if(option == Constants.EDIT_OPTION) {
+             goToAddProductActivity(productId,Constants.EDIT_OPTION);
+         }
+         else if(option == Constants.DETAIL_OPTION) {
+             goToAddProductActivity(productId, Constants.DETAIL_OPTION);
+         }
+         else{
+             productFragmentPresenterImp.deleteProduct(getActivity(), products, productId, onItemRecyclerViewClickListener);
+         }
     }
 
 
@@ -244,7 +240,11 @@ public class ProductFragment extends Fragment implements ProductFragmentView {
     @Override
     public void updateRecyclerView(ArrayList<Product> products){
         this.products = products;
-        productAdapter = new ProductAdapter(products, rcProducts, onItemRecyclerViewClickListener);
+        productAdapter = new ProductAdapter(
+                products,
+                rcProducts,
+                onItemRecyclerViewClickListener,
+                true);
         rcProducts.setAdapter(productAdapter);
     }
 
@@ -279,9 +279,9 @@ public class ProductFragment extends Fragment implements ProductFragmentView {
     @Override
     public void showRecyclerViewProduct(ArrayList<Product> products) {
         this.products = products;
-        onItemRecyclerViewClickListener = item -> {
+        onItemRecyclerViewClickListener = (option, item) -> {
             Product product = (Product) item;
-            openOptionDialog(product.getId());
+            openOptionDialog(option, product.getId());
         };
         rcProducts.setLayoutManager(new VegaLayoutManager());
         updateRecyclerView(products);

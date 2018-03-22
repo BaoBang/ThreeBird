@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
 
         Realm.init(this);
 
-
         LinearLayout layoutRoot = findViewById(R.id.container);
         Utils.hideKeyboardOutside(layoutRoot, this);
 

@@ -94,14 +94,15 @@
                     app:panelBackgroundColor="@color/color_white"
                     app:errorColor="@color/A400red"
                     app:enabled="false">
-                <studio.carbonylgroup.textfieldboxes.ExtendedEditText
-                    android:id="@+id/txtOrderId"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/text_size"
-                    android:background="@color/color_white"
-                    android:enabled="false"/>
+                    <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                        android:id="@+id/txtOrderId"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/text_size"
+                        android:background="@color/color_white"
+                        android:enabled="false"/>
                 </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
             </LinearLayout>
 
             <LinearLayout
